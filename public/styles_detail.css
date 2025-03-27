@@ -1,19 +1,34 @@
-body {
-    margin: 0 auto;
-    padding: 10px;
-    max-width: 900px;
-    line-height: 1.5;
-    font-family: Arial, sans-serif;
-    background-color: #fafafa;
+/* Global Reset & Basis-Einstellungen */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     overflow-x: hidden;
 }
 
-h1 {
-    text-align: center;
-    font-size: 1.8rem;
-    margin-bottom: 15px;
+body {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 15px;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;
 }
 
+/* Verhindert Zoomen und horizontales Scrollen */
+html {
+    touch-action: manipulation;
+}
+
+img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 10px;
+    display: block;
+}
+
+/* Rezept-Header */
 .recipe-header {
     display: flex;
     flex-direction: column;
@@ -21,52 +36,75 @@ h1 {
     margin-bottom: 20px;
 }
 
-.recipe-header img {
-    width: 100%;
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    word-wrap: break-word;
 }
 
+/* Zutaten & Zubereitung */
 .ingredients-steps {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
 }
 
 .ingredients, .steps {
+    padding: 12px;
     background-color: #fff;
-    padding: 15px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
 .ingredients ul, .steps ul {
-    padding-left: 18px;
-    margin: 0;
+    padding-left: 20px;
 }
 
 .ingredients ul li, .steps ul li {
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
-/* Mobiloptimierung */
+/* Responsive Optimierung für größere Screens */
+@media (min-width: 768px) {
+    .recipe-header {
+        flex-direction: row;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .recipe-header img {
+        width: 45%;
+        flex-shrink: 0;
+    }
+
+    .ingredients-steps {
+        flex-direction: row;
+        gap: 20px;
+    }
+
+    .ingredients, .steps {
+        flex: 1;
+    }
+}
+
+/* Wichtige Mobil-Optimierungen */
 @media (max-width: 767px) {
     body {
         padding: 10px;
     }
 
     h1 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
 
-    .recipe-header {
-        flex-direction: column;
-        align-items: stretch;
+    .recipe-header img {
+        width: 100%;
     }
+}
 
-    .ingredients-steps {
-        flex-direction: column;
-    }
+/* Sicherstellen, dass Inhalte immer vollständig sichtbar sind (kein horizontales Scrollen mehr) */
+body, html {
+    width: 100%;
+    overflow-x: hidden;
 }
