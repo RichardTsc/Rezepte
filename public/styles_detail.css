@@ -1,34 +1,30 @@
-/* Global Reset & Basis-Einstellungen */
+/* Global Reset und Basiseinstellungen */
 html, body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     overflow-x: hidden;
-}
-
-body {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 15px;
-    line-height: 1.5;
-    font-family: Arial, sans-serif;
     background-color: #fafafa;
 }
 
-/* Verhindert Zoomen und horizontales Scrollen */
-html {
-    touch-action: manipulation;
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 15px;
+    max-width: 900px;
+    margin: 0 auto;
+    font-size: 18px; /* Deutlich größere Schrift */
+    line-height: 1.6;
+    color: #333;
 }
 
-img {
-    width: 100%;
-    height: auto;
-    max-width: 100%;
-    border-radius: 10px;
-    display: block;
+/* Überschriften deutlich lesbarer */
+h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    text-align: center;
+    color: #222;
 }
 
-/* Rezept-Header */
+/* Rezept-Header (Bild + Titel) */
 .recipe-header {
     display: flex;
     flex-direction: column;
@@ -36,51 +32,84 @@ img {
     margin-bottom: 20px;
 }
 
-h1 {
-    text-align: center;
-    font-size: 1.6rem;
-    margin-bottom: 15px;
-    word-wrap: break-word;
+.recipe-header img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
 }
 
-/* Zutaten & Zubereitung */
+/* Zutaten und Schritte */
 .ingredients-steps {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px;
 }
 
 .ingredients, .steps {
-    padding: 12px;
     background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.ingredients h2, .steps h2 {
+    font-size: 1.5rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #444;
 }
 
 .ingredients ul, .steps ul {
-    padding-left: 20px;
+    padding-left: 25px;
+    margin: 0;
 }
 
 .ingredients ul li, .steps ul li {
-    margin-bottom: 6px;
+    margin-bottom: 10px;
 }
 
-/* Responsive Optimierung für größere Screens */
+/* App-Feeling: Große, klare Schriften auf Mobilgeräten */
+@media (max-width: 767px) {
+    body {
+        font-size: 20px; /* Größere Schrift für einfache Lesbarkeit */
+        padding: 10px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    .recipe-header img {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .ingredients, .steps {
+        padding: 12px;
+    }
+
+    .ingredients h2, .steps h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* Breite Screens */
 @media (min-width: 768px) {
     .recipe-header {
         flex-direction: row;
         gap: 20px;
-        align-items: flex-start;
+        align-items: center;
     }
 
     .recipe-header img {
-        width: 45%;
-        flex-shrink: 0;
+        width: 50%;
     }
 
     .ingredients-steps {
         flex-direction: row;
-        gap: 20px;
     }
 
     .ingredients, .steps {
@@ -88,23 +117,8 @@ h1 {
     }
 }
 
-/* Wichtige Mobil-Optimierungen */
-@media (max-width: 767px) {
-    body {
-        padding: 10px;
-    }
-
-    h1 {
-        font-size: 1.4rem;
-    }
-
-    .recipe-header img {
-        width: 100%;
-    }
-}
-
-/* Sicherstellen, dass Inhalte immer vollständig sichtbar sind (kein horizontales Scrollen mehr) */
-body, html {
-    width: 100%;
-    overflow-x: hidden;
+/* Verhindert Zoomen, sorgt für nativen App-Look */
+html {
+    touch-action: manipulation;
+    user-scalable: no;
 }
