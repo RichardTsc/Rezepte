@@ -1,0 +1,73 @@
+a.recipe-cell {
+    text-decoration: none;
+}
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+#recipe-grid {
+    display: grid;
+    gap: 10px;
+    max-width: 1200px;
+}
+
+.category-row {
+    display: flex;
+    align-items: center;
+}
+
+.category-label {
+    font-size: 1.5em;
+    margin-right: 20px;
+    min-width: 200px;
+}
+
+.recipe-cell {
+    position: relative;
+    width: 200px;
+    height: 150px;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1em;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+    margin-right: 10px;
+    border-radius: 8px;
+}
+
+.recipe-cell span {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    text-align: center;
+    background-color: rgba(0,0,0,0.5);
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.recipe-cell.missing-md::after {
+    content: "⚠️ No Recipe";
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: white;
+    padding: 3px 6px;
+    font-size: 0.75em;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
