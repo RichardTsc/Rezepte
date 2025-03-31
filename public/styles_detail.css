@@ -1,9 +1,11 @@
-/* Global Reset und Basiseinstellungen */
+/* Global Reset und Basis-Einstellungen */
 html, body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     background-color: #fafafa;
+    touch-action: manipulation;
+    user-select: none;
 }
 
 body {
@@ -11,37 +13,45 @@ body {
     padding: 15px;
     max-width: 900px;
     margin: 0 auto;
-    font-size: 18px; /* Deutlich größere Schrift */
+    font-size: 18px;
     line-height: 1.6;
     color: #333;
 }
 
-/* Überschriften deutlich lesbarer */
-h1 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    text-align: center;
+/* Überschriften */
+h1, h2 {
+    margin: 0 0 15px 0;
     color: #222;
 }
 
-/* Rezept-Header (Bild + Titel) */
+h1 {
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: #444;
+}
+
+/* Rezept-Header (Bild + Info) */
 .recipe-header {
-    width: 100%;
-    max-width: 100%;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
 .recipe-header img {
     width: 100%;
-    max-width: 100%;
     height: auto;
-    object-fit: contain;
-    display: block;
     border-radius: 12px;
+    object-fit: cover;
+}
+
+.recipe-header div {
+    text-align: center;
 }
 
 /* Zutaten und Schritte */
@@ -56,17 +66,11 @@ h1 {
     padding: 15px;
     border-radius: 10px;
     box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-}
-
-.ingredients h2, .steps h2 {
-    font-size: 1.5rem;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #444;
+    flex: 1;
 }
 
 .ingredients ul, .steps ul {
-    padding-left: 25px;
+    padding-left: 20px;
     margin: 0;
 }
 
@@ -74,21 +78,46 @@ h1 {
     margin-bottom: 10px;
 }
 
-/* App-Feeling: Große, klare Schriften auf Mobilgeräten */
+/* Checkliste für Zubereitungsschritte */
+.check-list {
+    list-style: none;
+    padding: 0;
+}
+
+.check-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.check-list input[type="checkbox"] {
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.check-list input[type="checkbox"]:checked + label {
+    color: #bbb;
+    text-decoration: line-through;
+    transition: color 0.3s ease;
+}
+
+.check-list label {
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+/* Responsive Anpassungen */
+
+/* Mobilgeräte */
 @media (max-width: 767px) {
     body {
-        font-size: 20px; /* Größere Schrift für einfache Lesbarkeit */
+        font-size: 20px;
         padding: 10px;
     }
 
     h1 {
         font-size: 1.6rem;
-    }
-
-    .recipe-header img {
-        width: 100%;
-        max-width: 100%;
-        margin-bottom: 15px;
     }
 
     .ingredients, .steps {
@@ -100,29 +129,23 @@ h1 {
     }
 }
 
-/* Breite Screens */
+/* Größere Displays */
 @media (min-width: 768px) {
     .recipe-header {
         flex-direction: row;
-        gap: 20px;
         align-items: center;
+        gap: 20px;
     }
 
     .recipe-header img {
         width: 50%;
     }
 
+    .recipe-header div {
+        text-align: left;
+    }
+
     .ingredients-steps {
         flex-direction: row;
     }
-
-    .ingredients, .steps {
-        flex: 1;
-    }
-}
-
-/* Verhindert Zoomen, sorgt für nativen App-Look */
-html {
-    touch-action: manipulation;
-    user-scalable: no;
 }
