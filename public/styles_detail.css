@@ -42,31 +42,50 @@ h2 {
     gap: 15px;
     margin-bottom: 25px;
     position: relative; /* Essential for absolute positioning */
+    display: block; /* Ensures consistent positioning */
 }}
 
-.close-button {
+.close {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 16px; /* Adjusted spacing for better proportion */
+    right: 16px;
     width: 32px;
     height: 32px;
-    background-color: rgba(0,0,0,0.5);
+    opacity: 0.5; /* Slightly increased initial visibility */
+    transition: opacity 0.2s ease;
+}
+
+.close:hover {
+    opacity: 1;
+}
+
+.close:before, 
+.close:after {
+    content: '';
+    position: absolute;
+    top: 8px; /* Proper vertical centering */
+    left: 15px;
+    width: 2px;
+    height: 16px; /* Adjusted height to fit perfectly within the button */
+    background-color: #ffffff; /* White color ensures visibility on images */
+    border-radius: 1px; /* Rounded edges for Apple-style aesthetics */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.close:before {
+    transform: rotate(45deg);
+}
+
+.close:after {
+    transform: rotate(-45deg);
+}
+
+/* Apple-style translucent backdrop for visibility on any image */
+.close {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    background-color: rgba(0,0,0,0.35);
     border-radius: 50%;
-    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
-    transition: background-color 0.2s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
-
-.close-button:hover {
-    background-color: rgba(0,0,0,0.7);
-}
-
-.close-button svg {
-    width: 30px;
-    height: 30px;
 }
 
 .recipe-header img {
