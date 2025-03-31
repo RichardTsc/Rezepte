@@ -98,7 +98,7 @@ h2 {
 
 .check-list input[type="checkbox"] {
     cursor: pointer;
-    margin-top: 4px;
+    margin-top: 8px;
 }
 
 .check-list input[type="checkbox"]:checked + label {
