@@ -69,10 +69,15 @@ h2 {
     flex: 1;
 }
 
-.ingredients ul, .steps ul {
+.ingredients ul{
     padding-left: 20px;
     margin: 0;
 }
+
+.steps ul {
+    margin: 0;
+}
+
 
 .ingredients ul li, .steps ul li {
     margin-bottom: 10px;
