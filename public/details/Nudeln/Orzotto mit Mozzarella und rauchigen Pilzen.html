@@ -6,6 +6,18 @@
     <title>Orzotto mit Mozzarella und rauchigen Pilzen</title>
     <link rel="stylesheet" href="../../styles_detail.css">
     <script async src="//platform.getbring.com/widgets/import.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.check-list li').forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+                
+                const uniqueId = `step-`;
+                checkbox.id = uniqueId;
+                label.setAttribute('for', uniqueId);
+            });
+        });
+        </script>
 </head>
 <body>
     <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
@@ -45,47 +57,47 @@ Pilzen</h1>
                 <h2>Zubereitung</h2>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Backofen auf 220 °C
+                            <input type="checkbox" id="step">
+                            <label for="step">Backofen auf 220 °C
 Ober-/Unterhitze vorheizen. Champignons vierteln bzw achteln und mit 1
 EL geräuchertem Paprikapulver, Salz, Pfeffer und 1 EL Öl marinieren.
 Kirschtomaten halbieren.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Champignons und
+                            <input type="checkbox" id="step">
+                            <label for="step">Champignons und
 Kirschtomaten nebeneinander auf einem mit Backpapier belegten Blech
 verteilen. Kirschtomaten mit 1 Prise Zucker, Salz und Pfeffer würzen.
 Für ca. 20 Min. backen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Zwibel in dünne
-Streifen schneiden. In einer großen Pfanne 1EL Öl bei mittlerer Hitze
-erwärmen. Zwiebel darin 2–3 Min. anbraten. Die Basilikumstiele von den
-Blättern trennen. Orzo-Nudeln, Tomatenpesto, 1 TL abgezupfte
-Thymianblätter und Basilikumstiele in die Pfanne hinzufügen. Den
-Knoblauch hineinpressen. Alles 2-3 Min. braten.</label>
+                            <input type="checkbox" id="step">
+                            <label for="step">Zwibel in dünne Streifen
+schneiden. In einer großen Pfanne 1EL Öl bei mittlerer Hitze erwärmen.
+Zwiebel darin 2–3 Min. anbraten. Die Basilikumstiele von den Blättern
+trennen. Orzo-Nudeln, Tomatenpesto, 1 TL abgezupfte Thymianblätter und
+Basilikumstiele in die Pfanne hinzufügen. Den Knoblauch hineinpressen.
+Alles 2-3 Min. braten.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Wasser aufkochen. 1 EL
+                            <input type="checkbox" id="step">
+                            <label for="step">Wasser aufkochen. 1 EL
 Gemüsebrühe in die Pfanne geben und mit 450 ml heißem Wasser ablöschen.
 Bei niedriger Hitze und geschlossenem Deckel 12-14 Min. köcheln lassen
 und dabei gelegentlich umrühren.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Währenddessen den
-Parmesan reiben Mozarella in etwa 1 cm große Stücke zupfen und die
+                            <input type="checkbox" id="step">
+                            <label for="step">Währenddessen den Parmesan
+reiben Mozarella in etwa 1 cm große Stücke zupfen und die
 Basilikumblätter hacken. Sobald die Nugeln gar sind, Basilikumblätter,
 Mozarella und die Hälfte des Parmesans unterrühren. Mit Salz und Pfeffer
 abschmecken und die Basilikumstiele entfernen. Zum Schluss den
 Babyspinat portionsweise unterheben.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Orzotto auf Tellern
+                            <input type="checkbox" id="step">
+                            <label for="step">Orzotto auf Tellern
 anrichten. Mit Ofen-Champignons, Kirschtomaten und den restlichen Käse
 toppen.</label>
                         </li>

@@ -6,6 +6,18 @@
     <title>Perlcouscous-Bowl mit geschmorter Zucchini</title>
     <link rel="stylesheet" href="../../styles_detail.css">
     <script async src="//platform.getbring.com/widgets/import.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.check-list li').forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+                
+                const uniqueId = `step-`;
+                checkbox.id = uniqueId;
+                label.setAttribute('for', uniqueId);
+            });
+        });
+        </script>
 </head>
 <body>
     <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
@@ -55,69 +67,69 @@ Gemüsebrühpulver</li>
                 <h2>Zubereitung</h2>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Knoblauch fein hacken.
+                            <input type="checkbox" id="step">
+                            <label for="step">Knoblauch fein hacken.
 Knoblauch zusammen mit 1 EL Öl in einem kleinen Topf bei mittlerer Hitze
 anschwitzen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Gemüsebrühpulver und
+                            <input type="checkbox" id="step">
+                            <label for="step">Gemüsebrühpulver und
 Würzpaste ‘Hello Mezze’ mit 350 ml Wasser ablöschen, aufkochen und zum
 Kochen bringen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Perlcouscous einrühren
-und bei niedriger Hitze ca. 12 Min. köcheln lassen, bis das Wasser
+                            <input type="checkbox" id="step">
+                            <label for="step">Perlcouscous einrühren und
+bei niedriger Hitze ca. 12 Min. köcheln lassen, bis das Wasser
 vollständig aufgenommen wurde. Danach vom Herd nehmen und abgedeckt 10
 Min. ziehen lassen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Zucchini in 1 cm Würfel
+                            <input type="checkbox" id="step">
+                            <label for="step">Zucchini in 1 cm Würfel
 schneiden.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Rosmarinnadeln abzupfen
+                            <input type="checkbox" id="step">
+                            <label for="step">Rosmarinnadeln abzupfen
 und fein hacken.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Zucchini in einer
-großen Pfanne mit 1 EL Öl bei mittlerer Hitze ca. 3 Min. anbraten. Dann
+                            <input type="checkbox" id="step">
+                            <label for="step">Zucchini in einer großen
+Pfanne mit 1 EL Öl bei mittlerer Hitze ca. 3 Min. anbraten. Dann
 Rosmarin und gehackten Knoblauch zugeben und weitere 2–3 Min. braten.
 Mit Salz und Pfeffer abschmecken.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Zitrone heiß abwaschen,
+                            <input type="checkbox" id="step">
+                            <label for="step">Zitrone heiß abwaschen,
 Schale fein abreiben, Zitrone in Spalten schneiden.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Joghurt mit
-Zitronenabrieb und 1 TL Zitronensaft verrühren. Mit Salz und Pfeffer
+                            <input type="checkbox" id="step">
+                            <label for="step">Joghurt mit Zitronenabrieb
+und 1 TL Zitronensaft verrühren. Mit Salz und Pfeffer
 abschmecken.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Minzblätter abzupfen
-und fein hacken. Getrocknete Tomaten grob hacken. Walnüsse grob
+                            <input type="checkbox" id="step">
+                            <label for="step">Minzblätter abzupfen und
+fein hacken. Getrocknete Tomaten grob hacken. Walnüsse grob
 hacken.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Babyspinat grob
+                            <input type="checkbox" id="step">
+                            <label for="step">Babyspinat grob
 hacken.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Perlcouscous auf
-Schüsseln verteilen, Spinat, Tomaten, geschmorte Zucchini,
-Joghurt-Dressing, Minze und Walnüsse darauf anrichten. Mit
-Gewürzmischung ‘Za’atar’ toppen.</label>
+                            <input type="checkbox" id="step">
+                            <label for="step">Perlcouscous auf Schüsseln
+verteilen, Spinat, Tomaten, geschmorte Zucchini, Joghurt-Dressing, Minze
+und Walnüsse darauf anrichten. Mit Gewürzmischung ‘Za’atar’
+toppen.</label>
                         </li>
                                     </ul>
             </div>

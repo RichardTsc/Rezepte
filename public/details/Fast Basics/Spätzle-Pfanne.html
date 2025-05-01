@@ -6,6 +6,18 @@
     <title>Babyspinat-Spätzle-Pfanne mit Champignons</title>
     <link rel="stylesheet" href="../../styles_detail.css">
     <script async src="//platform.getbring.com/widgets/import.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.check-list li').forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+                
+                const uniqueId = `step-`;
+                checkbox.id = uniqueId;
+                label.setAttribute('for', uniqueId);
+            });
+        });
+        </script>
 </head>
 <body>
     <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
@@ -49,45 +61,45 @@ Gemüsebrühpulver</li>
                 <h2>Zubereitung</h2>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Champignons in Scheiben
+                            <input type="checkbox" id="step">
+                            <label for="step">Champignons in Scheiben
 schneiden. Zwiebel halbieren und in feine Streifen schneiden. Knoblauch
 abziehen und fein würfeln. Tomate halbieren, entkernen und grob würfeln.
 Chili (Achtung: scharf!) längs halbieren, entkernen und in feine
 Streifen schneiden.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">In einer großen Pfanne
+                            <input type="checkbox" id="step">
+                            <label for="step">In einer großen Pfanne
 Walnüsse ohne Fettzugabe rösten, bis sie leicht gebräunt sind.
 Herausnehmen, abkühlen lassen und grob hacken.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">In derselben Pfanne 1,5
-EL Öl erhitzen. Spätzle darin 4–5 Min. anbraten, bis sie leicht gebräunt
+                            <input type="checkbox" id="step">
+                            <label for="step">In derselben Pfanne 1,5 EL
+Öl erhitzen. Spätzle darin 4–5 Min. anbraten, bis sie leicht gebräunt
 sind. Herausnehmen und beiseite stellen. Erneut 1,5 EL Öl in die Pfanne
 geben und Champignons, Zwiebel, Knoblauch und Chili darin 4–5 Min.
 anbraten.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Pfanne mit 100 ml
-Wasser ablöschen. Gemüsebrühpulver, Kochsahne und Gewürzmischung ‘Hello
+                            <input type="checkbox" id="step">
+                            <label for="step">Pfanne mit 100 ml Wasser
+ablöschen. Gemüsebrühpulver, Kochsahne und Gewürzmischung ‘Hello
 Paprika’ einrühren. Aufkochen lassen und 2–3 Min. köcheln lassen. Mit
 Salz und Pfeffer abschmecken.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Spätzle und
-Tomatenwürfel zur Soße geben und alles gut vermengen. Babyspinat
-portionsweise unterheben, bis er zusammenfällt. Ggf. nochmals mit Salz
-und Pfeffer abschmecken.</label>
+                            <input type="checkbox" id="step">
+                            <label for="step">Spätzle und Tomatenwürfel
+zur Soße geben und alles gut vermengen. Babyspinat portionsweise
+unterheben, bis er zusammenfällt. Ggf. nochmals mit Salz und Pfeffer
+abschmecken.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Spätzlepfanne auf
-Teller verteilen und mit den gerösteten Walnüssen bestreuen. Guten
+                            <input type="checkbox" id="step">
+                            <label for="step">Spätzlepfanne auf Teller
+verteilen und mit den gerösteten Walnüssen bestreuen. Guten
 Appetit!</label>
                         </li>
                                     </ul>

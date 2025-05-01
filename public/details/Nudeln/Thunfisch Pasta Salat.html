@@ -7,6 +7,18 @@
 Basilikumdressing</title>
     <link rel="stylesheet" href="../../styles_detail.css">
     <script async src="//platform.getbring.com/widgets/import.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.check-list li').forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+                
+                const uniqueId = `step-`;
+                checkbox.id = uniqueId;
+                label.setAttribute('for', uniqueId);
+            });
+        });
+        </script>
 </head>
 <body>
     <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
@@ -49,44 +61,44 @@ Gewürzmischung ‘Hello Buon Appetito’</li>
                 <h2>Zubereitung</h2>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Pasta in reichlich
+                            <input type="checkbox" id="step">
+                            <label for="step">Pasta in reichlich
 kochendem Salzwasser für 10–11 Minuten bissfest garen. Anschließend
 abgießen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Zucchini der Länge nach
+                            <input type="checkbox" id="step">
+                            <label for="step">Zucchini der Länge nach
 halbieren und in Halbmonde schneiden. Zwiebel in feine Streifen
 schneiden.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Zitrone
+                            <input type="checkbox" id="step">
+                            <label for="step">Zitrone
 auspressen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">In einer großen Pfanne
-1 Esslöffel Öl erhitzen, Zucchini und Zwiebel darin 4–5 Minuten
-anbraten. Mit der Gewürzmischung, Salz und Pfeffer würzen.</label>
+                            <input type="checkbox" id="step">
+                            <label for="step">In einer großen Pfanne 1
+Esslöffel Öl erhitzen, Zucchini und Zwiebel darin 4–5 Minuten anbraten.
+Mit der Gewürzmischung, Salz und Pfeffer würzen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">In einer großen
-Schüssel Mayonnaise, Basilikumpaste, 1 Esslöffel Zitronensaft, 1
-Esslöffel Wasser, 1 Teelöffel Zucker, Salz und Pfeffer zu einem Dressing
+                            <input type="checkbox" id="step">
+                            <label for="step">In einer großen Schüssel
+Mayonnaise, Basilikumpaste, 1 Esslöffel Zitronensaft, 1 Esslöffel
+Wasser, 1 Teelöffel Zucker, Salz und Pfeffer zu einem Dressing
 verrühren.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Zucchini-Zwiebel-Mischung,
+                            <input type="checkbox" id="step">
+                            <label for="step">Zucchini-Zwiebel-Mischung,
 Pasta und abgetropften Thunfisch zum Dressing geben und alles gut
 vermengen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Salat auf Tellern
+                            <input type="checkbox" id="step">
+                            <label for="step">Salat auf Tellern
 anrichten und mit Hartkäse bestreuen. Nach Belieben mit Zitronenspalten
 servieren.</label>
                         </li>

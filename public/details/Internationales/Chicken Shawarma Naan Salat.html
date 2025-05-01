@@ -7,6 +7,18 @@
 Süßkartoffel-Pommes</title>
     <link rel="stylesheet" href="../../styles_detail.css">
     <script async src="//platform.getbring.com/widgets/import.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.check-list li').forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+                
+                const uniqueId = `step-`;
+                checkbox.id = uniqueId;
+                label.setAttribute('for', uniqueId);
+            });
+        });
+        </script>
 </head>
 <body>
     <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
@@ -59,8 +71,8 @@ Adobo-Sauce</li>
                 <h2>Zubereitung</h2>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">In einem großen
+                            <input type="checkbox" id="step">
+                            <label for="step">In einem großen
 Gefrierbeutel die Hähnchenstücke mit 1 Esslöffel Honig, 1 Teelöffel
 Paprika, 1 Teelöffel Kreuzkümmel, 1 Teelöffel Salz, 1 Teelöffel Pfeffer,
 dem Saft einer Zitrone, 2 gehackten Knoblauchzehen und 1/4 Tasse
@@ -68,46 +80,46 @@ Olivenöl vermengen. Mindestens 1 Stunde oder bis zu 12 Stunden im
 Kühlschrank marinieren lassen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Den Ofen auf 220°C
+                            <input type="checkbox" id="step">
+                            <label for="step">Den Ofen auf 220°C
 vorheizen. Die Süßkartoffeln in Stifte schneiden, auf ein Backblech
 legen und mit 2 Esslöffeln Olivenöl, Salz und Pfeffer vermengen. Für
 15-20 Minuten backen, dann wenden und weitere 15-20 Minuten backen, bis
 sie zart und knusprig sind.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Den Grill oder eine
+                            <input type="checkbox" id="step">
+                            <label for="step">Den Grill oder eine
 Grillpfanne auf mittlere bis hohe Hitze vorheizen. Die marinierten
 Hähnchenstücke auf Spieße stecken und die Marinade verwerfen. Die Spieße
 grillen, bis das Hähnchen durchgegart ist und leichte Grillspuren
 aufweist.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Das Naan-Brot erwärmen
-und mit Hummus bestreichen. Den gehackten Römersalat, halbierte
+                            <input type="checkbox" id="step">
+                            <label for="step">Das Naan-Brot erwärmen und
+mit Hummus bestreichen. Den gehackten Römersalat, halbierte
 Kirschtomaten, in Scheiben geschnittene Gurken und Avocado darauf
 verteilen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Die gegrillten
+                            <input type="checkbox" id="step">
+                            <label for="step">Die gegrillten
 Hähnchenspieße vom Spieß nehmen und auf dem belegten Naan-Brot
 verteilen. Mit zerbröckeltem Feta-Käse, gehackter Petersilie und Minze
 garnieren.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Für die Tahini-Sauce in
+                            <input type="checkbox" id="step">
+                            <label for="step">Für die Tahini-Sauce in
 einer kleinen Schüssel 2 Esslöffel Tahini, den Saft einer Zitrone und 1
 fein gehackten Chipotle-Paprika vermengen. Nach Bedarf Wasser
 hinzufügen, um die gewünschte Konsistenz zu erreichen. Über den Salat
 träufeln.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Mit den gebackenen
+                            <input type="checkbox" id="step">
+                            <label for="step">Mit den gebackenen
 Süßkartoffel-Pommes servieren und genießen.</label>
                         </li>
                                     </ul>

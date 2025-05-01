@@ -6,6 +6,18 @@
     <title>30-Minuten Ingwer-Erdnuss-Hähnchen-Bowls</title>
     <link rel="stylesheet" href="../../styles_detail.css">
     <script async src="//platform.getbring.com/widgets/import.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.check-list li').forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+                
+                const uniqueId = `step-`;
+                checkbox.id = uniqueId;
+                label.setAttribute('for', uniqueId);
+            });
+        });
+        </script>
 </head>
 <body>
     <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
@@ -62,63 +74,63 @@ normales Basilikum</li>
                 <h2>Zubereitung</h2>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Reis in einem Sieb
+                            <input type="checkbox" id="step">
+                            <label for="step">Reis in einem Sieb
 gründlich mit kaltem Wasser waschen und 10 Minuten lang einweichen
 lassen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Erdnussbutter, 80 ml
+                            <input type="checkbox" id="step">
+                            <label for="step">Erdnussbutter, 80 ml
 Sojasoße, 60 ml Sesamöl, 60 ml eingelegten Ingwersaft, 1 EL Currypaste,
 1 EL Honig und 3 EL Limettensaft im Thermomix glatt mixen. Bei Bedarf
 Wasser hinzufügen, um die gewünschte Konsistenz zu erreichen.
 Erdnusssoße beiseite stellen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Ingwer und
+                            <input type="checkbox" id="step">
+                            <label for="step">Ingwer und
 Frühlingszwiebeln im Thermomix hacken und beiseite stellen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Knoblauch im Thermomix
+                            <input type="checkbox" id="step">
+                            <label for="step">Knoblauch im Thermomix
 hacken und beiseite stellen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">1 Liter Wasser kochen
-und zusammen mit 1 EL Butter in den Thermomix geben. Reis in Gareinsatz
+                            <input type="checkbox" id="step">
+                            <label for="step">1 Liter Wasser kochen und
+zusammen mit 1 EL Butter in den Thermomix geben. Reis in Gareinsatz
 einfüllen und für 20 Minuten, 100 Grad auf Stufe 4 kochen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Mango schälen und
-würfeln. Sushi-Inwger, Koriander und Basilikum hacken und alles zusammen
-mit 1 EL Limettenschale, 2 EL Limettensaft sowie einer Prise Salz
+                            <input type="checkbox" id="step">
+                            <label for="step">Mango schälen und würfeln.
+Sushi-Inwger, Koriander und Basilikum hacken und alles zusammen mit 1 EL
+Limettenschale, 2 EL Limettensaft sowie einer Prise Salz
 vermengen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Hähnchen in Stücke
+                            <input type="checkbox" id="step">
+                            <label for="step">Hähnchen in Stücke
 schneiden. In einer großen Pfanne mit 1 EL Sesamöl, gehacktem Ingwer und
 Frühlingszwiebeln bei mittlerer bis hoher Hitze etwa 5 Minuten braten,
 bis es knusprig ist.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Knoblauch mit Butter,
+                            <input type="checkbox" id="step">
+                            <label for="step">Knoblauch mit Butter,
 etwas Sesamöl hinzufügen und eine weitere Minute kochen.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Währenddessen eine
-Avodado in Scheiben schneiden. Romanasalat waschen und in Stücke
+                            <input type="checkbox" id="step">
+                            <label for="step">Währenddessen eine Avodado
+in Scheiben schneiden. Romanasalat waschen und in Stücke
 schneiden.</label>
                         </li>
                                             <li>
-                            <input type="checkbox" id="step---">
-                            <label for="step---">Reis auf Schüsseln
+                            <input type="checkbox" id="step">
+                            <label for="step">Reis auf Schüsseln
 verteilen. Hähnchen darauflegen und mit der Erdnusssauce beträufeln.
 Mango-Mischung und Avocado hinzufügen. Nach Belieben mit zusätzlicher
 Erdnusssauce servieren.</label>
