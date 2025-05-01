@@ -6,18 +6,6 @@
     <title>Honig-Senf-Hähnchensalat mit Avocado</title>
     <link rel="stylesheet" href="../../styles_detail.css">
     <script async src="//platform.getbring.com/widgets/import.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.check-list li').forEach((li, index) => {
-                const checkbox = li.querySelector('input[type="checkbox"]');
-                const label = li.querySelector('label');
-                
-                const uniqueId = `step-`;
-                checkbox.id = uniqueId;
-                label.setAttribute('for', uniqueId);
-            });
-        });
-        </script>
 </head>
 <body>
     <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
@@ -106,5 +94,17 @@ verteilen, Avocado und Sonnenblumenkerne darüber geben.</label>
         </div>
 
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.check-list li').forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+                
+                const uniqueId = `step-`;
+                checkbox.id = uniqueId;
+                label.setAttribute('for', uniqueId);
+            });
+        });
+        </script>
 </body>
 </html>
