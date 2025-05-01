@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pasta alla Cacciatore mit Hähnchen</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Nudeln/Pasta%20alla%20Cacciatore.jpg" itemprop="image" alt="Pasta
+alla Cacciatore mit Hähnchen"/>
+            <div>
+                <h1 itemprop="name">Pasta alla Cacciatore mit
+Hähnchen</h1>
+                <p><span>Von </span><span itemprop="author">HelloFresh</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">2</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">15min</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>250 g
+Hähnchengeschnetzeltes</li>
+                                            <li>200 g Fettuccine</li>
+                                            <li>200 g Tomatensugo</li>
+                                            <li>2 Knoblauchzehen</li>
+                                            <li>1 Zwiebel</li>
+                                            <li>70 g schwarze
+Oliven</li>
+                                            <li>20 g Hartkäse</li>
+                                            <li>1 Karotte</li>
+                                            <li>15 ml
+Basilikumpaste</li>
+                                            <li>1 Esslöffel
+Gewürzmischung ‘Hello Buon Appetito’</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Reichlich Wasser in
+einem großen Topf erhitzen. Zwiebel würfeln, Knoblauch fein hacken.
+Karotte grob raspeln.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Fettuccine in das
+kochende Wasser geben und 11–12 Minuten bissfest kochen. Danach abgießen
+und dabei 150 ml Kochwasser auffangen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In einer großen Pfanne
+1 EL Olivenöl erhitzen. Hähnchengeschnetzeltes, Karotten, Zwiebel und
+Knoblauch 4–5 Minuten anbraten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Oliven grob
+hacken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Pfanneninhalt mit
+Tomatensugo und Gewürzmischung ‘Hello Buon Appetito’ ablöschen und 1–2
+Minuten köcheln lassen. Fettuccine, Kochwasser, die Hälfte der Oliven
+und der Basilikumpaste zugeben und 1–2 Minuten einkochen lassen. Mit
+Pfeffer abschmecken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Nudeln auf Tellern
+anrichten, mit Hartkäse, restlichen Oliven und Basilikumpaste
+toppen.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

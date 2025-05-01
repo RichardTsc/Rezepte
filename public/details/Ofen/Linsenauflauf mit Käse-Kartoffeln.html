@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Linsenauflauf mit Käse-Kartoffeln</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Ofen/Linsenauflauf%20mit%20K%C3%A4se-Kartoffeln.jpg" itemprop="image" alt="Linsenauflauf
+mit Käse-Kartoffeln"/>
+            <div>
+                <h1 itemprop="name">Linsenauflauf mit
+Käse-Kartoffeln</h1>
+                <p><span>Von </span><span itemprop="author">HelloFresh</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">2</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">45–55
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>400 g Kartoffeln</li>
+                                            <li>1 Zucchini</li>
+                                            <li>1 Zwiebel</li>
+                                            <li>150 g braune
+Champignons</li>
+                                            <li>10 g Petersilie</li>
+                                            <li>1 Packung stückige
+Tomaten ‘Hello Buon Appetito’</li>
+                                            <li>2 g Gewürzmischung
+‘Hello Buon Appetito’</li>
+                                            <li>1 Esslöffel
+Tomatenmark</li>
+                                            <li>4 g
+Gemüsebrühepulver</li>
+                                            <li>1 Teelöffel
+mittelscharfer Senf</li>
+                                            <li>1 Esslöffel Crème
+fraîche</li>
+                                            <li>50 g geriebener würziger
+Gouda</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Backofen auf 220 °C
+Ober-/Unterhitze vorheizen. Kartoffeln in Wasser aufsetzen und ca. 10
+Min. vorkochen. Champignons vierteln. Zucchini in 2 cm Würfel schneiden.
+Zwiebel fein würfeln. Petersilie grob hacken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zwiebel in einer großen
+Pfanne mit 1,5 EL Öl anbraten. Dann Zucchini und Champignons zugeben und
+ca. 5 Min. anbraten. Knoblauch dazu pressen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Tomatenmark, Sojasoße,
+Senf und stückige Tomaten zugeben. Gemüsebrühepulver und Gewürzmischung
+einrühren. Mit Salz und Pfeffer abschmecken. Linsen zugeben und alles
+3–4 Min. köcheln lassen. Gehackte Petersilie unterheben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Kartoffeln abgießen und
+in 0,5 cm dicke Scheiben schneiden. Auflaufform mit dem Gemüse befüllen
+und Kartoffelscheiben darüber verteilen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Crème fraîche mit dem
+Käse vermengen und auf den Kartoffeln verteilen. Auflauf im Ofen 15–18
+Min. backen, bis der Käse goldbraun ist.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Auflauf mit restlicher
+Petersilie bestreuen und servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

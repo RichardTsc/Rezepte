@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>25-Minuten Chili-Öl-Ei-Ramen</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Asiatisches/25%20Minuten%20Ramen.jpg" itemprop="image" alt="25-Minuten
+Chili-Öl-Ei-Ramen"/>
+            <div>
+                <h1 itemprop="name">25-Minuten Chili-Öl-Ei-Ramen</h1>
+                <p><span>Von </span><span itemprop="author">Halfbaked
+Harvest</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">2
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">25
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>2 Esslöffel Butter</li>
+                                            <li>4 Knoblauchzehen</li>
+                                            <li>1 Zoll frischer
+Ingwer</li>
+                                            <li>3 Esslöffel
+Miso-Paste</li>
+                                            <li>1 Liter Hühner- oder
+Gemüsebrühe</li>
+                                            <li>2 Esslöffel
+Sojasauce</li>
+                                            <li>2 Baby Pak Choi</li>
+                                            <li>4 Ramen-Nudelblöcke</li>
+                                            <li>2 Eier</li>
+                                            <li>2 Esslöffel Sesamöl</li>
+                                            <li>2 Teelöffel
+Chiliflocken</li>
+                                            <li>1 Esslöffel
+Sesamsamen</li>
+                                            <li>2 Frühlingszwiebeln</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Butter in einem großen
+Topf bei mittlerer Hitze schmelzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Knoblauch fein hacken
+und Ingwer reiben, beides zur Butter geben und etwa 2 Minuten
+anschwitzen, bis es duftet.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Miso-Paste hinzufügen
+und eine weitere Minute kochen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Brühe und Sojasauce
+einrühren, dann den Pak Choi hinzufügen und die Mischung zum Kochen
+bringen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ramen-Nudeln hinzufügen
+und 1-2 Minuten kochen, bis sie gerade weich sind.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Eier in kleine
+Schüsseln aufschlagen. Eier vorsichtig über die Nudeln gießen, ohne zu
+rühren. 30 Sekunden kochen lassen, dann den Topf abdecken und vom Herd
+nehmen. Eier 2-3 Minuten ziehen lassen, bis das Eigelb die gewünschte
+Konsistenz erreicht hat.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In der Zwischenzeit
+Sesamöl in einer kleinen Pfanne bei mittlerer Hitze erhitzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Restlichen gehackten
+Knoblauch hinzufügen und unter gelegentlichem Rühren 8-10 Minuten
+kochen, bis der Knoblauch duftet und goldbraun wird.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Chiliflocken und
+Sesamsamen einrühren und weitere 30 Sekunden bis 1 Minute kochen. Vom
+Herd nehmen und vorsichtig in eine hitzebeständige Schüssel oder ein
+Glasgefäß umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Suppe und Nudeln in
+Schüsseln verteilen, jeweils ein Ei daraufsetzen und mit dem Chili-Öl
+beträufeln.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Frühlingszwiebeln in
+dünne Scheiben schneiden und die Ramen damit garnieren. Sofort
+servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

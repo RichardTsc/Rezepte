@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cremiger Knoblauch-Butter gebackener Lachs</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Ofen/Garlic%20Butter%20Lachs.jpg" itemprop="image" alt="Cremiger
+Knoblauch-Butter gebackener Lachs"/>
+            <div>
+                <h1 itemprop="name">Cremiger Knoblauch-Butter gebackener
+Lachs</h1>
+                <p><span>Von </span><span itemprop="author">Half Baked
+Harvest</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">15
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>4 Lachsfilets (je
+150-180 g)</li>
+                                            <li>Salz und schwarzer
+Pfeffer nach Geschmack</li>
+                                            <li>1 Esslöffel
+Olivenöl</li>
+                                            <li>4 Esslöffel gesalzene
+Butter</li>
+                                            <li>2 Teelöffel frische
+Thymianblätter</li>
+                                            <li>4 Knoblauchzehen</li>
+                                            <li>1 Schalotte</li>
+                                            <li>240 ml Sahne (alternativ
+Hühner- oder Gemüsebrühe)</li>
+                                            <li>2 Esslöffel Salsa
+Verde</li>
+                                            <li>60 g geriebener
+Parmesan</li>
+                                            <li>60 g gehackte
+sonnengetrocknete Tomaten</li>
+                                            <li>120 g frischer
+Babyspinat</li>
+                                            <li>Saft von 1 Zitrone</li>
+                                            <li>2 Esslöffel gehackter
+frischer Dill</li>
+                                            <li>2 Esslöffel gehackte
+Frühlingszwiebeln</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Backofen auf
+Grillfunktion vorheizen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Lachsfilets mit
+Salz und Pfeffer würzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In einer ofenfesten
+Pfanne 1 Esslöffel Butter, Thymian und die ungeschälten Knoblauchzehen
+hinzufügen. Die Lachsfilets hineinlegen und 5-8 Minuten grillen, bis die
+Oberseite knusprig ist.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Lachs aus der
+Pfanne nehmen und beiseite stellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Pfanne bei
+mittlerer Hitze auf den Herd stellen. 3 Esslöffel Butter, die gehackte
+Schalotte und eine Prise Chiliflocken hinzufügen. Den Knoblauch mit
+einer Gabel zerdrücken und einrühren. Etwa 2 Minuten kochen, bis es
+duftet.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Sahne und Salsa Verde
+einrühren und zum Köcheln bringen, dabei ständig rühren, bis die Sauce
+glatt und cremig ist.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Parmesan,
+sonnengetrocknete Tomaten und Spinat hinzufügen und kochen, bis der
+Spinat zusammenfällt (3-5 Minuten).</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Lachs zurück in die
+Sauce legen und mit Zitronensaft beträufeln.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit Dill und
+Frühlingszwiebeln bestreuen und servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

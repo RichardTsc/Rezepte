@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Asiatische Tacos mit Hähnchen &amp; Avocado</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Asiatisches/Asiatische%20H%C3%A4hnchen%20Tacos.jpg" itemprop="image" alt="Asiatische
+Tacos mit Hähnchen &amp; Avocado"/>
+            <div>
+                <h1 itemprop="name">Asiatische Tacos mit Hähnchen &amp;
+Avocado</h1>
+                <p><span>Von </span><span itemprop="author">HelloFresh</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">2</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">25min</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>4 Weizentortillas</li>
+                                            <li>1 Paprika (gelb)</li>
+                                            <li>50 g
+Frühlingszwiebeln</li>
+                                            <li>1 Avocado</li>
+                                            <li>150 g
+Hähnchenbrustfilets</li>
+                                            <li>75 g Salatmischung</li>
+                                            <li>1 Limette</li>
+                                            <li>1 EL Erdnussbutter</li>
+                                            <li>1 EL Sojadrink</li>
+                                            <li>1 EL Joghurt</li>
+                                            <li>1 EL Sojasoße</li>
+                                            <li>10 g Erdnüsse</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Weizentortillas aus dem
+Kühlschrank nehmen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Frühlingszwiebeln in
+dünne Ringe schneiden.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Paprika halbieren,
+entkernen und in Streifen schneiden.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Limette halbieren und
+Saft auspressen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Avocado halbieren,
+entkernen und das Fruchtfleisch in eine große Schüssel mit dem
+Limettensaft geben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Salatmischung und
+Frühlingszwiebeln zugeben und vorsichtig vermengen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In einer großen Pfanne
+etwas Öl erhitzen. Hähnchenbrust in 2 cm breite Streifen schneiden,
+salzen und pfeffern. 2–3 Minuten anbraten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In einer kleinen
+Schüssel Joghurt, Erdnussbutter und Sojadrink glatt verrühren.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Nach dem Anbraten
+Sojasoße und Erdnusssoße zum Fleisch geben und 2–3 Minuten
+erhitzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Tortillas mit Salat,
+Hähnchen und Erdnusssauce belegen. Mit Erdnüssen und Limettensaft
+toppen.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

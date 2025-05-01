@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hähnchen-Reispfanne mit Aprikosen-Minz-Joghurt</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Healthy/H%C3%A4hnchen-Reispfanne.jpg" itemprop="image" alt="Hähnchen-Reispfanne
+mit Aprikosen-Minz-Joghurt"/>
+            <div>
+                <h1 itemprop="name">Hähnchen-Reispfanne mit
+Aprikosen-Minz-Joghurt</h1>
+                <p><span>Von </span><span itemprop="author">HelloFresh</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">2</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">35min</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>250 g
+Hähnchenbrustfilet</li>
+                                            <li>1 rote Zwiebel</li>
+                                            <li>1 Möhre</li>
+                                            <li>1 Knoblauchzehe</li>
+                                            <li>1 Bund Minze</li>
+                                            <li>2 Packungen
+Aprikosenkonfitüre (je 25 g)</li>
+                                            <li>4 g
+Madras-Currypulver</li>
+                                            <li>100 g gelbe
+Gourmet-Paprika</li>
+                                            <li>150 g Basmatireis</li>
+                                            <li>1 Packung Joghurt</li>
+                                            <li>20 g Erdnüsse,
+gesalzen</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Wasser (700 ml) in
+einem Topf aufkochen. Reis waschen. Hähnchenbrustfilet in 0,5 cm
+Streifen schneiden. Zwiebel halbieren und in feine Streifen schneiden.
+Knoblauch fein hacken. Möhre halbieren und in dünne Scheiben schneiden.
+Minze grob hacken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In einer großen Pfanne
+1 EL Öl erhitzen. Zwiebelstreifen 7–8 Min. karamellisieren lassen. Mit
+der Aprikosenkonfitüre ablöschen, salzen und pfeffern. Aus der Pfanne
+nehmen und beiseitestellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In derselben Pfanne
+erneut 1 EL Öl erhitzen. Hähnchenstreifen, Knoblauch, Möhrenscheiben und
+Currypulver 3–4 Min. anbraten. Reis, 700 ml heißes Wasser und die
+vorbereitete Brühe hinzufügen. Zugedeckt bei mittlerer Hitze ca. 12 Min.
+köcheln lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In der Zwischenzeit
+Joghurt mit Aprikosenkonfitüre verrühren. Mit Salz und Pfeffer
+abschmecken. Minze unterrühren. Erdnüsse grob hacken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Wenn der Reis gar ist,
+die Pfanne vom Herd nehmen und 1–2 Min. abgedeckt ziehen lassen. Mit
+Salz und Pfeffer abschmecken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Reispfanne auf Tellern
+anrichten, mit karamellisierter Zwiebel und gehackten Erdnüssen toppen.
+Mit Aprikosen-Minz-Joghurt servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

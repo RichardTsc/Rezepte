@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Indisches Kokosnuss-Butter-Blumenkohl</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Asiatisches/Butter%20Cauliflower%20mit%20Naan.jpg" itemprop="image" alt="Indisches
+Kokosnuss-Butter-Blumenkohl"/>
+            <div>
+                <h1 itemprop="name">Indisches
+Kokosnuss-Butter-Blumenkohl</h1>
+                <p><span>Von </span><span itemprop="author">Halfbaked
+Harvest</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">40
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>1 großer Kopf
+Blumenkohl</li>
+                                            <li>1 Dose Kokosmilch</li>
+                                            <li>4 Knoblauchzehen</li>
+                                            <li>5cm frischer Ingwer</li>
+                                            <li>1 Zwiebel</li>
+                                            <li>150g Tomatenmark</li>
+                                            <li>2 EL Kokosöl</li>
+                                            <li>Frischer Koriander</li>
+                                            <li>200g Reis</li>
+                                            <li>Naanbrot</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Knoblauch und Ingwer in
+den Thermomix geben und klein hacken - danach herausnehmen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zwiebel in den
+Thermomix geben und hacken, mit dem Spatel nach unten schieben, Olivenöl
+hinzugeben und für 5 Minuten auf 98 Grad anschwitzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Backofengrill auf hohe
+Stufe vorheizen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Blumenkohl in 2-3cm
+große Röschen schneiden.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Blumenkohl in eine
+Schüssel geben und mit 2 EL der Koblauch/Ingwer-Mischung sowie 1/3 Dose
+Kokosmilch vermengen. Mit Salz würzen und 10 Minuten marinieren
+lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In der Zwischenzeit
+Reis kochen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Restlichen Knoblauch
+und Ingwer hinzufügen und weitere 5 Minuten auf 98 Grad kochen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Blumenkohl auf dem
+Blech verteilen und 4-6 Minuten grillen, bis die Ränder gebräunt
+sind.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">1 EL Garam Masala, 2 TL
+Currypulver, 1/2 TL Kurkuma und 1 TL Cayennepfeffer einrühren und 1
+Minute rösten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Tomatenmark und
+restliche Kokosmilch einrühren. Aufkochen und 5 Minuten köcheln
+lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Kokosöl einrühren und
+Sauce ggf. mit etwas Wasser verdünnen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Gegrillten Blumenkohl
+in die Sauce geben und 5 Minuten köcheln lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In der Zwischenzeit
+Naanbrot erwärmen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Koriander unterrühren,
+mit Salz und Pfeffer abschmecken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit Reis und Naanbrot
+servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

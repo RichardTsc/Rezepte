@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bunte Burrito-Bowl mit Chorizo</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Internationales/Burrito-Bowl%20mit%20Chorizo.jpg" itemprop="image" alt="Bunte
+Burrito-Bowl mit Chorizo"/>
+            <div>
+                <h1 itemprop="name">Bunte Burrito-Bowl mit Chorizo</h1>
+                <p><span>Von </span><span itemprop="author">HelloFresh</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">2</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">30–40min</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>150 g Chorizo</li>
+                                            <li>150 g Jasminreis</li>
+                                            <li>1 Avocado</li>
+                                            <li>1 Knoblauchzehe</li>
+                                            <li>1 Tomate</li>
+                                            <li>1 Frühlingszwiebel</li>
+                                            <li>75 g Mais</li>
+                                            <li>50 g Schmand</li>
+                                            <li>10 g Petersilie
+glatt</li>
+                                            <li>8 g Gewürzmischung
+‘Hello Fiesta’</li>
+                                            <li>1 Limette</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Reis gründlich waschen.
+In einem kleinen Topf mit 300 ml Wasser, 0,5 TL Salz und 1 EL Butter
+(optional) aufkochen. Hitze reduzieren und bei niedriger Hitze ca. 10
+Min. köcheln lassen. Danach abgedeckt ca. 10 Min. ziehen lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Chorizo in kleine
+Würfel schneiden. Knoblauch abziehen und fein hacken. Frühlingszwiebel
+in feine Ringe schneiden. Tomate grob würfeln. Avocado halbieren,
+entkernen und in kleine Stücke schneiden. Petersilie fein hacken. Mais
+abgießen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In einer großen Pfanne
+1 EL Öl erhitzen. Chorizo ca. 3–4 Min. anbraten. Mais, Knoblauch und die
+Gewürzmischung dazugeben. 3 EL Wasser hinzufügen und ca. 2–3 Min.
+weiterbraten, bis das Wasser verdampft ist.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für die Salsa Avocado,
+Tomate, die Hälfte der Frühlingszwiebel und die Hälfte der Petersilie in
+einer Schüssel vermengen. Mit Salz und Pfeffer abschmecken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Reis mit einer Gabel
+auflockern und mit Limettensaft, Salz und Pfeffer abschmecken. Schmand
+mit 1 EL Wasser glatt rühren.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Reis auf Teller
+verteilen. Chorizo-Mais darauf geben. Mit Salsa toppen. Mit restlicher
+Petersilie, Frühlingszwiebel und dem Limettenschmand garnieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>
