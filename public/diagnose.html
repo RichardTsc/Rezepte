@@ -676,7 +676,7 @@ button:disabled { opacity: .45; cursor: default; }
       var rec = new SR();
       rec.lang = 'de-DE'; rec.interimResults = false; rec.maxAlternatives = 1;
       rec.onstart = function () { put('act', 'Spracherkennung', 'hört zu … sag z. B. „weiter“'); };
-      rec.onresult = function (e) { put('act', 'Spracherkennung', 'verstanden ✓: „' + e.results[0][0].transcript + '“'); };
+      rec.onresult = function (e) { var a = e.results[0] && e.results[0][0]; if (a && a.transcript) put('act', 'Spracherkennung', 'verstanden ✓: „' + a.transcript + '“'); };
       rec.onerror = function (e) { put('act', 'Spracherkennung', 'Fehler: ' + (e.error || 'unbekannt')); };
       rec.onend = function () { if (/hört zu/.test(String(get('act', 'Spracherkennung')))) put('act', 'Spracherkennung', 'beendet, nichts erkannt'); };
       rec.start();
@@ -699,7 +699,7 @@ button:disabled { opacity: .45; cursor: default; }
       var rec = new SR(), started = false;
       rec.lang = 'de-DE'; rec.continuous = true; rec.interimResults = false;
       rec.onstart = function () { started = true; var ms = Math.round(now() - t0); lat.push(ms); log.push('Start ' + n + ': ' + ms + ' ms'); put('act', prefix + 'Sprach-Dauertest', log.join(' | ') + ' … sprich jetzt'); };
-      rec.onresult = function (e) { var r = e.results[e.results.length - 1]; if (r && r.isFinal) log.push('„' + r[0].transcript + '“'); };
+      rec.onresult = function (e) { var r = e.results[e.results.length - 1]; if (r && r.isFinal && r[0] && r[0].transcript) log.push('„' + r[0].transcript + '“'); else if (r && r.isFinal) log.push('(leeres Ergebnis)'); };
       rec.onerror = function (e) { log.push('Fehler ' + (e.error || '?')); };
       rec.onend = function () {
         log.push('Ende ' + n + ' nach ' + Math.round((now() - t0) / 1000) + ' s' + (started ? '' : ' (nie gestartet)'));

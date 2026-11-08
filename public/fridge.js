@@ -668,7 +668,8 @@
       recognizer.onstart = () => { listening = true; updateToggles(); };
       recognizer.onresult = (e) => {
         const r = e.results[e.results.length - 1];
-        if (r && r.isFinal && !ownVoice()) command(r[0].transcript);
+        // Tizen liefert gelegentlich ein Ergebnis ohne Alternativen (r[0] fehlt) → ignorieren
+        if (r && r.isFinal && r[0] && r[0].transcript && !ownVoice()) command(r[0].transcript);
       };
       recognizer.onerror = (e) => {
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
