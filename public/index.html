@@ -1,15 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rezepte</title>
+    <meta name="application-name" content="Rezepte">
+    <meta name="apple-mobile-web-app-title" content="Rezepte">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="app.webmanifest">
+    <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="apple-touch-icon-precomposed" sizes="180x180" href="apple-touch-icon-precomposed.png">
     <link rel="stylesheet" href="styles_main.css">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="icon" href="apple-touch-icon.png">
-    <link rel="stylesheet" href="tokens.css?v=e01912a303">
-    <link rel="stylesheet" href="fridge.css?v=e01912a303">
+    <link rel="stylesheet" href="tokens.css?v=de4ce5d12c">
+    <link rel="stylesheet" href="fridge.css?v=de4ce5d12c">
     <script>
+        window.FRIDGE_BUILD = { v: "53abcaee", t: "08.11. 19:09" };
         /* Kühlschrank-Modus früh aktivieren (Samsung Family Hub). Auf anderen Geräten testen mit ?fridge, abschalten mit ?fridge=0 */
         (function () {
             var on = /Family Hub/.test(navigator.userAgent), q = location.search, off = /[?&]fridge=0/.test(q);
@@ -18,10 +27,15 @@
                 else if (/[?&]fridge/.test(q)) localStorage.setItem('fridge.force', '1');
                 if (localStorage.getItem('fridge.force') === '1') on = true;
             } catch (e) {}
-            if (on && !off) document.documentElement.className += ' fridge';
+            if (!on || off) return;
+            document.documentElement.className += ' fridge';
+            /* Kühlschrank: kein versehentliches Zoomen, dunkle Browser-Leisten */
+            document.getElementById('viewport').setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no');
+            var tc = document.createElement('meta'); tc.name = 'theme-color'; tc.content = '#12110f';
+            document.head.appendChild(tc);
         })();
     </script>
-    <script src="fridge.js?v=e01912a303" defer></script>
+    <script src="fridge.js?v=de4ce5d12c" defer></script>
 </head>
 <body>
     <div id="recipe-grid">

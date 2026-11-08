@@ -9,6 +9,8 @@
   if (!root.classList.contains('fridge')) return;
 
   const IS_FRIDGE = /Family Hub/.test(navigator.userAgent);
+  const BUILD = window.FRIDGE_BUILD || { v: '', t: '' }; // von generate.sh in index.html gesetzt
+  let lastInteraction = Date.now();
   // Einkauf (Picnic-Warenkorb, eigenes Projekt auf dem NAS). Unter der Küchen-Adresse auf dem NAS (alles außer github.io)
   // liegt der Einkauf same-origin unter /einkauf/ und wird als Tab eingebettet: eine App, das Vollbild bleibt beim Wechsel.
   // Auf GitHub Pages bleibt es beim Link ins Heimnetz (http → kein Einbetten möglich, Mixed Content).
@@ -185,7 +187,8 @@
     for (const r of recipes) if (!cats.includes(r.category)) cats.push(r.category);
     el.chips.innerHTML = `<button class="fh-chip is-active" data-act="cat" data-cat="-1">Alle<span>${recipes.length}</span></button>` +
       cats.map((c, i) => `<button class="fh-chip" data-act="cat" data-cat="${i}">${esc(c)}</button>`).join('');
-    el.home.innerHTML = `<div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>`;
+    el.home.innerHTML = `<div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>
+      <button class="fh-version" data-act="reload">Stand ${esc(BUILD.t || '?')} · ${esc(BUILD.v)} · antippen zum Neuladen</button>`;
   }
 
   function filterCategory(i) {
@@ -347,10 +350,11 @@
   // ---------- Cookidoo (Planen in „Meine Woche“) ----------
   // Die ID des eigenen Cookidoo-Rezepts schreibt der picnic-assistent nach dem Anlegen ins Frontmatter (cookidoo: "<id>").
   // Planen läuft über den Dienst cookidoo-bridge auf dem NAS (same-origin unter /cookidoo/api/, nur unter der Küchen-Adresse):
-  //   GET  /cookidoo/api/geplant?von=YYYY-MM-DD&tage=7  → { tage: { 'YYYY-MM-DD': ['<id>', …] } }
+  //   GET  /cookidoo/api/geplant?von=YYYY-MM-DD&tage=9  → { tage: { 'YYYY-MM-DD': ['<id>', …] } }
   //   POST /cookidoo/api/plan  { recipeId, date: 'YYYY-MM-DD', action: 'add' | 'remove' } → { ok: true }
   //   GET  /cookidoo/api/status → { verbunden: true|false }  (fehlt der Dienst oder der Login, gibt es nur das Tag)
   const CK_API = '/cookidoo/api/';
+  const PLAN_DAYS = 9; // Tagesauswahl: heute + 8 Tage (Wunsch des Nutzers)
   let ckReady = null; // null = unbekannt, true = Planen möglich, false = Dienst/Login fehlt
   function refreshCkStatus() {
     return fetch(CK_API + 'status', { credentials: 'same-origin', cache: 'no-store' })
@@ -393,7 +397,7 @@
     const rec = byId.get(currentId());
     const panel = $('#fh-plan');
     if (!rec || !rec.cookidoo || !panel) return;
-    const days = nextDays(7);
+    const days = nextDays(PLAN_DAYS);
     panel.innerHTML = `<div class="fh-scrim" data-act="ck-close"></div>
       <div class="fh-drawer-panel">
         <div class="fh-drawer-head"><h2>In Cookidoo planen</h2><button class="fh-round" data-act="ck-close" aria-label="Schließen">${icon('x')}</button></div>
@@ -403,7 +407,7 @@
       </div>`;
     panel.hidden = false;
     root.classList.add('fh-drawer-open');
-    ckFetch(`geplant?von=${days[0].iso}&tage=7`).then((data) => {
+    ckFetch(`geplant?von=${days[0].iso}&tage=${PLAN_DAYS}`).then((data) => {
       const tage = (data && data.tage) || {};
       for (const b of panel.querySelectorAll('.fh-ck-day')) b.classList.toggle('is-active', (tage[b.dataset.date] || []).includes(rec.cookidoo));
       $('#fh-ck-status').textContent = '';
@@ -830,7 +834,12 @@
   // ---------- Bedienung ----------
   // Jede Berührung: Audio freischalten, auf dem Kühlschrank ins Vollbild, Wachhalte-Video ggf. mit Ton neu starten.
   // Nicht bei Links, die die Seite verlassen (Einkauf): Vollbild würde dort sofort wieder enden.
+  // Samsung/Tizen: langes Drücken öffnet sonst das Browser-Kontextmenü (Kopieren/Teilen), Bilder ließen sich ziehen
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  document.addEventListener('dragstart', (e) => e.preventDefault());
+
   document.addEventListener('click', (e) => {
+    lastInteraction = Date.now();
     unlockAudio();
     if (IS_FRIDGE && autoFs && !e.target.closest('[data-act="fs"], a[href^="http"]')) enterFullscreen();
     const v = $('#fh-awake');
@@ -927,6 +936,30 @@
   });
   window.addEventListener('resize', () => { if (view === 'cook') fitStep(); });
   window.addEventListener('hashchange', route);
+
+  // ---------- Automatisches Update ----------
+  // generate.sh schreibt die Build-Kennung in index.html (window.FRIDGE_BUILD) und in version.json. Die App prüft alle
+  // 3 Minuten und nach dem Aufwachen. Bei neuer Version lädt sie sich auf der Startseite selbst neu, sobald 20 s niemand
+  // getippt hat. Sonst passiert das beim nächsten Wechsel zur Startseite (Kochen, Timer usw. überstehen das Neuladen).
+  let pendingVersion = null;
+  function checkUpdate() {
+    if (!BUILD.v || BUILD.v.indexOf('__') === 0) return; // lokaler Build ohne Kennung
+    fetch('version.json?t=' + Date.now(), { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((v) => { if (v && v.v && v.v !== BUILD.v) { pendingVersion = v.v; applyUpdate(); } }, () => {});
+  }
+  function applyUpdate() {
+    if (!pendingVersion || view !== 'home' || !el.alarm.hidden || Date.now() - lastInteraction < 20000) return;
+    // Nur ein Versuch pro Version: Liefert ein Cache noch die alte Seite, entsteht keine Neulade-Schleife
+    let tried = null;
+    try { tried = sessionStorage.getItem('fridge.reloadFor'); sessionStorage.setItem('fridge.reloadFor', pendingVersion); } catch { /* egal */ }
+    if (tried === pendingVersion) { pendingVersion = null; return; }
+    // Neue Kennung in der Adresse → die Startseite wird garantiert frisch geladen (an keinem Cache vorbei)
+    location.replace(location.pathname + '?b=' + encodeURIComponent(pendingVersion) + location.hash);
+  }
+  setInterval(checkUpdate, 3 * 60 * 1000);
+  setInterval(applyUpdate, 15 * 1000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
 
   // ---------- Start ----------
   tick();
