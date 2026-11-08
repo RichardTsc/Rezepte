@@ -220,7 +220,8 @@
     if (prev) prev.classList.remove('is-active');
     const next = el.chips.querySelector(`[data-cat="${i}"]`);
     if (next) next.classList.add('is-active');
-    if (window.scrollY > 0) window.scrollTo(0, 0);
+    const scroller = document.getElementById('fh-app'); // die Übersicht scrollt in #fh-app, nicht im Dokument
+    if (scroller.scrollTop > 0) scroller.scrollTop = 0;
   }
 
   // Kacheln: kleine quadratische Bilder (300 px, tiles/), sofort laden – alle 31 sind ohnehin auf dem ersten Bildschirm
@@ -266,7 +267,10 @@
     // Berührungen im Einkauf (gleiche Herkunft) zählen auch für die 2-Minuten-Regel des Wachhaltens
     shopFrame.addEventListener('load', () => {
       try {
-        for (const ev of ['pointerdown', 'touchstart', 'keydown', 'scroll']) shopFrame.contentWindow.addEventListener(ev, markActive, { capture: true, passive: true });
+        const w = shopFrame.contentWindow;
+        for (const ev of ['pointerdown', 'touchstart', 'keydown', 'scroll']) w.addEventListener(ev, markActive, { capture: true, passive: true });
+        // Auch eine Berührung im Einkauf schaltet ins Vollbild (die Geste gilt für die einbettende Seite mit)
+        for (const ev of ['pointerdown', 'mousedown', 'touchend', 'keydown']) w.addEventListener(ev, () => tryFullscreen(null), true);
       } catch { /* andere Herkunft – dann eben nicht */ }
     });
   }
@@ -896,9 +900,19 @@
 
   document.addEventListener('click', (e) => {
     unlockAudio();
-    if (IS_FRIDGE && autoFs && !e.target.closest('[data-act="fs"], a[href^="http"]')) enterFullscreen();
+    tryFullscreen(e);
     markActive(); // Wachhalte-Video ggf. (mit Ton) starten
   }, true);
+
+  // Vollbild schon bei der ERSTEN Berührung, nicht erst beim Antippen: Der Kühlschrank meldet seinen Touchscreen als Maus,
+  // und pointerdown/mousedown einer Maus zählen als Benutzergeste – auch wenn daraus ein Scrollen wird.
+  function tryFullscreen(e) {
+    if (!IS_FRIDGE || !autoFs || fsElement()) return;
+    const t = e && e.target;
+    if (t && t.closest && t.closest('[data-act="fs"], a[href^="http"]')) return;
+    enterFullscreen();
+  }
+  for (const ev of ['pointerdown', 'mousedown', 'touchend', 'keydown']) document.addEventListener(ev, tryFullscreen, true);
 
   document.addEventListener('click', (e) => {
     const t = e.target.closest('[data-act]');
@@ -909,7 +923,7 @@
         if (fsElement()) { autoFs = false; exitFullscreen(); } else { autoFs = true; enterFullscreen(); }
         break;
       case 'top':
-        if (view === 'home') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        if (view === 'home') { e.preventDefault(); document.getElementById('fh-app').scrollTo({ top: 0, behavior: 'smooth' }); }
         break;
       case 'cat': filterCategory(+t.dataset.cat); break;
       case 'resume': {
