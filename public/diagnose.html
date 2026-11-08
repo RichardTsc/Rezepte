@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6b4f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="robots" content="noindex">
+<title>Gerätediagnose</title>
+<link rel="manifest" href="diagnose.webmanifest">
+<link rel="icon" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root {
+  --bg: #f4f1ea; --card: #ffffff; --fg: #1d2420; --muted: #5d6a63; --line: #e2ddd2;
+  --accent: #2f6b4f; --accent-fg: #ffffff; --yes: #1e7a46; --no: #b03a2e; --na: #8a8f8b; --hint: #fff7e0; --hint-line: #ecd9a0;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141816; --card: #1d2320; --fg: #e8ece9; --muted: #9aa59f; --line: #2f3833;
+    --accent: #5fb487; --accent-fg: #0d1a13; --yes: #5cc98a; --no: #ff8a7a; --na: #7d8682; --hint: #2a2618; --hint-line: #4d4425;
+  }
+}
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.45 -apple-system, "SamsungOne", "Segoe UI", Roboto, Arial, sans-serif; }
+.wrap { max-width: 980px; margin: 0 auto; padding: 16px 16px 48px; }
+h1 { font-size: 1.6em; margin: 4px 0 2px; }
+h2 { font-size: 1.15em; margin: 0 0 8px; }
+p { margin: 6px 0; }
+.lead { color: var(--muted); margin-bottom: 14px; }
+.small { font-size: .85em; color: var(--muted); }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 12px 0; }
+.tiles { display: flex; flex-wrap: wrap; margin: 0 -5px; }
+.tile { -webkit-box-flex: 1; flex: 1 1 220px; margin: 5px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; min-width: 0; }
+.tile .k { font-size: .75em; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.tile .v { font-size: 1.12em; font-weight: 600; word-wrap: break-word; overflow-wrap: break-word; }
+.hints { background: var(--hint); border: 1px solid var(--hint-line); border-radius: 12px; padding: 10px 14px 10px 32px; margin: 12px 0; }
+.hints li { margin: 4px 0; }
+details > summary { cursor: pointer; font-weight: 700; font-size: 1.05em; padding: 2px 0; }
+.cnt { font-weight: 400; color: var(--muted); font-size: .85em; }
+table { width: 100%; border-collapse: collapse; margin-top: 6px; table-layout: fixed; }
+td { padding: 6px 8px 6px 0; border-top: 1px solid var(--line); vertical-align: top; word-wrap: break-word; overflow-wrap: break-word; }
+td.k { width: 42%; color: var(--muted); }
+.yes { color: var(--yes); font-weight: 600; }
+.no { color: var(--no); font-weight: 600; }
+.na { color: var(--na); }
+button { font: inherit; padding: 11px 16px; min-height: 48px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); margin: 4px 6px 4px 0; cursor: pointer; }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); font-weight: 600; }
+button:disabled { opacity: .45; cursor: default; }
+.code { font: 700 1.7em/1.2 Menlo, Consolas, monospace; letter-spacing: .14em; }
+#status { font-weight: 600; }
+#live { position: fixed; top: 6px; right: 6px; z-index: 20; background: rgba(0,0,0,.75); color: #fff; font: 600 13px/1.3 Menlo, Consolas, monospace; padding: 4px 8px; border-radius: 6px; pointer-events: none; }
+#frame { position: fixed; top: 0; left: 0; right: 0; bottom: 0; border: 6px solid #e5483a; z-index: 30; pointer-events: none; display: none; }
+#frame.on { display: block; }
+#frame span { position: absolute; background: #e5483a; color: #fff; font: 700 13px/1.4 Menlo, Consolas, monospace; padding: 2px 6px; }
+#frame .tl { top: 0; left: 0; } #frame .tr { top: 0; right: 0; } #frame .bl { bottom: 0; left: 0; } #frame .br { bottom: 0; right: 0; }
+#frame .mid { top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); font-size: 18px; padding: 8px 12px; }
+#report { display: none; white-space: pre-wrap; word-wrap: break-word; font: 12px/1.35 Menlo, Consolas, monospace; max-height: 60vh; overflow: auto; background: var(--bg); border-radius: 8px; padding: 8px; }
+#jserr { display: none; background: #b03a2e; color: #fff; padding: 10px 14px; border-radius: 10px; margin: 12px 0; font: 13px/1.4 Menlo, Consolas, monospace; white-space: pre-wrap; }
+.nest-probe { width: 1px; }
+.nest-probe { &.on { width: 7px; } }
+</style>
+<script>
+  // Fängt auch Syntaxfehler im Hauptskript ab (z. B. auf sehr alten Engines).
+  window.__diagErrors = [];
+  window.onerror = function (msg, src, line, col) {
+    var t = msg + ' (Zeile ' + line + (col ? ':' + col : '') + ')';
+    window.__diagErrors.push(t);
+    var box = document.getElementById('jserr');
+    if (box) { box.style.display = 'block'; box.textContent = 'JavaScript-Fehler:\n' + window.__diagErrors.join('\n'); }
+  };
+</script>
+</head>
+<body>
+<div id="live">…</div>
+<div id="frame"><span class="tl">↖ oben links</span><span class="tr">oben rechts ↗</span><span class="bl">↙ unten links</span><span class="br">unten rechts ↘</span><span class="mid" id="frame-size"></span></div>
+
+<div class="wrap">
+  <h1>Gerätediagnose</h1>
+  <p class="lead">Misst, was Browser und Bildschirm dieses Geräts können. Alles läuft lokal. Gesendet wird nur, wenn du unten auf „Bericht senden“ tippst.</p>
+  <noscript><div class="card no">JavaScript ist deaktiviert – ohne JavaScript kann die Seite nichts messen.</div></noscript>
+  <div id="jserr"></div>
+
+  <div class="tiles" id="tiles"></div>
+  <ul class="hints" id="hints" style="display:none"></ul>
+
+  <div class="card">
+    <h2>Interaktive Tests</h2>
+    <p class="small">Einmal antippen, das Ergebnis landet im Bericht.</p>
+    <button id="b-fs">Vollbild testen</button>
+    <button id="b-install" disabled>Als App installieren</button>
+    <button id="b-wake">Bildschirm wachhalten</button>
+    <button id="b-tts">Vorlesen testen</button>
+    <button id="b-stt">Spracherkennung testen</button>
+    <button id="b-frame">Ränder anzeigen</button>
+    <button id="b-rerun">Neu messen</button>
+    <p class="small">Wachhalten: danach nichts mehr berühren und schauen, ob der Bildschirmschoner trotzdem kommt. Die Seite merkt sich, nach wie vielen Sekunden sie verdeckt wurde.</p>
+  </div>
+
+  <div class="card">
+    <h2>Bericht an Claude schicken</h2>
+    <p>Dein Code: <span class="code" id="code">……</span></p>
+    <button class="primary" id="b-send">Bericht senden</button>
+    <button id="b-show">Bericht anzeigen</button>
+    <button id="b-copy">Kopieren</button>
+    <p id="status"></p>
+    <p class="small">Sendet nur die Messwerte (Browser, Bildschirm, unterstützte Funktionen, keine persönlichen Daten) an den Dienst ntfy.sh, Kanal <span id="topic"></span>. Lesbar für jeden, der den Code kennt. ntfy löscht die Nachrichten nach etwa 12 Stunden.</p>
+    <pre id="report"></pre>
+  </div>
+
+  <div id="groups"></div>
+  <div class="nest-probe on" id="nest-probe"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var VERSION = '1.0';
+  function now() { return (window.performance && performance.now) ? performance.now() : new Date().getTime(); }
+  var T_START = now();
+
+  // ---------- Datenmodell ----------
+  var G = {
+    pwa: 'Vollbild & App-Modus', act: 'Interaktive Tests', scr: 'Bildschirm & Viewport', sys: 'Browser & System',
+    mq: 'Media Queries', perf: 'Leistung', live: 'Live-Beobachtung', js: 'JavaScript', css: 'CSS',
+    api: 'Web-APIs', gfx: 'Grafik & Medien', sto: 'Speicher', hw: 'Hardware-Schnittstellen', vend: 'Tizen/Samsung-spezifisch'
+  };
+  var ORDER = ['pwa', 'act', 'scr', 'sys', 'mq', 'perf', 'live', 'js', 'css', 'api', 'gfx', 'sto', 'hw', 'vend'];
+  var R = { meta: { seite: 'Rezepte-Gerätediagnose', version: VERSION, url: location.href, start: new Date().toISOString() }, gruppen: {} };
+
+  function put(g, k, v) {
+    var name = G[g];
+    if (!R.gruppen[name]) R.gruppen[name] = {};
+    R.gruppen[name][k] = (v === undefined) ? null : v;
+    schedule();
+  }
+  function get(g, k) { var o = R.gruppen[G[g]]; return o ? o[k] : undefined; }
+
+  // ---------- Helfer ----------
+  function errText(e) {
+    if (!e) return 'Fehler';
+    var n = e.name || e.error || '', m = e.message || '';
+    return 'Fehler: ' + (n && m ? n + ' – ' + m : (n || m || String(e)));
+  }
+  function val(fn) { try { var v = fn(); return v === undefined ? null : v; } catch (e) { return errText(e); } }
+  function has(fn) { try { return !!fn(); } catch (e) { return false; } }
+  function syn(code) { try { new Function(code); return true; } catch (e) { return false; } }
+  function sup(p, v) { try { return !!(window.CSS && CSS.supports && CSS.supports(p, v)); } catch (e) { return false; } }
+  function sel(s) { try { document.querySelector(s); return true; } catch (e) { return false; } }
+  function mq(q) { try { return !!(window.matchMedia && window.matchMedia(q).matches); } catch (e) { return false; } }
+  function r1(n) { return Math.round(n * 10) / 10; }
+  function ver(re) { var m = navigator.userAgent.match(re); return m ? m[1] : null; }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+  function $(id) { return document.getElementById(id); }
+  function on(el, ev, fn) { if (el && el.addEventListener) el.addEventListener(ev, fn, false); }
+
+  function measureHeight(unit) {
+    var el = document.createElement('div');
+    el.style.cssText = 'position:absolute;left:-20px;top:0;width:1px;visibility:hidden;';
+    el.style.height = '100' + unit;
+    if (!el.style.height) return 'nicht unterstützt';
+    document.body.appendChild(el);
+    var h = el.getBoundingClientRect().height;
+    document.body.removeChild(el);
+    return r1(h);
+  }
+  function safeArea() {
+    var el = document.createElement('div');
+    el.style.cssText = 'position:absolute;left:-20px;top:0;width:1px;height:1px;visibility:hidden;';
+    el.style.paddingTop = 'env(safe-area-inset-top)';
+    el.style.paddingRight = 'env(safe-area-inset-right)';
+    el.style.paddingBottom = 'env(safe-area-inset-bottom)';
+    el.style.paddingLeft = 'env(safe-area-inset-left)';
+    if (!el.style.paddingTop) return 'env() nicht unterstützt';
+    document.body.appendChild(el);
+    var cs = getComputedStyle(el);
+    var out = [cs.paddingTop, cs.paddingRight, cs.paddingBottom, cs.paddingLeft].join(' / ');
+    document.body.removeChild(el);
+    return out;
+  }
+  function flexGap() {
+    var f = document.createElement('div');
+    f.style.cssText = 'display:flex;flex-direction:column;row-gap:1px;position:absolute;left:-20px;top:0;';
+    f.appendChild(document.createElement('div'));
+    f.appendChild(document.createElement('div'));
+    document.body.appendChild(f);
+    var ok = f.scrollHeight === 1;
+    document.body.removeChild(f);
+    return ok;
+  }
+  function cssNesting() {
+    var el = $('nest-probe');
+    return !!el && Math.round(el.getBoundingClientRect().width) === 7;
+  }
+  function fontAvailable(name) {
+    var ctx = document.createElement('canvas').getContext('2d');
+    if (!ctx) return null;
+    var s = 'mmmmmmmmmmlli1WQ@#ÄÖßg', bases = ['monospace', 'serif', 'sans-serif'];
+    for (var i = 0; i < bases.length; i++) {
+      ctx.font = '72px ' + bases[i];
+      var w0 = ctx.measureText(s).width;
+      ctx.font = '72px "' + name + '", ' + bases[i];
+      if (ctx.measureText(s).width !== w0) return true;
+    }
+    return false;
+  }
+  function emojiColor() {
+    var c = document.createElement('canvas'); c.width = c.height = 40;
+    var ctx = c.getContext('2d'); if (!ctx) return null;
+    ctx.textBaseline = 'top'; ctx.font = '32px sans-serif'; ctx.fillText('🍳', 2, 2);
+    var d = ctx.getImageData(0, 0, 40, 40).data, colored = false, any = false;
+    for (var i = 0; i < d.length; i += 4) {
+      if (d[i + 3] > 0) { any = true; if (Math.abs(d[i] - d[i + 1]) > 40 || Math.abs(d[i + 1] - d[i + 2]) > 40) { colored = true; break; } }
+    }
+    return colored ? 'farbig' : (any ? 'nur einfarbig' : 'nicht darstellbar');
+  }
+  function imgFormat(src, cb) {
+    var i = new Image();
+    i.onload = function () { cb(i.width > 0 && i.height > 0); };
+    i.onerror = function () { cb(false); };
+    i.src = src;
+  }
+  function germanVoices() {
+    if (!window.speechSynthesis || !speechSynthesis.getVoices) return [];
+    var all = speechSynthesis.getVoices() || [], out = [];
+    for (var i = 0; i < all.length; i++) if (/^de/i.test(all[i].lang)) out.push(all[i]);
+    return out;
+  }
+
+  // ---------- Synchrone Messungen ----------
+  function viewport() {
+    var w = window, de = document.documentElement, dpr = w.devicePixelRatio || 1;
+    put('scr', 'screen width × height', screen.width + ' × ' + screen.height);
+    put('scr', 'screen avail', screen.availWidth + ' × ' + screen.availHeight);
+    put('scr', 'devicePixelRatio', r1(dpr));
+    put('scr', 'Fenster innerWidth × innerHeight', w.innerWidth + ' × ' + w.innerHeight);
+    put('scr', 'Fenster in Gerätepixeln', Math.round(w.innerWidth * dpr) + ' × ' + Math.round(w.innerHeight * dpr));
+    put('scr', 'outerWidth × outerHeight', w.outerWidth + ' × ' + w.outerHeight);
+    put('scr', 'documentElement client', de.clientWidth + ' × ' + de.clientHeight);
+    put('scr', 'visualViewport', val(function () {
+      var v = w.visualViewport; if (!v) return false;
+      return r1(v.width) + ' × ' + r1(v.height) + ', Zoom ' + r1(v.scale) + ', offsetTop ' + r1(v.offsetTop);
+    }));
+    put('scr', 'Ausrichtung', val(function () {
+      if (screen.orientation) return screen.orientation.type + ' (' + screen.orientation.angle + '°)';
+      return w.orientation !== undefined ? w.orientation + '°' : null;
+    }));
+    put('scr', 'Höhe 100vh (px)', measureHeight('vh'));
+    put('scr', 'Höhe 100dvh (px)', measureHeight('dvh'));
+    put('scr', 'Höhe 100svh (px)', measureHeight('svh'));
+    put('scr', 'Höhe 100lvh (px)', measureHeight('lvh'));
+    put('scr', 'Safe-Area (oben/rechts/unten/links)', val(safeArea));
+  }
+
+  function collect() {
+    var nav = navigator, ua = nav.userAgent, d = document, de = d.documentElement, w = window;
+
+    // Browser & System
+    put('sys', 'User-Agent', ua);
+    put('sys', 'Chromium-Version', ver(/Chrome\/([\d.]+)/));
+    put('sys', 'Samsung Internet', ver(/SamsungBrowser\/([\d.]+)/));
+    put('sys', 'Tizen', ver(/Tizen[ \/]?([\d.]+)/i) || (/tizen/i.test(ua) ? 'ja (ohne Version)' : null));
+    put('sys', 'WebKit/Blink', ver(/AppleWebKit\/([\d.]+)/));
+    put('sys', 'platform', val(function () { return nav.platform; }));
+    put('sys', 'vendor', val(function () { return nav.vendor; }));
+    put('sys', 'UA-Client-Hints', val(function () {
+      if (!nav.userAgentData) return false;
+      var b = [], br = nav.userAgentData.brands || [];
+      for (var i = 0; i < br.length; i++) b.push(br[i].brand + ' ' + br[i].version);
+      return b.join(', ') + ' | Plattform: ' + nav.userAgentData.platform + ' | mobil: ' + nav.userAgentData.mobile;
+    }));
+    put('sys', 'Sprache(n)', val(function () { return (nav.languages && nav.languages.join(', ')) || nav.language; }));
+    put('sys', 'Zeitzone', val(function () { return Intl.DateTimeFormat().resolvedOptions().timeZone; }));
+    put('sys', 'Datum/Uhrzeit lokal', val(function () { return new Date().toLocaleString('de-DE'); }));
+    put('sys', 'CPU-Kerne', val(function () { return nav.hardwareConcurrency || null; }));
+    put('sys', 'Arbeitsspeicher (GB, gerundet)', val(function () { return nav.deviceMemory || null; }));
+    put('sys', 'Online', val(function () { return nav.onLine; }));
+    put('sys', 'Verbindung', val(function () {
+      var c = nav.connection || nav.mozConnection || nav.webkitConnection;
+      if (!c) return null;
+      return [c.type, c.effectiveType, c.downlink ? c.downlink + ' Mbit/s' : null, c.rtt ? c.rtt + ' ms RTT' : null].filter(Boolean).join(', ');
+    }));
+    put('sys', 'Sicherer Kontext (HTTPS)', val(function () { return w.isSecureContext; }));
+    put('sys', 'Cookies aktiv', val(function () { return nav.cookieEnabled; }));
+    put('sys', 'Do Not Track', val(function () { return nav.doNotTrack; }));
+
+    // Bildschirm & Viewport (veränderliche Werte misst viewport(), auch bei jeder Größenänderung)
+    viewport();
+    put('scr', 'Farbtiefe', screen.colorDepth + ' bit');
+
+    // Media Queries
+    var mode = 'browser';
+    var modes = ['fullscreen', 'standalone', 'minimal-ui', 'window-controls-overlay', 'picture-in-picture'];
+    for (var i = 0; i < modes.length; i++) if (mq('(display-mode: ' + modes[i] + ')')) { mode = modes[i]; break; }
+    put('mq', 'orientation', mq('(orientation: portrait)') ? 'portrait' : 'landscape');
+    put('mq', 'pointer', mq('(pointer: coarse)') ? 'coarse (Finger)' : (mq('(pointer: fine)') ? 'fine (Maus)' : 'none'));
+    put('mq', 'any-pointer: fine', mq('(any-pointer: fine)'));
+    put('mq', 'hover', mq('(hover: hover)'));
+    put('mq', 'prefers-color-scheme: dark', mq('(prefers-color-scheme: dark)'));
+    put('mq', 'prefers-reduced-motion', mq('(prefers-reduced-motion: reduce)'));
+    put('mq', 'color-gamut: p3', mq('(color-gamut: p3)'));
+    put('mq', 'dynamic-range: high (HDR)', mq('(dynamic-range: high)'));
+    put('mq', 'Touchpunkte (maxTouchPoints)', val(function () { return nav.maxTouchPoints; }));
+    put('mq', 'Touch-Events', 'ontouchstart' in w);
+
+    // Vollbild & App-Modus
+    put('pwa', 'Display-Modus', mode);
+    put('pwa', 'Über App-Manifest gestartet', /[?&]pwa=1/.test(location.search));
+    put('pwa', 'Fullscreen-API', !!(de.requestFullscreen || de.webkitRequestFullscreen || de.webkitRequestFullScreen));
+    put('pwa', 'fullscreenEnabled', val(function () {
+      var v = d.fullscreenEnabled; if (v === undefined) v = d.webkitFullscreenEnabled; return v === undefined ? null : v;
+    }));
+    put('pwa', 'Service Worker', 'serviceWorker' in nav);
+    put('pwa', 'Manifest verlinkt', !!d.querySelector('link[rel="manifest"]'));
+    put('pwa', 'BeforeInstallPromptEvent bekannt', 'BeforeInstallPromptEvent' in w);
+    put('pwa', 'Ausrichtung sperrbar (API)', has(function () { return screen.orientation && screen.orientation.lock; }));
+    if (get('pwa', 'Install-Angebot (beforeinstallprompt)') === undefined) put('pwa', 'Install-Angebot (beforeinstallprompt)', 'noch keins – Seite offen lassen, einmal tippen');
+
+    // JavaScript
+    put('js', 'ES2015 (let/const/Pfeile/Klassen)', syn('let a=1;const b=()=>a;class C{}'));
+    put('js', 'ES2015 Template-Strings', syn('var x=`a${1}`'));
+    put('js', 'ES2017 async/await', syn('async function f(){await 1}'));
+    put('js', 'ES2018 Objekt-Spread', syn('var o={...{a:1}}'));
+    put('js', 'ES2020 ?. und ??', syn('var a=null;var b=a?.c??1'));
+    put('js', 'ES2020 BigInt', syn('var b=1n'));
+    put('js', 'ES2022 Klassenfelder/#privat', syn('class A{#x=1;static y=2;m(){return this.#x}}'));
+    put('js', 'ES-Module (script type=module)', 'noModule' in d.createElement('script'));
+    put('js', 'globalThis', typeof globalThis !== 'undefined');
+    put('js', 'Promise.allSettled', has(function () { return Promise.allSettled; }));
+    put('js', 'Array.prototype.at (2022)', has(function () { return [].at; }));
+    put('js', 'structuredClone', typeof w.structuredClone === 'function');
+    put('js', 'Array.prototype.findLast (2023)', has(function () { return [].findLast; }));
+    put('js', 'Object.groupBy (2024)', has(function () { return Object.groupBy; }));
+    put('js', 'Set.prototype.union (2025)', has(function () { return new Set().union; }));
+    put('js', 'Intl.Segmenter', has(function () { return Intl.Segmenter; }));
+    put('js', 'Intl.RelativeTimeFormat', has(function () { return Intl.RelativeTimeFormat; }));
+    put('js', 'WeakRef', typeof w.WeakRef === 'function');
+    put('js', 'WebAssembly', typeof w.WebAssembly === 'object');
+
+    // CSS
+    put('css', 'Grid', sup('display', 'grid'));
+    put('css', 'Subgrid', sup('grid-template-columns', 'subgrid'));
+    put('css', 'Flexbox-gap', val(flexGap));
+    put('css', 'aspect-ratio', sup('aspect-ratio', '1 / 1'));
+    put('css', 'position: sticky', sup('position', 'sticky'));
+    put('css', 'Custom Properties (var)', sup('--x', '1'));
+    put('css', 'clamp()/min()/max()', sup('width', 'clamp(1px, 2px, 3px)'));
+    put('css', 'Einheiten dvh/svh/lvh', sup('height', '100dvh'));
+    put('css', 'Container Queries', sup('container-type', 'inline-size'));
+    put('css', ':has()', sel('html:has(body)'));
+    put('css', ':is()/:where()', sel(':is(html)') && sel(':where(html)'));
+    put('css', ':focus-visible', sel(':focus-visible'));
+    put('css', 'Nesting (&)', val(cssNesting));
+    put('css', '@layer', 'CSSLayerBlockRule' in w);
+    put('css', 'color-mix()', sup('color', 'color-mix(in srgb, red, blue)'));
+    put('css', 'oklch()', sup('color', 'oklch(50% 0.1 120)'));
+    put('css', 'backdrop-filter', sup('backdrop-filter', 'blur(2px)') || sup('-webkit-backdrop-filter', 'blur(2px)'));
+    put('css', 'scroll-snap', sup('scroll-snap-type', 'x mandatory'));
+    put('css', 'overscroll-behavior', sup('overscroll-behavior', 'contain'));
+    put('css', 'touch-action', sup('touch-action', 'manipulation'));
+    put('css', 'text-wrap: balance', sup('text-wrap', 'balance'));
+    put('css', 'content-visibility', sup('content-visibility', 'auto'));
+    put('css', 'accent-color', sup('accent-color', 'red'));
+    put('css', 'Anchor Positioning', sup('anchor-name', '--a'));
+    put('css', 'View Transitions', 'startViewTransition' in d);
+
+    // Web-APIs
+    put('api', 'fetch', typeof w.fetch === 'function');
+    put('api', 'Promise', typeof w.Promise === 'function');
+    put('api', 'AbortController', typeof w.AbortController === 'function');
+    put('api', 'WebSocket', typeof w.WebSocket === 'function');
+    put('api', 'EventSource (SSE)', typeof w.EventSource === 'function');
+    put('api', 'BroadcastChannel', typeof w.BroadcastChannel === 'function');
+    put('api', 'Web Worker', typeof w.Worker === 'function');
+    put('api', 'SharedWorker', typeof w.SharedWorker === 'function');
+    put('api', 'Wake Lock', 'wakeLock' in nav);
+    put('api', 'Notifications', val(function () { return w.Notification ? 'ja (Erlaubnis: ' + Notification.permission + ')' : false; }));
+    put('api', 'Push', 'PushManager' in w);
+    put('api', 'Sprachausgabe (speechSynthesis)', 'speechSynthesis' in w);
+    put('api', 'Spracherkennung', !!(w.SpeechRecognition || w.webkitSpeechRecognition));
+    put('api', 'Web Audio', !!(w.AudioContext || w.webkitAudioContext));
+    put('api', 'Vibration', 'vibrate' in nav);
+    put('api', 'Zwischenablage (clipboard)', !!nav.clipboard);
+    put('api', 'Web Share', 'share' in nav);
+    put('api', 'Geolocation', 'geolocation' in nav);
+    put('api', 'Kamera/Mikrofon (getUserMedia)', !!(nav.mediaDevices && nav.mediaDevices.getUserMedia));
+    put('api', 'IntersectionObserver', 'IntersectionObserver' in w);
+    put('api', 'ResizeObserver', 'ResizeObserver' in w);
+    put('api', 'requestIdleCallback', 'requestIdleCallback' in w);
+    put('api', 'Pointer Events', 'PointerEvent' in w);
+    put('api', '<dialog>', typeof w.HTMLDialogElement === 'function');
+    put('api', 'Popover', has(function () { return HTMLElement.prototype.hasOwnProperty('popover'); }));
+    put('api', 'CompressionStream', typeof w.CompressionStream === 'function');
+    put('api', 'Web Locks', 'locks' in nav);
+    put('api', 'Badging', 'setAppBadge' in nav);
+    put('api', 'Screen Capture', !!(nav.mediaDevices && nav.mediaDevices.getDisplayMedia));
+    put('api', 'Picture-in-Picture', 'pictureInPictureEnabled' in d);
+    put('api', 'WebGPU', 'gpu' in nav);
+
+    // Hardware
+    put('hw', 'Web Bluetooth', 'bluetooth' in nav);
+    put('hw', 'WebUSB', 'usb' in nav);
+    put('hw', 'Web Serial', 'serial' in nav);
+    put('hw', 'WebHID', 'hid' in nav);
+    put('hw', 'Web NFC', 'NDEFReader' in w);
+    put('hw', 'Gamepad', 'getGamepads' in nav);
+    put('hw', 'Bewegungssensoren', 'DeviceMotionEvent' in w);
+    put('hw', 'Generic Sensor API', 'Accelerometer' in w || 'AmbientLightSensor' in w);
+    put('hw', 'Batterie', 'getBattery' in nav);
+
+    // Tizen / Samsung
+    put('vend', 'window.tizen', typeof w.tizen !== 'undefined' ? typeof w.tizen : false);
+    put('vend', 'window.webapis', typeof w.webapis !== 'undefined' ? typeof w.webapis : false);
+    put('vend', 'Auffällige globale Objekte', val(function () {
+      var names = Object.getOwnPropertyNames(w), hits = [];
+      var re = /tizen|samsung|sbrowser|webapis|bixby|familyhub|smartthings|knox|bridge|wrt|^sec[A-Z_]|native/i;
+      for (var j = 0; j < names.length; j++) if (re.test(names[j])) hits.push(names[j]);
+      return hits.length ? hits.join(', ') : 'keine';
+    }));
+    put('vend', 'navigator-Eigenschaften', val(function () {
+      var list = []; for (var k in nav) list.push(k); list.sort(); return list.join(', ');
+    }));
+
+    // Grafik & Medien
+    put('gfx', 'WebGL', val(function () {
+      var c = d.createElement('canvas'), gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+      if (!gl) return false;
+      var ext = gl.getExtension('WEBGL_debug_renderer_info');
+      var ren = ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+      var ven = ext ? gl.getParameter(ext.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR);
+      return ven + ' – ' + ren + ' (max. Textur ' + gl.getParameter(gl.MAX_TEXTURE_SIZE) + ')';
+    }));
+    put('gfx', 'WebGL 2', has(function () { return d.createElement('canvas').getContext('webgl2'); }));
+    put('gfx', 'Emoji', val(emojiColor));
+    var v = d.createElement('video');
+    function cpt(t) { var r = v.canPlayType ? v.canPlayType(t) : ''; return r ? r : false; }
+    put('gfx', 'Video H.264', cpt('video/mp4; codecs="avc1.42E01E"'));
+    put('gfx', 'Video HEVC', cpt('video/mp4; codecs="hvc1.1.6.L93.B0"'));
+    put('gfx', 'Video VP9', cpt('video/webm; codecs="vp9"'));
+    put('gfx', 'Video AV1', cpt('video/mp4; codecs="av01.0.05M.08"'));
+    put('gfx', 'Media Source Extensions', 'MediaSource' in w);
+    put('gfx', 'Schriften installiert', val(function () {
+      var fonts = ['SamsungOne', 'Samsung Sans', 'SamsungOneUI', 'Tizen Sans', 'TizenSans', 'BreezeSans', 'Roboto', 'Noto Sans', 'Noto Color Emoji', 'DejaVu Sans', 'Liberation Sans', 'Arial', 'Helvetica', 'Inter', 'Open Sans'];
+      var yes = [];
+      for (var j = 0; j < fonts.length; j++) if (fontAvailable(fonts[j])) yes.push(fonts[j]);
+      return yes.length ? yes.join(', ') : 'keine der geprüften';
+    }));
+
+    // Speicher
+    put('sto', 'localStorage', val(function () { localStorage.setItem('diag-t', '1'); var ok = localStorage.getItem('diag-t') === '1'; localStorage.removeItem('diag-t'); return ok; }));
+    put('sto', 'sessionStorage', val(function () { sessionStorage.setItem('diag-t', '1'); var ok = sessionStorage.getItem('diag-t') === '1'; sessionStorage.removeItem('diag-t'); return ok; }));
+    put('sto', 'Cache API', 'caches' in w);
+    put('sto', 'IndexedDB vorhanden', 'indexedDB' in w);
+
+    // Leistung (schnell)
+    put('perf', 'JS-Heap-Limit (MB)', val(function () { return performance.memory ? Math.round(performance.memory.jsHeapSizeLimit / 1048576) : null; }));
+  }
+
+  // ---------- Asynchrone Messungen ----------
+  function collectAsync() {
+    var nav = navigator, w = window;
+
+    if (nav.userAgentData && nav.userAgentData.getHighEntropyValues) {
+      nav.userAgentData.getHighEntropyValues(['architecture', 'bitness', 'model', 'platformVersion', 'fullVersionList']).then(function (h) {
+        var fv = [], l = h.fullVersionList || [];
+        for (var i = 0; i < l.length; i++) fv.push(l[i].brand + ' ' + l[i].version);
+        put('sys', 'Client Hints (Details)', 'Modell: ' + (h.model || '–') + ' | Plattform-Version: ' + (h.platformVersion || '–') + ' | Architektur: ' + (h.architecture || '–') + ' ' + (h.bitness || '') + ' | ' + fv.join(', '));
+      }, function (e) { put('sys', 'Client Hints (Details)', errText(e)); });
+    }
+
+    var webp = 'data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA';
+    var avif = 'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=';
+    imgFormat(webp, function (ok) { put('gfx', 'Bildformat WebP', ok); });
+    imgFormat(avif, function (ok) { put('gfx', 'Bildformat AVIF', ok); });
+
+    if (w.indexedDB) {
+      try {
+        var req = indexedDB.open('diag-test', 1);
+        req.onsuccess = function () { put('sto', 'IndexedDB nutzbar', true); try { req.result.close(); indexedDB.deleteDatabase('diag-test'); } catch (e) {} };
+        req.onerror = function () { put('sto', 'IndexedDB nutzbar', errText(req.error)); };
+      } catch (e) { put('sto', 'IndexedDB nutzbar', errText(e)); }
+    }
+    if (nav.storage && nav.storage.estimate) {
+      nav.storage.estimate().then(function (e) {
+        put('sto', 'Speicherkontingent', Math.round(e.quota / 1048576) + ' MB (belegt ' + Math.round(e.usage / 1024) + ' KB)');
+      }, function (e) { put('sto', 'Speicherkontingent', errText(e)); });
+    }
+    if (nav.mediaDevices && nav.mediaDevices.enumerateDevices) {
+      nav.mediaDevices.enumerateDevices().then(function (list) {
+        var c = { audioinput: 0, videoinput: 0, audiooutput: 0 };
+        for (var i = 0; i < list.length; i++) if (c[list[i].kind] !== undefined) c[list[i].kind]++;
+        put('hw', 'Mediengeräte (ohne Erlaubnis sichtbar)', 'Mikrofone ' + c.audioinput + ', Kameras ' + c.videoinput + ', Lautsprecher ' + c.audiooutput);
+      }, function (e) { put('hw', 'Mediengeräte (ohne Erlaubnis sichtbar)', errText(e)); });
+    }
+    if (w.speechSynthesis) {
+      var voices = function () {
+        var all = speechSynthesis.getVoices() || [], de = germanVoices(), names = [];
+        for (var i = 0; i < de.length; i++) names.push(de[i].name + (de[i].localService ? '' : ' (online)'));
+        put('api', 'Stimmen gesamt / deutsch', all.length + ' / ' + de.length + (names.length ? ' – ' + names.join(', ') : ''));
+      };
+      voices();
+      if ('onvoiceschanged' in speechSynthesis) speechSynthesis.onvoiceschanged = voices;
+    }
+
+    // Service Worker nur für diese Seite (Scope beschränkt), damit „Installieren“ möglich wird
+    if ('serviceWorker' in nav) {
+      nav.serviceWorker.register('diagnose-sw.js', { scope: './diagnose.html' }).then(function () {
+        put('pwa', 'Service Worker registriert', true);
+      }, function (e) { put('pwa', 'Service Worker registriert', errText(e)); });
+    }
+  }
+
+  // ---------- Leistung ----------
+  function benchmarks() {
+    var t0 = now(), x = 0;
+    for (var i = 0; i < 3000000; i++) x += Math.sqrt(i) * Math.sin(i);
+    put('perf', 'CPU-Test (ms, weniger = besser)', Math.round(now() - t0));
+    window.__diagSink = x; // verhindert, dass die Schleife wegoptimiert wird
+    put('perf', 'Referenz MacBook (Apple Silicon)', 'CPU ca. 20–30 ms, DOM ca. 5 ms');
+
+    var box = document.createElement('div');
+    box.style.cssText = 'position:absolute;left:-9999px;top:0;width:300px;';
+    document.body.appendChild(box);
+    t0 = now();
+    for (var j = 0; j < 2000; j++) { var el = document.createElement('div'); el.textContent = 'Zeile ' + j; el.style.padding = '2px'; box.appendChild(el); }
+    window.__diagSink = box.offsetHeight; // erzwingt das Layout
+    put('perf', 'DOM-Test 2000 Elemente (ms)', Math.round(now() - t0));
+    document.body.removeChild(box);
+
+    var nt = val(function () {
+      var n = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      if (n && n.duration) return Math.round(n.duration);
+      var t = performance.timing; return t && t.loadEventEnd ? t.loadEventEnd - t.navigationStart : null;
+    });
+    put('perf', 'Seitenladezeit (ms)', nt);
+
+    if (window.requestAnimationFrame) {
+      var n = 0, start = null;
+      var step = function (ts) {
+        if (start === null) start = ts;
+        n++;
+        if (ts - start < 2000) requestAnimationFrame(step);
+        else put('perf', 'Bildrate (fps, 2 s gemessen)', r1((n - 1) * 1000 / (ts - start)));
+      };
+      requestAnimationFrame(step);
+    }
+  }
+
+  // ---------- Live-Beobachtung ----------
+  var seen = [], lastTouch = now(), hiddenAt = null, liveTimer = null;
+  function onViewportChange() {
+    live();
+    if (liveTimer) clearTimeout(liveTimer);
+    liveTimer = setTimeout(function () { liveTimer = null; viewport(); }, 250);
+  }
+  function live() {
+    var w = window, vv = w.visualViewport, dpr = w.devicePixelRatio || 1;
+    var s = w.innerWidth + '×' + w.innerHeight;
+    $('live').textContent = s + (vv ? ' · vv ' + Math.round(vv.height) : '') + ' · ' + r1(dpr) + 'x';
+    $('frame-size').textContent = s + ' CSS-px';
+    var tag = s + (document.fullscreenElement || document.webkitFullscreenElement ? ' (Vollbild)' : '');
+    if (seen.indexOf(tag) < 0) { seen.push(tag); put('live', 'Beobachtete Fenstergrößen', seen.join(', ')); }
+  }
+  function touched() { lastTouch = now(); }
+  on(document, 'touchstart', touched); on(document, 'pointerdown', touched); on(document, 'mousedown', touched); on(document, 'keydown', touched);
+  on(window, 'resize', onViewportChange); on(window, 'orientationchange', onViewportChange);
+  if (window.visualViewport) { on(window.visualViewport, 'resize', onViewportChange); on(window.visualViewport, 'scroll', live); }
+  on(document, 'visibilitychange', function () {
+    if (document.hidden) {
+      hiddenAt = now();
+      put('live', 'Zuletzt verdeckt nach (s ohne Berührung)', Math.round((hiddenAt - lastTouch) / 1000));
+    } else if (hiddenAt) {
+      put('live', 'Zuletzt verdeckt für (s)', Math.round((now() - hiddenAt) / 1000));
+    }
+  });
+
+  // ---------- Interaktive Tests ----------
+  function fsEl() { return document.fullscreenElement || document.webkitFullscreenElement || document.webkitCurrentFullScreenElement || null; }
+  on($('b-fs'), 'click', function () {
+    var de = document.documentElement;
+    if (fsEl()) {
+      var ex = document.exitFullscreen || document.webkitExitFullscreen || document.webkitCancelFullScreen;
+      if (ex) ex.call(document);
+      return;
+    }
+    var req = de.requestFullscreen || de.webkitRequestFullscreen || de.webkitRequestFullScreen;
+    if (!req) { put('act', 'Vollbild', 'API fehlt'); return; }
+    put('act', 'Vollbild', 'angefordert …');
+    try {
+      var p = req.call(de);
+      if (p && p.then) p.then(null, function (e) { put('act', 'Vollbild', 'abgelehnt: ' + errText(e)); });
+    } catch (e) { put('act', 'Vollbild', errText(e)); }
+  });
+  function fsChange() {
+    setTimeout(function () {
+      if (fsEl()) {
+        put('act', 'Vollbild', 'aktiv ✓');
+        put('act', 'Fenstergröße im Vollbild', window.innerWidth + ' × ' + window.innerHeight);
+        $('b-fs').textContent = 'Vollbild beenden';
+      } else {
+        $('b-fs').textContent = 'Vollbild testen';
+        if (get('act', 'Vollbild') === 'aktiv ✓') put('act', 'Vollbild', 'funktionierte ✓ (wieder beendet)');
+      }
+      live();
+    }, 500);
+  }
+  function fsError() { put('act', 'Vollbild', 'Fehler (fullscreenerror)'); }
+  on(document, 'fullscreenchange', fsChange); on(document, 'webkitfullscreenchange', fsChange);
+  on(document, 'fullscreenerror', fsError); on(document, 'webkitfullscreenerror', fsError);
+
+  var installEvt = null;
+  on(window, 'beforeinstallprompt', function (e) {
+    e.preventDefault();
+    installEvt = e;
+    $('b-install').disabled = false;
+    put('pwa', 'Install-Angebot (beforeinstallprompt)', true);
+  });
+  on(window, 'appinstalled', function () { put('act', 'App-Installation', 'installiert ✓'); });
+  on($('b-install'), 'click', function () {
+    if (!installEvt) return;
+    installEvt.prompt();
+    if (installEvt.userChoice) installEvt.userChoice.then(function (c) { put('act', 'App-Installation', c.outcome === 'accepted' ? 'angenommen ✓' : 'abgelehnt'); });
+    installEvt = null;
+    $('b-install').disabled = true;
+  });
+
+  var wakeLock = null;
+  on($('b-wake'), 'click', function () {
+    if (!('wakeLock' in navigator)) { put('act', 'Wake Lock', 'API fehlt'); return; }
+    if (wakeLock) { wakeLock.release(); wakeLock = null; return; }
+    navigator.wakeLock.request('screen').then(function (lock) {
+      wakeLock = lock;
+      var t = new Date();
+      put('act', 'Wake Lock', 'aktiv seit ' + t.toLocaleTimeString('de-DE'));
+      $('b-wake').textContent = 'Wachhalten beenden';
+      lock.addEventListener('release', function () {
+        put('act', 'Wake Lock', 'freigegeben nach ' + Math.round((new Date() - t) / 1000) + ' s');
+        $('b-wake').textContent = 'Bildschirm wachhalten';
+        wakeLock = null;
+      });
+    }, function (e) { put('act', 'Wake Lock', errText(e)); });
+  });
+
+  on($('b-tts'), 'click', function () {
+    if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) { put('act', 'Vorlesen', 'API fehlt'); return; }
+    var u = new SpeechSynthesisUtterance('Schritt eins: Die Nudeln in reichlich Salzwasser kochen.');
+    u.lang = 'de-DE';
+    var dv = germanVoices();
+    if (dv.length) u.voice = dv[0];
+    var started = false;
+    u.onstart = function () { started = true; put('act', 'Vorlesen', 'spricht …'); };
+    u.onend = function () { put('act', 'Vorlesen', 'fertig ✓ (Stimme: ' + (u.voice ? u.voice.name : 'Standard') + ')'); };
+    u.onerror = function (e) { put('act', 'Vorlesen', 'Fehler: ' + (e.error || 'unbekannt')); };
+    speechSynthesis.cancel();
+    speechSynthesis.speak(u);
+    setTimeout(function () { if (!started) put('act', 'Vorlesen', 'startet nicht (keine Stimme oder blockiert)'); }, 6000);
+  });
+
+  on($('b-stt'), 'click', function () {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { put('act', 'Spracherkennung', 'API fehlt'); return; }
+    try {
+      var rec = new SR();
+      rec.lang = 'de-DE'; rec.interimResults = false; rec.maxAlternatives = 1;
+      rec.onstart = function () { put('act', 'Spracherkennung', 'hört zu … sag z. B. „weiter“'); };
+      rec.onresult = function (e) { put('act', 'Spracherkennung', 'verstanden ✓: „' + e.results[0][0].transcript + '“'); };
+      rec.onerror = function (e) { put('act', 'Spracherkennung', 'Fehler: ' + (e.error || 'unbekannt')); };
+      rec.onend = function () { if (/hört zu/.test(String(get('act', 'Spracherkennung')))) put('act', 'Spracherkennung', 'beendet, nichts erkannt'); };
+      rec.start();
+    } catch (e) { put('act', 'Spracherkennung', errText(e)); }
+  });
+
+  on($('b-frame'), 'click', function () {
+    var f = $('frame'), isOn = f.className === 'on';
+    f.className = isOn ? '' : 'on';
+    $('b-frame').textContent = isOn ? 'Ränder anzeigen' : 'Ränder ausblenden';
+    live();
+  });
+  on($('b-rerun'), 'click', function () { collect(); live(); render(); });
+
+  // ---------- Bericht senden ----------
+  function makeCode() {
+    var a = 'abcdefghjkmnpqrstuvwxyz23456789', s = '', rnd = null;
+    try { rnd = window.crypto.getRandomValues(new Uint8Array(6)); } catch (e) {}
+    for (var i = 0; i < 6; i++) s += a.charAt((rnd ? rnd[i] : Math.floor(Math.random() * 256)) % a.length);
+    return s;
+  }
+  var code = null;
+  try { code = localStorage.getItem('diag-code'); } catch (e) {}
+  if (!code) { code = makeCode(); try { localStorage.setItem('diag-code', code); } catch (e) {} }
+  var topic = 'rezepte-diag-' + code;
+  $('code').textContent = code;
+  $('topic').textContent = topic;
+
+  function reportJSON(pretty) {
+    R.meta.code = code;
+    R.meta.erstellt = new Date().toISOString();
+    R.meta.laufzeit_s = Math.round((now() - T_START) / 1000);
+    R.meta.js_fehler = window.__diagErrors.length ? window.__diagErrors : null;
+    return pretty ? JSON.stringify(R, null, 1) : JSON.stringify(R);
+  }
+  function post(body, cb) {
+    var x = new XMLHttpRequest();
+    x.open('POST', 'https://ntfy.sh/' + topic, true);
+    x.timeout = 20000;
+    x.onload = function () { cb(x.status >= 200 && x.status < 300 ? null : 'HTTP ' + x.status); };
+    x.onerror = function () { cb('Netzwerkfehler'); };
+    x.ontimeout = function () { cb('Zeitüberschreitung'); };
+    x.send(body);
+  }
+  on($('b-send'), 'click', function () {
+    var json = reportJSON(false), size = 2500, parts = [];
+    for (var i = 0; i < json.length; i += size) parts.push(json.substr(i, size));
+    var st = $('status'), n = 0;
+    $('b-send').disabled = true;
+    st.className = '';
+    st.textContent = 'Sende Teil 1/' + parts.length + ' …';
+    var next = function () {
+      post('[' + (n + 1) + '/' + parts.length + '] ' + parts[n], function (err) {
+        if (err) { st.className = 'no'; st.textContent = 'Senden fehlgeschlagen (' + err + ').'; $('b-send').disabled = false; return; }
+        n++;
+        if (n < parts.length) { st.textContent = 'Sende Teil ' + (n + 1) + '/' + parts.length + ' …'; next(); }
+        else { st.className = 'yes'; st.textContent = 'Gesendet ✓ – sag Claude den Code „' + code + '“.'; $('b-send').disabled = false; }
+      });
+    };
+    next();
+  });
+  on($('b-show'), 'click', function () {
+    var pre = $('report'), vis = pre.style.display === 'block';
+    if (!vis) pre.textContent = reportJSON(true);
+    pre.style.display = vis ? 'none' : 'block';
+    $('b-show').textContent = vis ? 'Bericht anzeigen' : 'Bericht ausblenden';
+  });
+  on($('b-copy'), 'click', function () {
+    var text = reportJSON(true), st = $('status');
+    var fallback = function () {
+      var ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select();
+      var ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      st.className = ok ? 'yes' : 'no'; st.textContent = ok ? 'In die Zwischenablage kopiert ✓' : 'Kopieren nicht möglich.';
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { st.className = 'yes'; st.textContent = 'In die Zwischenablage kopiert ✓'; }, fallback);
+    } else fallback();
+  });
+
+  // ---------- Darstellung ----------
+  var timer = null;
+  function schedule() { if (timer || !document.body) return; timer = setTimeout(function () { timer = null; render(); }, 150); }
+
+  function fmt(v) {
+    if (v === true) return '<span class="yes">✓ ja</span>';
+    if (v === false) return '<span class="no">✗ nein</span>';
+    if (v === null || v === undefined || v === '') return '<span class="na">–</span>';
+    var s = String(v);
+    if (/^(Fehler|abgelehnt|API fehlt|nicht unterstützt|Senden)/.test(s)) return '<span class="no">' + esc(s) + '</span>';
+    if (/✓/.test(s)) return '<span class="yes">' + esc(s) + '</span>';
+    return esc(s);
+  }
+  function yn(v) { return v === true ? 'ja' : (v === false ? 'nein' : (v === null || v === undefined ? '–' : String(v))); }
+
+  function tiles() {
+    var b = [], c = get('sys', 'Chromium-Version'), sb = get('sys', 'Samsung Internet'), tz = get('sys', 'Tizen');
+    if (c) b.push('Chromium ' + String(c).split('.')[0]);
+    if (sb) b.push('Samsung ' + sb);
+    if (tz) b.push('Tizen ' + tz);
+    var vh = get('scr', 'Höhe 100vh (px)'), ih = window.innerHeight, vhTxt = '–';
+    if (typeof vh === 'number') vhTxt = vh > ih + 1 ? vh + ' / ' + ih + ' – ' + Math.round(vh - ih) + ' px abgeschnitten' : vh + ' / ' + ih + ' ✓';
+    var fsTest = get('act', 'Vollbild');
+    var bip = get('pwa', 'Install-Angebot (beforeinstallprompt)');
+    var fps = get('perf', 'Bildrate (fps, 2 s gemessen)'), cpu = get('perf', 'CPU-Test (ms, weniger = besser)');
+    var ptr = get('mq', 'pointer');
+    var t = [
+      ['Browser', b.length ? b.join(' · ') : navigator.userAgent.slice(0, 80)],
+      ['Fenster (CSS-px)', get('scr', 'Fenster innerWidth × innerHeight')],
+      ['Pixeldichte', get('scr', 'devicePixelRatio') + '× → ' + get('scr', 'Fenster in Gerätepixeln') + ' px'],
+      ['Bildschirm', get('scr', 'screen width × height')],
+      ['Eingabe', (ptr ? String(ptr).split(' ')[0] : '–') + ', Hover: ' + yn(get('mq', 'hover')) + ', Touch: ' + yn(get('mq', 'Touchpunkte (maxTouchPoints)'))],
+      ['Display-Modus', get('pwa', 'Display-Modus')],
+      ['Vollbild-API', yn(get('pwa', 'Fullscreen-API')) + (fsTest ? ' · Test: ' + fsTest : ' · noch nicht getestet')],
+      ['Als App installierbar', bip === true ? 'ja ✓' : String(bip)],
+      ['Wake Lock', yn(get('api', 'Wake Lock')) + (get('act', 'Wake Lock') ? ' · ' + get('act', 'Wake Lock') : '')],
+      ['Sprache', 'Ausgabe ' + yn(get('api', 'Sprachausgabe (speechSynthesis)')) + ', Erkennung ' + yn(get('api', 'Spracherkennung'))],
+      ['100vh / Fensterhöhe', vhTxt],
+      ['Leistung', (fps ? fps + ' fps' : '… fps') + ' · CPU ' + (cpu !== undefined ? cpu + ' ms' : '…')]
+    ];
+    var sv = get('live', 'Zuletzt verdeckt nach (s ohne Berührung)');
+    if (sv !== undefined) t.push(['Verdeckt nach', sv + ' s ohne Berührung']);
+    var h = '';
+    for (var i = 0; i < t.length; i++) h += '<div class="tile"><div class="k">' + esc(t[i][0]) + '</div><div class="v">' + fmt(t[i][1]) + '</div></div>';
+    return h;
+  }
+
+  function hints() {
+    var out = [];
+    var vh = get('scr', 'Höhe 100vh (px)');
+    if (get('pwa', 'Fullscreen-API') === true && !get('act', 'Vollbild')) out.push('Die Vollbild-API ist vorhanden. Tipp auf „Vollbild testen“: Klappt das, kann die Rezepte-App einen eigenen Vollbild-Knopf bekommen, der die Adressleiste ohne Samsung-Einstellung ausblendet.');
+    if (/✓/.test(String(get('act', 'Vollbild')))) out.push('Vollbild per JavaScript funktioniert. Damit lässt sich die Adressleiste aus der App heraus ausblenden.');
+    if (get('pwa', 'Install-Angebot (beforeinstallprompt)') === true) out.push('Der Browser bietet die Installation als App an. Eine installierte App startet ohne Adressleiste.');
+    if (typeof vh === 'number' && vh > window.innerHeight + 1) out.push('100vh ist größer als der sichtbare Bereich. Layouts mit 100vh werden unten abgeschnitten, besser 100dvh oder window.innerHeight verwenden.');
+    if (get('scr', 'Höhe 100dvh (px)') === 'nicht unterstützt') out.push('dvh-Einheiten fehlen. Die volle Höhe müsste per JavaScript gesetzt werden.');
+    if (get('css', 'Flexbox-gap') === false) out.push('Flexbox-gap fehlt. Abstände im Layout per margin statt gap.');
+    if (get('api', 'Wake Lock') === true) out.push('Wake Lock ist vorhanden. Beim Kochen ließe sich der Bildschirm wachhalten (Test oben).');
+    if (window.__diagErrors.length) out.push('Es gab JavaScript-Fehler (siehe roter Kasten). Bitte trotzdem den Bericht senden.');
+    return out;
+  }
+
+  function render() {
+    if (!document.body) return;
+    $('tiles').innerHTML = tiles();
+    var hs = hints(), hl = $('hints');
+    if (hs.length) {
+      var hh = '';
+      for (var i = 0; i < hs.length; i++) hh += '<li>' + esc(hs[i]) + '</li>';
+      hl.innerHTML = hh; hl.style.display = 'block';
+    } else hl.style.display = 'none';
+
+    var closed = {}, ds = $('groups').getElementsByTagName('details');
+    for (var c = 0; c < ds.length; c++) if (!ds[c].open) closed[ds[c].getAttribute('data-g')] = true;
+
+    var html = '';
+    for (var g = 0; g < ORDER.length; g++) {
+      var name = G[ORDER[g]], obj = R.gruppen[name];
+      if (!obj) continue;
+      var keys = Object.keys(obj);
+      if (!keys.length) continue;
+      html += '<details class="card" data-g="' + ORDER[g] + '"' + (closed[ORDER[g]] ? '' : ' open') + '><summary>' + esc(name) + ' <span class="cnt">(' + keys.length + ')</span></summary><table>';
+      for (var k = 0; k < keys.length; k++) html += '<tr><td class="k">' + esc(keys[k]) + '</td><td class="v">' + fmt(obj[keys[k]]) + '</td></tr>';
+      html += '</table></details>';
+    }
+    $('groups').innerHTML = html;
+  }
+
+  // ---------- Start ----------
+  collect();
+  live();
+  render();
+  collectAsync();
+  var started = false;
+  var startBench = function () { if (started) return; started = true; setTimeout(benchmarks, 300); };
+  if (document.readyState === 'complete') startBench(); else on(window, 'load', startBench);
+})();
+</script>
+</body>
+</html>
