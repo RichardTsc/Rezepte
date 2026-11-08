@@ -14,6 +14,13 @@
   // Auf GitHub Pages bleibt es beim Link ins Heimnetz (http → kein Einbetten möglich, Mixed Content).
   const EMBED_SHOP = !/github\.io$/.test(location.hostname);
   const SHOP_URL = EMBED_SHOP ? '/einkauf/' : 'http://192.168.178.100:8090/';
+  // Landet der Kühlschrank auf der GitHub-Version (altes Lesezeichen), geht es zur Küchen-App auf dem NAS weiter –
+  // aber nur, wenn die erreichbar ist. Sonst bleibt alles hier (NAS aus → Rezepte funktionieren trotzdem).
+  const KUECHE_URL = 'https://kueche-maue.duckdns.org:8443/';
+  if (IS_FRIDGE && !EMBED_SHOP) {
+    fetch(KUECHE_URL + 'tokens.css', { mode: 'no-cors', cache: 'no-store' })
+      .then(() => location.replace(KUECHE_URL + location.hash), () => { /* nicht erreichbar → hier bleiben */ });
+  }
   const SESSION_MAX_AGE = 12 * 3600 * 1000;
 
   // ---------- Speicher ----------
