@@ -93,6 +93,7 @@ button:disabled { opacity: .45; cursor: default; }
     <button id="b-tts">Vorlesen testen</button>
     <button id="b-stt">Spracherkennung testen</button>
     <button id="b-stt3">Sprache: Dauertest (3 Starts)</button>
+    <button id="b-mickeep">Mikrofon offen halten + 3× Sprache</button>
     <button id="b-frame">Ränder anzeigen</button>
     <button id="b-rerun">Neu messen</button>
     <p class="small">Wachhalten: danach nichts mehr berühren und schauen, ob der Bildschirmschoner trotzdem kommt. Die Seite merkt sich, nach wie vielen Sekunden sie verdeckt wurde.</p>
@@ -684,32 +685,53 @@ button:disabled { opacity: .45; cursor: default; }
     if (!navigator.permissions || !navigator.permissions.query) { put('act', key, 'Permissions-API fehlt'); return; }
     navigator.permissions.query({ name: 'microphone' }).then(function (st) { put('act', key, st.state); }, function (e) { put('act', key, errText(e)); });
   }
-  on($('b-stt3'), 'click', function () {
+  function speech3(prefix) {
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { put('act', 'Sprach-Dauertest', 'API fehlt'); return; }
+    if (!SR) { put('act', prefix + 'Sprach-Dauertest', 'API fehlt'); return; }
     var log = [], n = 0, t0 = 0, lat = [];
-    micPermission('Mikrofon-Erlaubnis vorher');
+    micPermission(prefix + 'Mikrofon-Erlaubnis vorher');
     var one = function () {
       n++;
       t0 = now();
       var rec = new SR(), started = false;
       rec.lang = 'de-DE'; rec.continuous = true; rec.interimResults = false;
-      rec.onstart = function () { started = true; var ms = Math.round(now() - t0); lat.push(ms); log.push('Start ' + n + ': ' + ms + ' ms'); put('act', 'Sprach-Dauertest', log.join(' | ') + ' … sprich jetzt'); };
+      rec.onstart = function () { started = true; var ms = Math.round(now() - t0); lat.push(ms); log.push('Start ' + n + ': ' + ms + ' ms'); put('act', prefix + 'Sprach-Dauertest', log.join(' | ') + ' … sprich jetzt'); };
       rec.onresult = function (e) { var r = e.results[e.results.length - 1]; if (r && r.isFinal) log.push('„' + r[0].transcript + '“'); };
       rec.onerror = function (e) { log.push('Fehler ' + (e.error || '?')); };
       rec.onend = function () {
         log.push('Ende ' + n + ' nach ' + Math.round((now() - t0) / 1000) + ' s' + (started ? '' : ' (nie gestartet)'));
-        put('act', 'Sprach-Dauertest', log.join(' | '));
+        put('act', prefix + 'Sprach-Dauertest', log.join(' | '));
         if (n < 3) setTimeout(one, 400);
         else {
-          put('act', 'Sprach-Dauertest Startzeiten (ms)', lat.join(', ') + (lat.length > 1 && lat[1] > 1000 ? ' → vermutlich Abfrage bei jedem Start' : ''));
-          micPermission('Mikrofon-Erlaubnis nachher');
+          put('act', prefix + 'Sprach-Dauertest Startzeiten (ms)', lat.join(', ') + (lat.length > 1 && lat[1] > 1000 ? ' → vermutlich Abfrage bei jedem Start' : ' → keine Abfrage zwischen den Starts'));
+          micPermission(prefix + 'Mikrofon-Erlaubnis nachher');
         }
       };
-      try { rec.start(); } catch (e) { log.push(errText(e)); put('act', 'Sprach-Dauertest', log.join(' | ')); }
+      try { rec.start(); } catch (e) { log.push(errText(e)); put('act', prefix + 'Sprach-Dauertest', log.join(' | ')); }
     };
-    put('act', 'Sprach-Dauertest', 'startet …');
+    put('act', prefix + 'Sprach-Dauertest', 'startet …');
     one();
+  }
+  on($('b-stt3'), 'click', function () { speech3(''); });
+
+  // Experiment: Mikrofon einmal per getUserMedia öffnen und offen HALTEN. Fragt der Browser danach bei
+  // SpeechRecognition.start() bzw. einem zweiten getUserMedia() nicht mehr, reicht eine Freigabe pro Seitenaufruf.
+  on($('b-mickeep'), 'click', function () {
+    var md = navigator.mediaDevices;
+    if (!md || !md.getUserMedia) { put('act', 'Mikrofon offen halten', 'getUserMedia fehlt'); return; }
+    var t0 = now();
+    put('act', 'Mikrofon offen halten', 'fordere an …');
+    md.getUserMedia({ audio: true }).then(function (stream) {
+      window.__diagMic = stream; // bewusst nicht stoppen
+      put('act', 'Mikrofon offen halten', 'offen nach ' + Math.round(now() - t0) + ' ms (1. Anfrage)');
+      var t1 = now();
+      md.getUserMedia({ audio: true }).then(function (s2) {
+        var ms = Math.round(now() - t1);
+        put('act', 'Mikrofon: 2. Anfrage', ms + ' ms' + (ms > 1000 ? ' → erneut gefragt' : ' → ohne Abfrage'));
+        s2.getTracks().forEach(function (t) { t.stop(); });
+        speech3('Mit offenem Mikrofon: ');
+      }, function (e) { put('act', 'Mikrofon: 2. Anfrage', errText(e)); speech3('Mit offenem Mikrofon: '); });
+    }, function (e) { put('act', 'Mikrofon offen halten', errText(e)); });
   });
 
   on($('b-frame'), 'click', function () {
