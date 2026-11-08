@@ -333,7 +333,7 @@
           <ol class="fh-steplist">${rec.steps.map((t, i) => `<li data-act="cook-at" data-step="${i + 1}"><span class="fh-num">${i + 1}</span><span>${esc(t)}</span></li>`).join('')}</ol>
         </section>
       </div>
-      <div class="fh-bar"><button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? `Weiter bei Schritt ${resumeStep}` : 'Kochen starten'}</button></div>
+      <div class="fh-bar">${cookidooButton(rec)}<button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? `Weiter bei Schritt ${resumeStep}` : 'Kochen starten'}</button></div>
       <aside class="fh-drawer" id="fh-plan" hidden></aside>`;
     el.recipe.hidden = false;
     updateCkBlock(rec);
@@ -365,16 +365,23 @@
   // Beim Öffnen eines angelegten Rezepts erneut prüfen: Läuft der Dienst inzwischen, wird aus dem Tag sofort der Knopf
   function updateCkBlock(rec) {
     if (!EMBED_SHOP || !rec.cookidoo || ckReady === true) return;
+    const before = ckReady;
     refreshCkStatus().then(() => {
-      const box = $('.fh-ck', el.recipe);
-      if (ckReady && box && currentId() === rec.id) box.outerHTML = cookidooBlock(rec);
+      // Status hat sich geändert → Rezeptansicht neu aufbauen (Tag oben bzw. Knopf unten neben „Kochen starten“)
+      if (ckReady === before || currentId() !== rec.id || view !== 'recipe') return;
+      const sc = $('#fh-rscroll');
+      recipeScroll = { id: rec.id, top: sc ? sc.scrollTop : 0 };
+      showRecipe(rec);
     });
   }
+  const ckCanPlan = (rec) => !!rec.cookidoo && EMBED_SHOP && ckReady !== false;
+  // Oben im Rezeptkopf: nur Tags. Kann geplant werden, sitzt der Knopf unten neben „Kochen starten“ (beide Haupt-Aktionen)
   function cookidooBlock(rec) {
     if (!rec.cookidoo) return `<div class="fh-ck"><span class="fh-tag fh-tag-todo">${icon('cal')}Muss noch in Cookidoo angelegt werden</span></div>`;
-    if (!EMBED_SHOP || ckReady === false) return `<div class="fh-ck"><span class="fh-tag">${icon('cal')}In Cookidoo angelegt</span></div>`;
-    return `<div class="fh-ck"><button class="fh-btn fh-ck-btn" data-act="ck-open">${icon('cal')}In Cookidoo planen</button></div>`;
+    if (!ckCanPlan(rec)) return `<div class="fh-ck"><span class="fh-tag">${icon('cal')}In Cookidoo angelegt</span></div>`;
+    return '';
   }
+  const cookidooButton = (rec) => (ckCanPlan(rec) ? `<button class="fh-btn fh-ck-btn" data-act="ck-open">${icon('cal')}In Cookidoo planen</button>` : '');
   const isoDate = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
   function nextDays(n) {
     const noon = new Date(); noon.setHours(12, 0, 0, 0);
