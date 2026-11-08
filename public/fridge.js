@@ -10,6 +10,10 @@
 
   const IS_FRIDGE = /Family Hub/.test(navigator.userAgent);
   if (IS_FRIDGE) root.classList.add('fh-device'); // echtes Gerät: Abstand für die Systemleiste ohne Vollbild (--sysbar)
+  // Handy (iPhone als Home-Bildschirm-App): Das Layout passt sich per Media Query in fridge.css an (< 600 px Breite).
+  // Vollbild-Knopf nur, wo es die Fullscreen-API gibt und die App nicht ohnehin randlos läuft (iPhone hat keine).
+  const IS_STANDALONE = navigator.standalone === true || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches;
+  if (!IS_FRIDGE && (IS_STANDALONE || !(document.fullscreenEnabled || document.webkitFullscreenEnabled))) root.classList.add('fh-nofs');
   const BUILD = window.FRIDGE_BUILD || { v: '', t: '' }; // von generate.sh in index.html gesetzt
   let lastInteraction = Date.now();
   // Einkauf (Picnic-Warenkorb, eigenes Projekt auf dem NAS). Unter der Küchen-Adresse auf dem NAS (alles außer github.io)
@@ -541,9 +545,11 @@
   function fitStep() {
     const box = $('#fh-step'), text = $('#fh-steptext');
     if (!box || !text || el.cook.hidden) return;
-    let size = 38;
+    const phone = window.innerWidth < 600; // Handy: kleiner anfangen und weiter schrumpfen dürfen
+    let size = phone ? 32 : 38;
+    const min = phone ? 18 : 22;
     text.style.fontSize = size + 'px';
-    while (size > 22 && box.scrollHeight > box.clientHeight + 1) {
+    while (size > min && box.scrollHeight > box.clientHeight + 1) {
       size -= 2;
       text.style.fontSize = size + 'px';
     }
@@ -625,14 +631,37 @@
   // und ohne Klicks abzufangen, für den Nutzer also unsichtbar.
   // Regel (Wunsch des Nutzers): wach beim Kochen, bei laufendem Timer bzw. Alarm und bis 2 Minuten nach der letzten
   // Berührung in der App (auch im Einkauf-Tab). Danach darf der Kühlschrank wie gewohnt in den Standby.
+  // Handy: Dort wirkt die Wake-Lock-API (iOS ab 16.4, als Home-Bildschirm-App ab 18.4). Das Video mit Ton liefe dort NICHT,
+  // es würde Musik oder Podcasts anhalten. Die 2-Minuten-Regel gilt nur am Kühlschrank, das Handy sperrt sich wie gewohnt
+  // selbst und bleibt nur beim Kochen, bei laufendem Timer und beim Alarm an (ein gesperrtes Handy kann nicht klingeln).
   const AWAKE_AFTER_TOUCH_MS = 2 * 60 * 1000;
+  const AWAKE_VIDEO = IS_FRIDGE;
   let wakeLock = null;
+  let wakeLockPending = false;
+  let awakeGrace = 0; // kurz nach „Kochen starten“/Timer schon wach halten, damit die Sperre noch in der Geste angefragt wird
   const awakeVideo = () => document.getElementById('fh-awake');
   const wantAwake = () => settings.keepAwake &&
-    (view === 'cook' || Date.now() - lastInteraction < AWAKE_AFTER_TOUCH_MS || timers.some((t) => !t.rung) || !el.alarm.hidden);
+    (view === 'cook' || Date.now() < awakeGrace || timers.some((t) => !t.rung) || !el.alarm.hidden ||
+      (IS_FRIDGE && Date.now() - lastInteraction < AWAKE_AFTER_TOUCH_MS));
   // Mit Ton darf ein Video erst nach einer Berührung der Seite laufen (Autoplay-Regel), danach jederzeit
   const canPlayAudible = () => !navigator.userActivation || navigator.userActivation.hasBeenActive;
+  function markAwake() {
+    const v = awakeVideo();
+    root.classList.toggle('fh-awake-on', AWAKE_VIDEO ? !!v && !v.paused && !v.muted : !!wakeLock);
+  }
+  function lockScreen() {
+    if (!('wakeLock' in navigator) || wakeLock || wakeLockPending || document.hidden) return;
+    wakeLockPending = true;
+    navigator.wakeLock.request('screen').then((l) => {
+      wakeLockPending = false;
+      wakeLock = l;
+      l.addEventListener('release', () => { if (wakeLock === l) wakeLock = null; markAwake(); }); // auch beim Wegwischen der App
+      markAwake();
+    }, () => { wakeLockPending = false; });
+  }
   function awakeStart() {
+    lockScreen();
+    if (!AWAKE_VIDEO) return;
     const v = awakeVideo();
     if (!v) return;
     const audible = canPlayAudible();
@@ -641,21 +670,16 @@
     v.volume = 0.05;
     const p = v.play();
     if (p && p.catch) p.catch(() => { if (!v.muted) { v.muted = true; v.play().catch(() => {}); } });
-    if ('wakeLock' in navigator && !wakeLock) {
-      navigator.wakeLock.request('screen').then((l) => { wakeLock = l; l.addEventListener('release', () => { wakeLock = null; }); }, () => {});
-    }
   }
   function awakeStop() {
     const v = awakeVideo();
     if (v && !v.paused) v.pause();
-    if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+    if (wakeLock) { const l = wakeLock; wakeLock = null; l.release().catch(() => {}); markAwake(); }
   }
   function syncAwake() { if (wantAwake()) awakeStart(); else awakeStop(); }
   function markActive() { lastInteraction = Date.now(); syncAwake(); }
   for (const ev of ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel']) document.addEventListener(ev, markActive, { capture: true, passive: true });
-  for (const ev of ['playing', 'pause', 'volumechange']) {
-    awakeVideo().addEventListener(ev, () => { const v = awakeVideo(); root.classList.toggle('fh-awake-on', !v.paused && !v.muted); });
-  }
+  for (const ev of ['playing', 'pause', 'volumechange']) awakeVideo().addEventListener(ev, markAwake);
 
   // ---------- Vorlesen ----------
   const synth = window.speechSynthesis || null;
@@ -902,7 +926,11 @@
   document.addEventListener('click', (e) => {
     unlockAudio();
     tryFullscreen(e);
-    markActive(); // Wachhalte-Video ggf. (mit Ton) starten
+    // Kochen oder Timer starten: Bildschirmsperre jetzt anfragen, solange die Berührung als Geste gilt (Safari)
+    if (e.target.closest && e.target.closest('[data-act="cook"], [data-act="cook-at"], [data-act="resume"], [data-act="timer"]')) {
+      awakeGrace = Date.now() + 3000;
+    }
+    markActive(); // Wachhalte-Video bzw. Wake Lock ggf. starten
   }, true);
 
   // Vollbild schon bei der ERSTEN Berührung, nicht erst beim Antippen: Der Kühlschrank meldet seinen Touchscreen als Maus,

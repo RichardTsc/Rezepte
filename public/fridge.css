@@ -7,7 +7,10 @@ html.fridge {
   --accent-soft: rgba(212, 243, 106, .14); --accent-line: rgba(212, 243, 106, .45);
   /* Ohne Vollbild legt der Kühlschrank-Browser seine untere Navigationsleiste ÜBER die Seite (die Seite wird nicht
      kleiner). --sysbar hebt deshalb alles unten Verankerte an, nur auf dem echten Gerät (fh-device) und nur ohne Vollbild. */
-  --sysbar: 0px;
+  /* Safe-Areas (iPhone als Home-Bildschirm-App: Dynamic Island oben, Home-Indikator unten). Am Kühlschrank 0. */
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --sysbar: var(--safe-b);
   --dock-total: calc(101px + var(--sysbar)); /* 76 + Innenabstand 10/14 + 1 px Linie (+ Systemleiste) */
   background: var(--bg);
   color-scheme: dark;
@@ -50,7 +53,7 @@ html.fridge [hidden] { display: none !important; }
 .fh-textbtn:active, .fh-awake-btn:active { transform: scale(.96); }
 
 /* ---------- Kopf, Kategorien ---------- */
-.fh-sticky { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 14px 16px 8px; }
+.fh-sticky { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: calc(14px + var(--safe-t)) 16px 8px; }
 .fh-top { display: flex; align-items: center; gap: 12px; min-height: 64px; }
 .fh-brand { flex: 1; font-size: 49.5px; line-height: 1.1; font-weight: 800; letter-spacing: -.035em; }
 .fh-dot { color: var(--accent); }
@@ -61,6 +64,7 @@ html.fridge [hidden] { display: none !important; }
 }
 .fh-round[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
 html.fridge.fh-fs [data-act="fs"] { display: none; } /* im Vollbild überflüssig; beenden per Wischgeste des Systems */
+html.fridge.fh-nofs [data-act="fs"] { display: none; } /* iPhone: keine Fullscreen-API, als Home-Bildschirm-App ohnehin randlos */
 .fh-round.is-live { box-shadow: 0 0 0 5px var(--accent-line); }
 .fh-chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; }
 .fh-chips::-webkit-scrollbar { display: none; }
@@ -124,7 +128,7 @@ html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 .fh-tab.is-active .fh-badge { background: var(--on-accent); color: var(--accent); }
 
 /* ---------- Einkauf als Tab (same-origin-iframe, nur unter der Küchen-Adresse auf dem NAS) ---------- */
-.fh-shop { position: fixed; top: 0; left: 0; right: 0; bottom: var(--dock-total); z-index: 7; background: var(--bg); }
+.fh-shop { position: fixed; top: var(--safe-t); left: 0; right: 0; bottom: var(--dock-total); z-index: 7; background: var(--bg); }
 .fh-shop-frame { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
 
 /* ---------- Ebenen (Rezept, Kochmodus) ---------- */
@@ -135,7 +139,7 @@ html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 /* ---------- Rezept ---------- */
 .fh-hero { position: relative; height: 340px; flex: none; background: var(--plate); }
 .fh-hero img { display: block; width: 100%; height: 100%; object-fit: cover; }
-.fh-hero-back { position: absolute; top: 16px; left: 16px; background: rgba(18, 17, 15, .78); color: var(--text); }
+.fh-hero-back { position: absolute; top: calc(16px + var(--safe-t)); left: 16px; background: rgba(18, 17, 15, .78); color: var(--text); }
 .fh-rec-head { padding: 22px 20px 6px; }
 .fh-kicker { color: var(--accent); font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
 .fh-rec-head h1 { margin: 6px 0 14px; font-size: 36px; line-height: 1.15; font-weight: 800; letter-spacing: -.015em; text-align: left; }
@@ -196,7 +200,7 @@ html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 .fh-btn:disabled { opacity: .35; }
 
 /* ---------- Kochmodus ---------- */
-.fh-cook { padding: 16px 16px 0; }
+.fh-cook { padding: calc(16px + var(--safe-t)) 16px 0; }
 .fh-cook-top { display: flex; align-items: center; gap: 10px; flex: none; }
 .fh-cook-title { flex: 1; min-width: 0; padding-left: 4px; }
 .fh-cook-name { font-size: 21px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -280,7 +284,113 @@ html.fridge.fh-drawer-open .fh-timers { display: none; }
 .fh-alarm-item { margin-bottom: 8px; color: var(--muted); font-size: 22px; }
 .fh-alarm .fh-btn { margin-top: 18px; }
 .fh-toast {
-  position: fixed; top: 112px; left: 50%; z-index: 40; transform: translateX(-50%); max-width: calc(100% - 48px); box-sizing: border-box;
+  position: fixed; top: calc(112px + var(--safe-t)); left: 50%; z-index: 40; transform: translateX(-50%); max-width: calc(100% - 48px); box-sizing: border-box;
   padding: 14px 24px; border-radius: var(--r-pill); background: var(--text); color: var(--bg);
   font-size: 20px; font-weight: 650; text-align: center; box-shadow: 0 6px 18px rgba(0, 0, 0, .35);
+}
+
+/* ---------- Handy (iPhone 17 Pro Max: 440 × 956 CSS-px, als Home-Bildschirm-App randlos) ----------
+   Der Kühlschrank hat 721 px und ist davon nicht betroffen. Touch-Ziele hier ≥ 44 px (iOS-Richtwert) statt 64 px. */
+@media (max-width: 600px) {
+  html.fridge {
+    --dock-h: 62px;
+    --pad-b: max(10px, var(--sysbar));               /* unterer Innenabstand von Dock und Leisten (Home-Indikator) */
+    --dock-total: calc(8px + 62px + 1px + var(--pad-b));
+    --bar-total: calc(10px + 58px + var(--pad-b));   /* Rezept-Leiste unten */
+    --nav-total: calc(10px + 68px + var(--pad-b));   /* Koch-Navigation unten */
+  }
+  html.fridge body { font-size: 17px; }
+
+  /* Kopf und Kategorien */
+  .fh-sticky { padding: calc(6px + var(--safe-t)) 16px 6px; }
+  .fh-top { min-height: 52px; }
+  .fh-brand { font-size: 40px; }
+  .fh-clock { display: none; } /* die Uhr zeigt die Statusleiste */
+  .fh-round { width: 48px; height: 48px; }
+  .fh-ic { width: 24px; height: 24px; }
+  .fh-chips { gap: 6px; padding: 6px 0 2px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; scroll-padding: 0 16px; }
+  .fh-chip { min-height: 44px; padding: 0 16px; font-size: 16px; }
+  .fh-resume { min-height: 52px; gap: 10px; padding: 0 16px; font-size: 16px; }
+
+  /* Übersicht: 3 Kacheln pro Reihe (≈ 133 px, so groß wie am Kühlschrank) */
+  .fh-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  #fh-home { padding: 4px 16px calc(var(--dock-total) + 16px); }
+  .fh-card { border-radius: 18px; }
+  .fh-card-title { padding: 24px 9px 8px; font-size: 14px; }
+  .fh-card-time { font-size: 12px; }
+  .fh-version { font-size: 12px; margin-top: 20px; }
+  .fh-msg { font-size: 18px; }
+
+  /* Dock */
+  .fh-dock { padding: 8px 16px var(--pad-b); }
+  .fh-dock-inner { padding: 5px; }
+  .fh-tab { font-size: 17px; gap: 8px; }
+  .fh-tab .fh-ic { width: 24px; height: 24px; }
+  .fh-badge { min-width: 26px; height: 26px; padding: 0 8px; font-size: 14px; }
+
+  /* Rezept: Foto läuft unter die Statusleiste */
+  .fh-hero { height: calc(260px + var(--safe-t)); }
+  .fh-hero-back { top: calc(12px + var(--safe-t)); left: 12px; }
+  .fh-rec-head { padding: 18px 16px 4px; }
+  .fh-kicker { font-size: 14px; }
+  .fh-rec-head h1 { margin: 4px 0 12px; font-size: 28px; }
+  .fh-pills { gap: 8px; }
+  .fh-pill { min-height: 38px; padding: 0 14px; gap: 6px; font-size: 15px; }
+  .fh-pill .fh-ic, .fh-tag .fh-ic { width: 18px; height: 18px; }
+  .fh-tag { min-height: 38px; padding: 0 14px; font-size: 14px; }
+  .fh-panel { margin: 12px; padding: 14px 14px 4px; border-radius: 22px; }
+  .fh-panel h2 { font-size: 21px; }
+  .fh-textbtn { min-height: 44px; font-size: 15px; }
+  .fh-ingr-head { padding: 14px 0 4px; font-size: 13px; }
+  .fh-ingr-main { min-height: 50px; gap: 12px; padding: 4px 0; font-size: 17px; }
+  .fh-check { width: 28px; height: 28px; border-radius: 9px; }
+  .fh-check .fh-ic { width: 18px; height: 18px; }
+  .fh-cart { width: 44px; height: 44px; }
+  .fh-cart .fh-ic { width: 22px; height: 22px; }
+  .fh-steplist li { gap: 12px; padding: 12px 0; font-size: 16.5px; }
+  .fh-num { width: 30px; height: 30px; font-size: 15px; }
+  .fh-bar { gap: 10px; padding: 10px 12px var(--pad-b); }
+  .fh-btn { min-height: 58px; padding: 0 18px; gap: 8px; border-radius: 18px; font-size: 19px; }
+  .fh-bar .fh-ck-btn { min-height: 58px; padding: 0 10px; font-size: 16px; line-height: 1.15; }
+  .fh-ck-btn { min-height: 52px; font-size: 17px; }
+  .fh-ck-hint { font-size: 15px; }
+  .fh-ck-days { gap: 8px; }
+  .fh-ck-day { flex: 1 1 calc(33.333% - 8px); min-width: 0; padding: 0 8px; }
+  .fh-ck-status { font-size: 15px; }
+
+  /* Kochmodus */
+  .fh-cook { padding: calc(8px + var(--safe-t)) 12px 0; }
+  .fh-cook-top { gap: 6px; }
+  .fh-cook .fh-round { width: 44px; height: 44px; }
+  .fh-cook .fh-round .fh-ic { width: 22px; height: 22px; }
+  .fh-cook-name { font-size: 17px; }
+  .fh-cook-count { font-size: 14px; }
+  .fh-awake-btn { width: 32px; height: 44px; background: none; }
+  .fh-awake-dot { width: 14px; height: 14px; }
+  .fh-progress { height: 6px; margin-top: 10px; }
+  .fh-step { padding: 6px 4px; }
+  .fh-step-no { margin-bottom: 8px; font-size: 64px; }
+  .fh-step-text { font-size: 32px; } /* fitStep() schrumpft bis 18 px */
+  .fh-nextstep { margin: 0 4px 10px; font-size: 15px; }
+  .fh-voicehint { margin: 0 4px 8px; font-size: 14px; }
+  .fh-cook-nav { gap: 10px; padding: 10px 0 var(--pad-b); }
+  .fh-nav { min-height: 68px; font-size: 22px; }
+  html.fridge.fh-has-timers .fh-cook .fh-nextstep { margin-bottom: 72px; }
+  .fh-drawer-panel { padding: 16px 14px calc(20px + var(--sysbar)); border-radius: 22px 22px 0 0; }
+  .fh-drawer-head h2 { font-size: 22px; }
+
+  /* Timer, Alarm, Hinweise */
+  .fh-timers { left: 12px; right: 12px; gap: 8px; bottom: calc(var(--dock-total) + 10px); }
+  html.fridge[data-fh-view="recipe"] .fh-timers { bottom: calc(var(--bar-total) + 10px); }
+  html.fridge[data-fh-view="cook"] .fh-timers { bottom: calc(var(--nav-total) + 10px); }
+  .fh-timer { min-height: 52px; gap: 8px; padding: 0 4px 0 14px; font-size: 16px; }
+  .fh-timer .fh-ic { width: 20px; height: 20px; }
+  .fh-timer-label { max-width: 150px; }
+  .fh-timer-left { font-size: 20px; }
+  .fh-timer-x { width: 44px; height: 44px; }
+  .fh-alarm-card { padding: 28px 20px 20px; }
+  .fh-alarm-card > .fh-ic { width: 64px; height: 64px; }
+  .fh-alarm-title { font-size: 34px; }
+  .fh-alarm-item { font-size: 18px; }
+  .fh-toast { top: calc(64px + var(--safe-t)); padding: 12px 18px; font-size: 16px; }
 }
