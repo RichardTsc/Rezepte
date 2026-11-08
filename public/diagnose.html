@@ -94,9 +94,12 @@ button:disabled { opacity: .45; cursor: default; }
     <button id="b-stt">Spracherkennung testen</button>
     <button id="b-stt3">Sprache: Dauertest (3 Starts)</button>
     <button id="b-mickeep">Mikrofon offen halten + 3× Sprache</button>
+    <button id="b-videowake">Video-Wachtest (danach 4 min nicht berühren)</button>
+    <div id="videowake-box"></div>
     <button id="b-frame">Ränder anzeigen</button>
     <button id="b-rerun">Neu messen</button>
     <p class="small">Wachhalten: danach nichts mehr berühren und schauen, ob der Bildschirmschoner trotzdem kommt. Die Seite merkt sich, nach wie vielen Sekunden sie verdeckt wurde.</p>
+    <p class="small">Video-Wachtest: spielt ein großes Video mit (stummer) Tonspur in Endlosschleife ab, gestartet durch dein Antippen. Danach den Kühlschrank 4 Minuten nicht berühren. Bleibt der Bildschirm an, hält Videowiedergabe ihn wach. Die Seite protokolliert, ob das Video wirklich lief und wann der Bildschirm eingeschlafen ist.</p>
     <p class="small">Sprach-Dauertest: startet die Erkennung dreimal hintereinander automatisch. Jedes Mal kurz etwas sagen. Achte darauf, ob jedes Mal eine Mikrofon-Abfrage erscheint. Die Seite misst, wie lange jeder Start dauert, denn eine Abfrage verzögert ihn.</p>
   </div>
 
@@ -732,6 +735,27 @@ button:disabled { opacity: .45; cursor: default; }
         speech3('Mit offenem Mikrofon: ');
       }, function (e) { put('act', 'Mikrofon: 2. Anfrage', errText(e)); speech3('Mit offenem Mikrofon: '); });
     }, function (e) { put('act', 'Mikrofon offen halten', errText(e)); });
+  });
+
+  // Video-Wachtest: großes, sichtbares Video MIT Tonspur, unstumm, per Benutzergeste gestartet. Damit sind die
+  // Bedingungen aus Chromiums video_wake_lock.cc erfüllt (sichtbar, groß genug bzw. hörbar, spielt).
+  var wakeVideo = null, wakeStart = 0, wakeTimer = null;
+  on($('b-videowake'), 'click', function () {
+    if (wakeVideo) { wakeVideo.pause(); clearInterval(wakeTimer); $('videowake-box').innerHTML = ''; wakeVideo = null; put('act', 'Video-Wachtest', 'beendet nach ' + Math.round((now() - wakeStart) / 1000) + ' s'); $('b-videowake').textContent = 'Video-Wachtest (danach 4 min nicht berühren)'; return; }
+    var v = document.createElement('video');
+    v.src = 'keepawake.mp4'; v.loop = true; v.setAttribute('playsinline', ''); v.muted = false; v.volume = 0.05;
+    v.style.cssText = 'display:block;width:100%;height:320px;object-fit:cover;border-radius:12px;margin:10px 0;background:#000';
+    $('videowake-box').appendChild(v);
+    wakeVideo = v; wakeStart = now();
+    $('b-videowake').textContent = 'Video-Wachtest beenden';
+    var p = v.play();
+    var report = function (extra) {
+      put('act', 'Video-Wachtest', (v.paused ? 'pausiert' : 'spielt') + (v.muted ? ', stumm' : ', mit Ton') + ', Position ' + r1(v.currentTime) + ' s, Laufzeit ' + Math.round((now() - wakeStart) / 1000) + ' s' + (extra ? ' – ' + extra : ''));
+    };
+    if (p && p.then) p.then(function () { report('gestartet um ' + new Date().toLocaleTimeString('de-DE')); }, function (e) { report('Start abgelehnt: ' + errText(e)); });
+    else report('gestartet');
+    wakeTimer = setInterval(function () { if (!document.hidden) report(); }, 10000);
+    try { v.scrollIntoView({ block: 'center' }); } catch (e) {}
   });
 
   on($('b-frame'), 'click', function () {
