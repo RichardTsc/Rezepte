@@ -9,6 +9,7 @@
   if (!root.classList.contains('fridge')) return;
 
   const IS_FRIDGE = /Family Hub/.test(navigator.userAgent);
+  if (IS_FRIDGE) root.classList.add('fh-device'); // echtes Gerät: Abstand für die Systemleiste ohne Vollbild (--sysbar)
   const BUILD = window.FRIDGE_BUILD || { v: '', t: '' }; // von generate.sh in index.html gesetzt
   let lastInteraction = Date.now();
   // Einkauf (Picnic-Warenkorb, eigenes Projekt auf dem NAS). Unter der Küchen-Adresse auf dem NAS (alles außer github.io)
