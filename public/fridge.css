@@ -87,6 +87,8 @@ html.fridge.fh-fs [data-act="fs"] { display: none; } /* im Vollbild überflüssi
 .fh-card-time {
   position: absolute; top: 6px; left: 6px; padding: 2px 8px; border-radius: var(--r-pill);
   background: rgba(18, 17, 15, .74); color: var(--text); font-size: 12.5px; font-weight: 700;
+  /* immer einzeilig, auch bei langen Angaben im Frontmatter */
+  max-width: calc(100% - 12px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .fh-msg { padding: 48px 12px; color: var(--muted); font-size: 22px; text-align: center; }
 .fh-msg .fh-btn { margin-top: 20px; }

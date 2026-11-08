@@ -71,13 +71,28 @@
   const icon = (name) => `<svg class="fh-ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
   const pill = (name, text) => (text ? `<span class="fh-pill">${icon(name)}${esc(text)}</span>` : '');
 
+  // Zeitangaben aus dem Frontmatter: „45 Minuten“, „25min“, „20–30 Min.“, „1,5 h“, „1 Std.“, optional mit Zusatz in
+  // Klammern, etwa „45 Minuten (plus mind. 1 Std. Marinieren)“
+  const DUR = '(\\d+(?:[.,]\\d+)?)(?:\\s*[–-]\\s*(\\d+(?:[.,]\\d+)?))?\\s*(min(?:\\.|uten?)?|h|std\\.?|stunden?)';
+  const DUR_ONLY = new RegExp(`^${DUR}$`, 'i');
+  const DUR_ANY = new RegExp(`${DUR}(?![a-zäöüß])`, 'i');
+  const parseDur = (m) => m && { n: m[2] ? `${m[1]}–${m[2]}` : m[1], hours: /^[hs]/i.test(m[3]) };
+  function splitTime(t) {
+    const m = /^(.*?)\s*(?:\((.*)\))?$/.exec(String(t || '').trim());
+    return { main: parseDur(DUR_ONLY.exec(m[1])), raw: m[1], extra: (m[2] || '').trim() };
+  }
+  // Rezeptansicht: „45 Min. + mind. 1 Std. Marinieren“
   function fmtTime(t) {
-    const s = String(t || '').trim();
-    let m;
-    if ((m = /^(\d+)\s*(?:min|minuten)$/i.exec(s))) return `${m[1]} Min.`;
-    if ((m = /^(\d+)\s*[–-]\s*(\d+)\s*(?:min|minuten)$/i.exec(s))) return `${m[1]}–${m[2]} Min.`;
-    if ((m = /^(\d+(?:[.,]\d+)?)\s*h$/i.exec(s))) return `${m[1]} Std.`;
-    return s;
+    const { main, raw, extra } = splitTime(t);
+    const base = main ? `${main.n} ${main.hours ? 'Std.' : 'Min.'}` : raw;
+    return extra ? `${base} + ${extra.replace(/^plus\s+/i, '')}` : base;
+  }
+  // Kachel-Badge: nur Zahlen, eine Zusatzzeit (z. B. Marinieren) knapp mit „+“, also „45′ + 1 h“
+  function shortTime(t) {
+    const { main, raw, extra } = splitTime(t);
+    const fmt = (d) => d.n + (d.hours ? ' h' : '′');
+    const add = parseDur(DUR_ANY.exec(extra));
+    return (main ? fmt(main) : raw) + (add ? ` + ${fmt(add)}` : '');
   }
   const fmtYield = (y) => (/^\d+$/.test(String(y || '').trim()) ? `${y} Portionen` : y || '');
   const shopUrl = (term) => SHOP_URL + (term ? '?suche=' + encodeURIComponent(term) : '');
@@ -198,7 +213,6 @@
     window.scrollTo(0, 0);
   }
 
-  const shortTime = (t) => fmtTime(t).replace(/\s*Min\.?$/, '′').replace(/\s*Std\.?$/, ' h');
   const card = (r, cat) => `
     <a class="fh-card" href="#/r/${r.id}" data-cat="${cat}">
       ${r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy" decoding="async">` : ''}
