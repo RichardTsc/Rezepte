@@ -194,9 +194,14 @@ html.fridge[data-fh-view="shop"] body { overflow: hidden; }
 .fh-cook-title { flex: 1; min-width: 0; padding-left: 4px; }
 .fh-cook-name { font-size: 21px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fh-cook-count { color: var(--muted); font-size: 17px; }
-.fh-awake-btn { width: 52px; height: 52px; flex: none; border-radius: var(--r-pill); overflow: hidden; background: var(--surface); opacity: .3; }
+/* Anzeige „Bildschirm bleibt wach“ im Kochmodus (antippen = an/aus). Atmet, solange das Wachhalte-Video mit Ton läuft. */
+.fh-awake-btn { width: 52px; height: 52px; flex: none; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--r-pill); background: var(--surface); opacity: .35; }
 .fh-awake-btn[aria-pressed="true"] { opacity: 1; }
-.fh-awake { display: block; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.fh-awake-dot { width: 18px; height: 18px; border-radius: 50%; background: var(--muted); }
+html.fridge.fh-awake-on .fh-awake-dot { background: var(--accent); animation: fh-breathe 2s ease-in-out infinite; }
+@keyframes fh-breathe { 0%, 100% { transform: scale(.7); opacity: .6; } 50% { transform: scale(1); opacity: 1; } }
+/* Wachhalte-Video: bildschirmfüllend über allem, 1 % Deckkraft, fängt keine Berührungen ab (für Tizen „sichtbar“, für Menschen nicht) */
+.fh-awake-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 50; opacity: .01; pointer-events: none; }
 .fh-progress { flex: none; height: 8px; margin-top: 14px; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; }
 .fh-progress i { display: block; height: 100%; width: 0; border-radius: var(--r-pill); background: var(--accent); transition: width .25s ease; }
 .fh-step { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 8px 6px; touch-action: pan-y; }

@@ -33,12 +33,12 @@
     set(key, value) { try { localStorage.setItem('fridge.' + key, JSON.stringify(value)); } catch { /* Speicher voll/gesperrt */ } },
     del(key) { try { localStorage.removeItem('fridge.' + key); } catch { /* egal */ } },
   };
-  const settings = Object.assign({ autoRead: false, voice: false, keepAwake: false }, store.get('settings', {}));
+  const settings = Object.assign({ autoRead: false, voice: false, keepAwake: true }, store.get('settings', {}));
   const saveSettings = () => store.set('settings', settings);
-  if (settings.v !== 2) { // v2: Wachhalte-Video hat am Gerät nicht geholfen → standardmäßig aus; autoFs nicht mehr dauerhaft
-    settings.keepAwake = false;
+  if (!settings.v || settings.v < 3) { // v3: Video-Wachtest am Kühlschrank erfolgreich (2026-11-08) → Wachhalten standardmäßig an
+    settings.keepAwake = true;
     delete settings.autoFs;
-    settings.v = 2;
+    settings.v = 3;
     saveSettings();
   }
   // Automatisches Vollbild beim Antippen. Der Vollbild-Knopf schaltet es nur bis zum nächsten Laden ab.
@@ -117,6 +117,7 @@
 
   // ---------- Gerüst ----------
   document.body.insertAdjacentHTML('afterbegin', `
+    <video class="fh-awake-bg" id="fh-awake" src="keepawake-bg.mp4" loop playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
     <div id="fh-app">
       <div class="fh-sticky">
         <header class="fh-top">
@@ -237,6 +238,12 @@
     if (shopFrame || !EMBED_SHOP) return;
     el.shop.innerHTML = `<iframe class="fh-shop-frame" title="Einkauf" allow="microphone; autoplay" src="${esc(shopUrl(term))}"></iframe>`;
     shopFrame = el.shop.firstElementChild;
+    // Berührungen im Einkauf (gleiche Herkunft) zählen auch für die 2-Minuten-Regel des Wachhaltens
+    shopFrame.addEventListener('load', () => {
+      try {
+        for (const ev of ['pointerdown', 'touchstart', 'keydown', 'scroll']) shopFrame.contentWindow.addEventListener(ev, markActive, { capture: true, passive: true });
+      } catch { /* andere Herkunft – dann eben nicht */ }
+    });
   }
   const toShop = (msg) => { if (shopFrame && shopFrame.contentWindow) shopFrame.contentWindow.postMessage(msg, location.origin); };
   function showShop(term) {
@@ -290,6 +297,7 @@
     $('#fh-tab-rezepte').classList.toggle('is-active', view !== 'shop');
     $('#fh-tab-einkauf').classList.toggle('is-active', view === 'shop');
     renderTimers(true);
+    syncAwake();
   }
   const parseHashId = (hash) => { const m = /^#\/r\/([a-z0-9-]+)/.exec(hash || ''); return m ? m[1] : null; };
 
@@ -455,8 +463,7 @@
         <header class="fh-cook-top">
           <button class="fh-round" data-act="close-cook" aria-label="Zum Rezept">${icon('back')}</button>
           <div class="fh-cook-title"><div class="fh-cook-name">${esc(rec.name)}</div><div class="fh-cook-count" id="fh-count"></div></div>
-          <button class="fh-awake-btn" data-act="awake" id="fh-awake-btn" aria-label="Bildschirm wachhalten">
-            <video class="fh-awake" id="fh-awake" src="keepawake.mp4" loop playsinline preload="auto" disablepictureinpicture></video></button>
+          <button class="fh-awake-btn" data-act="awake" id="fh-awake-btn" aria-label="Bildschirm wachhalten"><span class="fh-awake-dot"></span></button>
           <button class="fh-round" data-act="drawer" aria-label="Zutaten">${icon('list')}</button>
           <button class="fh-round" data-act="read" id="fh-read" aria-label="Vorlesen">${icon('speaker')}</button>
           <button class="fh-round" data-act="voice" id="fh-voice" aria-label="Sprachsteuerung">${icon('mic')}</button>
@@ -533,14 +540,13 @@
   function enterCook() {
     root.classList.add('fh-cooking');
     updateToggles();
-    awakeStart();
+    if (settings.keepAwake) awakeStart(); // view ist hier noch nicht 'cook', route() ruft danach syncAwake()
     // Ohne dauerhafte Mikrofon-Erlaubnis nicht automatisch starten – das würde eine Abfrage aus heiterem Himmel öffnen
     if (settings.voice && micPermission === 'granted') voiceStart();
   }
 
   function leaveCook() {
     root.classList.remove('fh-cooking');
-    awakeStop();
     voiceStop();
     if (synth) synth.cancel();
     closeDrawer();
@@ -583,26 +589,42 @@
   });
   el.cook.addEventListener('pointercancel', () => { swipe = null; });
 
-  // ---------- Bildschirm wachhalten (Experiment) ----------
-  // Chromium hält den Bildschirm an, solange ein sichtbares Video MIT Ton läuft (video_wake_lock.cc).
-  // keepawake.mp4 hat eine stumme Tonspur und läuft deshalb unstumm. Ob Tizen das beachtet, ist offen (FAMILY_HUB.md).
+  // ---------- Bildschirm wachhalten ----------
+  // Am Kühlschrank getestet (2026-11-08): Ein großes, sichtbares Video mit (stummer) Tonspur, das mit Ton läuft, verhindert
+  // das Einschlafen (Wake-Lock-API wirkt dort nicht). keepawake-bg.mp4 liegt bildschirmfüllend über allem, mit 1 % Deckkraft
+  // und ohne Klicks abzufangen, für den Nutzer also unsichtbar.
+  // Regel (Wunsch des Nutzers): wach beim Kochen, bei laufendem Timer bzw. Alarm und bis 2 Minuten nach der letzten
+  // Berührung in der App (auch im Einkauf-Tab). Danach darf der Kühlschrank wie gewohnt in den Standby.
+  const AWAKE_AFTER_TOUCH_MS = 2 * 60 * 1000;
   let wakeLock = null;
+  const awakeVideo = () => document.getElementById('fh-awake');
+  const wantAwake = () => settings.keepAwake &&
+    (view === 'cook' || Date.now() - lastInteraction < AWAKE_AFTER_TOUCH_MS || timers.some((t) => !t.rung) || !el.alarm.hidden);
+  // Mit Ton darf ein Video erst nach einer Berührung der Seite laufen (Autoplay-Regel), danach jederzeit
+  const canPlayAudible = () => !navigator.userActivation || navigator.userActivation.hasBeenActive;
   function awakeStart() {
-    updateToggles();
-    const v = $('#fh-awake');
-    if (!settings.keepAwake || !v) return;
-    v.muted = false;
+    const v = awakeVideo();
+    if (!v) return;
+    const audible = canPlayAudible();
+    if (!v.paused && (!v.muted || !audible)) return; // läuft schon (mit Ton bzw. stumm, solange Ton nicht erlaubt ist)
+    v.muted = !audible;
     v.volume = 0.05;
     const p = v.play();
-    if (p && p.catch) p.catch(() => { v.muted = true; v.play().catch(() => {}); }); // ohne Benutzergeste nur stumm erlaubt
+    if (p && p.catch) p.catch(() => { if (!v.muted) { v.muted = true; v.play().catch(() => {}); } });
     if ('wakeLock' in navigator && !wakeLock) {
       navigator.wakeLock.request('screen').then((l) => { wakeLock = l; l.addEventListener('release', () => { wakeLock = null; }); }, () => {});
     }
   }
   function awakeStop() {
-    const v = $('#fh-awake');
-    if (v) v.pause();
+    const v = awakeVideo();
+    if (v && !v.paused) v.pause();
     if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+  }
+  function syncAwake() { if (wantAwake()) awakeStart(); else awakeStop(); }
+  function markActive() { lastInteraction = Date.now(); syncAwake(); }
+  for (const ev of ['pointerdown', 'touchstart', 'keydown', 'scroll', 'wheel']) document.addEventListener(ev, markActive, { capture: true, passive: true });
+  for (const ev of ['playing', 'pause', 'volumechange']) {
+    awakeVideo().addEventListener(ev, () => { const v = awakeVideo(); root.classList.toggle('fh-awake-on', !v.paused && !v.muted); });
   }
 
   // ---------- Vorlesen ----------
@@ -805,6 +827,7 @@
 
   function tick() {
     el.clock.textContent = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    syncAwake(); // 2-Minuten-Regel, Timer und Alarm laufend nachführen
     const now = Date.now();
     let due = null;
     for (const t of timers) if (!t.rung && now >= t.end) { t.rung = true; due = t; }
@@ -847,11 +870,9 @@
   document.addEventListener('dragstart', (e) => e.preventDefault());
 
   document.addEventListener('click', (e) => {
-    lastInteraction = Date.now();
     unlockAudio();
     if (IS_FRIDGE && autoFs && !e.target.closest('[data-act="fs"], a[href^="http"]')) enterFullscreen();
-    const v = $('#fh-awake');
-    if (view === 'cook' && settings.keepAwake && v && (v.paused || v.muted)) awakeStart();
+    markActive(); // Wachhalte-Video ggf. (mit Ton) starten
   }, true);
 
   document.addEventListener('click', (e) => {
@@ -909,8 +930,9 @@
       case 'awake':
         settings.keepAwake = !settings.keepAwake;
         saveSettings();
-        if (settings.keepAwake) awakeStart(); else { awakeStop(); updateToggles(); }
-        toast(settings.keepAwake ? 'Bildschirm wachhalten: an (Experiment)' : 'Bildschirm wachhalten: aus');
+        syncAwake();
+        updateToggles();
+        toast(settings.keepAwake ? 'Bildschirm bleibt beim Kochen an' : 'Bildschirm darf einschlafen');
         break;
       case 'timer': startTimer(+t.dataset.sec, t.dataset.label, +t.dataset.step); break;
       case 'timer-cancel':
@@ -937,10 +959,11 @@
   });
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden || view !== 'cook') return;
-    awakeStart();
+    if (document.hidden) return;
+    lastInteraction = Date.now(); // Aufwecken per Berührung → wieder 2 Minuten wach
+    syncAwake();
     // Ohne dauerhafte Mikrofon-Erlaubnis nicht automatisch starten – das würde eine Abfrage aus heiterem Himmel öffnen
-    if (settings.voice && micPermission === 'granted') voiceStart();
+    if (view === 'cook' && settings.voice && micPermission === 'granted') voiceStart();
   });
   window.addEventListener('resize', () => { if (view === 'cook') fitStep(); });
   window.addEventListener('hashchange', route);
