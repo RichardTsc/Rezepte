@@ -333,6 +333,7 @@
       <div class="fh-bar"><button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? `Weiter bei Schritt ${resumeStep}` : 'Kochen starten'}</button></div>
       <aside class="fh-drawer" id="fh-plan" hidden></aside>`;
     el.recipe.hidden = false;
+    updateCkBlock(rec);
     const sc = $('#fh-rscroll');
     if (recipeScroll.id === rec.id) sc.scrollTop = recipeScroll.top;
     // Erst das kleine Vorschaubild zeigen, dann das große Foto nachladen
@@ -351,10 +352,19 @@
   //   GET  /cookidoo/api/status → { verbunden: true|false }  (fehlt der Dienst oder der Login, gibt es nur das Tag)
   const CK_API = '/cookidoo/api/';
   let ckReady = null; // null = unbekannt, true = Planen möglich, false = Dienst/Login fehlt
-  if (EMBED_SHOP) {
-    fetch(CK_API + 'status', { credentials: 'same-origin' })
+  function refreshCkStatus() {
+    return fetch(CK_API + 'status', { credentials: 'same-origin', cache: 'no-store' })
       .then((r) => (r.ok ? r.json() : { verbunden: false }))
       .then((s) => { ckReady = !!(s && s.verbunden); }, () => { ckReady = false; });
+  }
+  if (EMBED_SHOP) refreshCkStatus();
+  // Beim Öffnen eines angelegten Rezepts erneut prüfen: Läuft der Dienst inzwischen, wird aus dem Tag sofort der Knopf
+  function updateCkBlock(rec) {
+    if (!EMBED_SHOP || !rec.cookidoo || ckReady === true) return;
+    refreshCkStatus().then(() => {
+      const box = $('.fh-ck', el.recipe);
+      if (ckReady && box && currentId() === rec.id) box.outerHTML = cookidooBlock(rec);
+    });
   }
   function cookidooBlock(rec) {
     if (!rec.cookidoo) return `<div class="fh-ck"><span class="fh-tag fh-tag-todo">${icon('cal')}Muss noch in Cookidoo angelegt werden</span></div>`;
