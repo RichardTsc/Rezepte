@@ -363,7 +363,7 @@
           <div class="fh-kicker">${esc(rec.category)}</div>
           <h1>${esc(rec.title)}</h1>
           <div class="fh-pills">${pill('clock', fmtTime(rec.prepTime))}${pill('users', fmtYield(rec.yield))}${pill('pen', rec.author)}</div>
-          ${cookidooBlock(rec)}
+          ${tagsBlock(rec)}
         </div>
         <section class="fh-panel">
           <div class="fh-panel-head"><h2>Zutaten</h2>
@@ -375,7 +375,7 @@
           <ol class="fh-steplist">${rec.steps.map((t, i) => `<li data-act="cook-at" data-step="${i + 1}"><span class="fh-num">${i + 1}</span><span>${esc(t)}</span></li>`).join('')}</ol>
         </section>
       </div>
-      <div class="fh-bar">${cookidooButton(rec)}<button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? `Weiter bei Schritt ${resumeStep}` : 'Kochen starten'}</button></div>
+      <div class="fh-bar">${cookidooButton(rec)}${mainAction(rec, resumeStep)}</div>
       <aside class="fh-drawer" id="fh-plan" hidden></aside>`;
     el.recipe.hidden = false;
     updateCkBlock(rec);
@@ -418,10 +418,25 @@
   }
   const ckCanPlan = (rec) => !!rec.cookidoo && EMBED_SHOP && ckReady !== false;
   // Oben im Rezeptkopf: nur Tags. Kann geplant werden, sitzt der Knopf unten neben „Kochen starten“ (beide Haupt-Aktionen)
-  function cookidooBlock(rec) {
-    if (!rec.cookidoo) return `<div class="fh-ck"><span class="fh-tag fh-tag-todo">${icon('cal')}Muss noch in Cookidoo angelegt werden</span></div>`;
-    if (!ckCanPlan(rec)) return `<div class="fh-ck"><span class="fh-tag">${icon('cal')}In Cookidoo angelegt</span></div>`;
+  function cookidooTag(rec) {
+    if (!rec.cookidoo) return `<span class="fh-tag fh-tag-todo">${icon('cal')}Muss noch in Cookidoo angelegt werden</span>`;
+    if (!ckCanPlan(rec)) return `<span class="fh-tag">${icon('cal')}In Cookidoo angelegt</span>`;
     return '';
+  }
+  // Handy mit Picnic-App (iPhone/Android, nicht der Kühlschrank): Haupt-Aktion „In Picnic öffnen“ statt „Kochen starten“
+  // (Wunsch des Nutzers). Die ID des eigenen Picnic-Rezepts schreibt der picnic-assistent ins Frontmatter (picnic: "<id>").
+  // Deep Link über das App-Schema von Picnic (so leitet auch picnic.app Handys in die App), am iPhone getestet 2026-11-08.
+  // Kochen bleibt über die Schritte („Zubereitung“ antippen) und das Weiterkochen-Banner erreichbar.
+  const PICNIC_APP = !IS_FRIDGE && /iPhone|iPad|iPod|Android/.test(navigator.userAgent);
+  const picnicHref = (id) => `nl.picnic-supermarkt://store/page;id=selling-group-details-page,selling_group_id=${encodeURIComponent(id)}`;
+  const picnicTag = (rec) => (PICNIC_APP && !rec.picnic ? `<span class="fh-tag fh-tag-todo">${icon('cart')}Muss noch in Picnic angelegt werden</span>` : '');
+  function tagsBlock(rec) {
+    const tags = cookidooTag(rec) + picnicTag(rec);
+    return tags ? `<div class="fh-ck fh-tags">${tags}</div>` : '';
+  }
+  function mainAction(rec, resumeStep) {
+    if (PICNIC_APP && rec.picnic) return `<a class="fh-btn fh-primary fh-wide" href="${esc(picnicHref(rec.picnic))}">${icon('cart')}In Picnic öffnen</a>`;
+    return `<button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? `Weiter bei Schritt ${resumeStep}` : 'Kochen starten'}</button>`;
   }
   const cookidooButton = (rec) => (ckCanPlan(rec) ? `<button class="fh-btn fh-ck-btn" data-act="ck-open">${icon('cal')}In Cookidoo planen</button>` : '');
   const isoDate = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;

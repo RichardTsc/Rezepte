@@ -149,6 +149,7 @@ html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 
 /* Cookidoo: Tag („Muss noch angelegt werden“) bzw. Knopf „In Cookidoo planen“ + Tages-Auswahl */
 .fh-ck { margin-top: 14px; }
+.fh-tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .fh-tag {
   display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 18px; box-sizing: border-box;
   border-radius: var(--r-pill); border: 1px solid var(--line); color: var(--muted); font-size: 17px; font-weight: 650;
