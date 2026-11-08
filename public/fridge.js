@@ -20,8 +20,16 @@
     set(key, value) { try { localStorage.setItem('fridge.' + key, JSON.stringify(value)); } catch { /* Speicher voll/gesperrt */ } },
     del(key) { try { localStorage.removeItem('fridge.' + key); } catch { /* egal */ } },
   };
-  const settings = Object.assign({ autoRead: false, voice: false, autoFs: true, keepAwake: true }, store.get('settings', {}));
+  const settings = Object.assign({ autoRead: false, voice: false, keepAwake: false }, store.get('settings', {}));
   const saveSettings = () => store.set('settings', settings);
+  if (settings.v !== 2) { // v2: Wachhalte-Video hat am Gerät nicht geholfen → standardmäßig aus; autoFs nicht mehr dauerhaft
+    settings.keepAwake = false;
+    delete settings.autoFs;
+    settings.v = 2;
+    saveSettings();
+  }
+  // Automatisches Vollbild beim Antippen. Der Vollbild-Knopf schaltet es nur bis zum nächsten Laden ab.
+  let autoFs = true;
 
   // ---------- Helfer ----------
   const $ = (sel, scope = document) => scope.querySelector(sel);
@@ -153,26 +161,28 @@
   }
 
   // ---------- Startseite ----------
+  // Übersicht: alle Rezepte als gleich große Kacheln (5 pro Reihe), damit fast alle auf einen Bildschirm passen.
+  // Die Kategorie-Knöpfe filtern („Alle“ ist Standard).
   function renderHome() {
     const cats = [];
-    for (const r of recipes) {
-      let c = cats.find((x) => x.name === r.category);
-      if (!c) cats.push((c = { name: r.category, items: [] }));
-      c.items.push(r);
-    }
-    el.chips.innerHTML = cats.map((c, i) => `<button class="fh-chip" data-act="cat" data-cat="${i}">${esc(c.name)}</button>`).join('');
-    el.home.innerHTML = cats.map((c, i) => `
-      <section class="fh-cat" id="fh-cat-${i}">
-        <h2 class="fh-cat-title">${esc(c.name)}<span>${c.items.length}</span></h2>
-        <div class="fh-grid">${c.items.map(card).join('')}</div>
-      </section>`).join('');
+    for (const r of recipes) if (!cats.includes(r.category)) cats.push(r.category);
+    el.chips.innerHTML = `<button class="fh-chip is-active" data-act="cat" data-cat="-1">Alle<span>${recipes.length}</span></button>` +
+      cats.map((c, i) => `<button class="fh-chip" data-act="cat" data-cat="${i}">${esc(c)}</button>`).join('');
+    el.home.innerHTML = `<div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>`;
   }
 
-  const card = (r) => `
-    <a class="fh-card" href="#/r/${r.id}">
-      <span class="fh-card-img">${r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy" decoding="async">` : ''}</span>
-      <span class="fh-card-title">${esc(r.name)}</span>
-      ${r.prepTime ? `<span class="fh-card-meta">${icon('clock')}${esc(fmtTime(r.prepTime))}</span>` : ''}
+  function filterCategory(i) {
+    for (const chip of el.chips.children) chip.classList.toggle('is-active', +chip.dataset.cat === i);
+    for (const a of el.home.querySelectorAll('.fh-card')) a.hidden = i >= 0 && +a.dataset.cat !== i;
+    window.scrollTo(0, 0);
+  }
+
+  const shortTime = (t) => fmtTime(t).replace(/\s*Min\.?$/, '′').replace(/\s*Std\.?$/, ' h');
+  const card = (r, cat) => `
+    <a class="fh-card" href="#/r/${r.id}" data-cat="${cat}">
+      ${r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy" decoding="async">` : ''}
+      ${r.prepTime ? `<span class="fh-card-time">${esc(shortTime(r.prepTime))}</span>` : ''}
+      <span class="fh-card-title"><span>${esc(r.name)}</span></span>
     </a>`;
 
   function renderResume() {
@@ -374,7 +384,8 @@
     root.classList.add('fh-cooking');
     updateToggles();
     awakeStart();
-    if (settings.voice) voiceStart();
+    // Ohne dauerhafte Mikrofon-Erlaubnis nicht automatisch starten – das würde eine Abfrage aus heiterem Himmel öffnen
+    if (settings.voice && micPermission === 'granted') voiceStart();
   }
 
   function leaveCook() {
@@ -388,11 +399,11 @@
   function updateToggles() {
     const set = (id, on) => { const b = document.getElementById(id); if (b) b.setAttribute('aria-pressed', on ? 'true' : 'false'); };
     set('fh-read', settings.autoRead);
-    set('fh-voice', settings.voice);
+    set('fh-voice', listening); // gedrückt = hört gerade zu
     set('fh-awake-btn', settings.keepAwake);
     const mic = document.getElementById('fh-voice');
     if (mic) mic.classList.toggle('is-live', listening);
-    root.classList.toggle('fh-voice-on', settings.voice && view === 'cook');
+    root.classList.toggle('fh-voice-on', listening && view === 'cook');
   }
 
   function openDrawer() {
@@ -458,15 +469,19 @@
     .replace(/(\d)\s*kg\b/g, '$1 Kilogramm').replace(/(\d)\s*g\b/g, '$1 Gramm').replace(/(\d)\s*ml\b/g, '$1 Milliliter')
     .replace(/°C/g, ' Grad').replace(/\bz\.\s*B\./g, 'zum Beispiel');
 
+  // Während der Ansage läuft die Erkennung weiter, ihre Ergebnisse werden aber ignoriert (ownVoice).
+  // Früher wurde sie dafür angehalten und neu gestartet – jeder Neustart löst auf Tizen eine Mikrofon-Abfrage aus.
+  let speaking = false;
+  let speakEndedAt = 0;
   function speak(text) {
     if (!synth || !window.SpeechSynthesisUtterance) return;
     synth.cancel();
     const u = new SpeechSynthesisUtterance(spoken(text));
     u.lang = 'de-DE';
     if (deVoice) u.voice = deVoice;
-    u.onstart = voicePause; // sonst hört die Spracherkennung die eigene Ansage
-    u.onend = voiceResume;
-    u.onerror = voiceResume;
+    u.onstart = () => { speaking = true; };
+    u.onend = () => { speaking = false; speakEndedAt = Date.now(); };
+    u.onerror = u.onend;
     synth.speak(u);
   }
   function readStep() {
@@ -475,12 +490,22 @@
   }
 
   // ---------- Sprachsteuerung (nur im Kochmodus) ----------
+  // Der Tizen-Browser fragt bei jedem recognizer.start() erneut nach dem Mikrofon, solange die Erlaubnis nicht
+  // dauerhaft ist. Deshalb: Start nur per Antippen. Still neu starten nur, wenn die Permissions-API „granted“ meldet.
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   let recognizer = null;
   let listening = false;
-  let pausedForSpeech = false;
+  let userStopped = false;
+  let micPermission = 'unbekannt';
+  let tapHints = 0;
   let srErrors = [];
-  const shouldListen = () => settings.voice && view === 'cook' && !document.hidden;
+  if (navigator.permissions && navigator.permissions.query) {
+    navigator.permissions.query({ name: 'microphone' }).then((st) => {
+      micPermission = st.state;
+      st.onchange = () => { micPermission = st.state; };
+    }, () => { /* Abfrage nicht unterstützt */ });
+  }
+  const ownVoice = () => speaking || Date.now() - speakEndedAt < 800; // eigene Ansage nicht als Befehl werten
 
   function voiceStart() {
     if (!SR) { settings.voice = false; saveSettings(); updateToggles(); toast('Spracherkennung ist hier nicht verfügbar'); return; }
@@ -491,29 +516,34 @@
       recognizer.interimResults = false;
       recognizer.maxAlternatives = 1;
       recognizer.onstart = () => { listening = true; updateToggles(); };
-      recognizer.onresult = (e) => { const r = e.results[e.results.length - 1]; if (r && r.isFinal) command(r[0].transcript); };
+      recognizer.onresult = (e) => {
+        const r = e.results[e.results.length - 1];
+        if (r && r.isFinal && !ownVoice()) command(r[0].transcript);
+      };
       recognizer.onerror = (e) => {
         if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-          settings.voice = false; saveSettings(); toast('Mikrofon nicht erlaubt');
+          settings.voice = false; saveSettings(); userStopped = true; toast('Mikrofon nicht erlaubt');
         } else if (e.error !== 'no-speech' && e.error !== 'aborted') srErrors.push(Date.now());
       };
       recognizer.onend = () => {
         listening = false;
         updateToggles();
-        if (!shouldListen() || pausedForSpeech) return;
+        if (userStopped || !settings.voice || view !== 'cook' || document.hidden) return;
+        if (micPermission !== 'granted') {
+          if (tapHints++ < 2) toast('Für den nächsten Befehl das Mikrofon antippen', 3000);
+          return;
+        }
         srErrors = srErrors.filter((t) => Date.now() - t < 30000);
-        if (srErrors.length >= 5) { settings.voice = false; saveSettings(); updateToggles(); toast('Spracherkennung gestoppt (zu viele Fehler)'); return; }
-        setTimeout(() => { if (shouldListen() && !listening && !pausedForSpeech) try { recognizer.start(); } catch { /* läuft schon */ } }, 300);
+        if (srErrors.length >= 5) { settings.voice = false; saveSettings(); toast('Spracherkennung gestoppt (zu viele Fehler)'); return; }
+        setTimeout(() => { if (!listening && !userStopped && view === 'cook') try { recognizer.start(); } catch { /* läuft schon */ } }, 300);
       };
     }
+    userStopped = false;
     if (!listening) try { recognizer.start(); } catch { /* läuft schon */ }
   }
-  function voiceStop() { if (recognizer && listening) try { recognizer.abort(); } catch { /* egal */ } }
-  function voicePause() { if (recognizer && listening) { pausedForSpeech = true; try { recognizer.abort(); } catch { /* egal */ } } }
-  function voiceResume() {
-    if (!pausedForSpeech) return;
-    pausedForSpeech = false;
-    if (shouldListen()) setTimeout(() => { try { recognizer.start(); } catch { /* läuft schon */ } }, 250);
+  function voiceStop() {
+    userStopped = true;
+    if (recognizer && listening) try { recognizer.abort(); } catch { /* egal */ }
   }
 
   function command(raw) {
@@ -651,14 +681,19 @@
     const ex = document.exitFullscreen || document.webkitExitFullscreen;
     if (ex && fsElement()) ex.call(document);
   }
-  document.addEventListener('fullscreenchange', () => setTimeout(fitStep, 300));
-  document.addEventListener('webkitfullscreenchange', () => setTimeout(fitStep, 300));
+  function onFullscreenChange() {
+    root.classList.toggle('fh-fs', !!fsElement()); // im Vollbild wird der Vollbild-Knopf ausgeblendet
+    setTimeout(fitStep, 300);
+  }
+  document.addEventListener('fullscreenchange', onFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', onFullscreenChange);
 
   // ---------- Bedienung ----------
-  // Jede Berührung: Audio freischalten, auf dem Kühlschrank ins Vollbild, Wachhalte-Video ggf. mit Ton neu starten
+  // Jede Berührung: Audio freischalten, auf dem Kühlschrank ins Vollbild, Wachhalte-Video ggf. mit Ton neu starten.
+  // Nicht bei Links, die die Seite verlassen (Einkauf): Vollbild würde dort sofort wieder enden.
   document.addEventListener('click', (e) => {
     unlockAudio();
-    if (IS_FRIDGE && settings.autoFs && !e.target.closest('[data-act="fs"]')) enterFullscreen();
+    if (IS_FRIDGE && autoFs && !e.target.closest('[data-act="fs"], a[href^="http"]')) enterFullscreen();
     const v = $('#fh-awake');
     if (view === 'cook' && settings.keepAwake && v && (v.paused || v.muted)) awakeStart();
   }, true);
@@ -669,17 +704,12 @@
     const id = currentId();
     switch (t.dataset.act) {
       case 'fs':
-        if (fsElement()) { settings.autoFs = false; exitFullscreen(); } else { settings.autoFs = true; enterFullscreen(); }
-        saveSettings();
+        if (fsElement()) { autoFs = false; exitFullscreen(); } else { autoFs = true; enterFullscreen(); }
         break;
       case 'top':
         if (view === 'home') { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
         break;
-      case 'cat': {
-        const sec = document.getElementById('fh-cat-' + t.dataset.cat);
-        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        break;
-      }
+      case 'cat': filterCategory(+t.dataset.cat); break;
       case 'resume': {
         const s = session();
         if (s) location.hash = `#/r/${s.id}/k/${s.step}`;
@@ -710,10 +740,9 @@
         if (settings.autoRead) readStep(); else if (synth) synth.cancel();
         toast(settings.autoRead ? 'Schritte werden vorgelesen' : 'Vorlesen aus');
         break;
-      case 'voice':
-        settings.voice = !settings.voice;
-        saveSettings();
-        if (settings.voice) { voiceStart(); toast('Sprachsteuerung an – sag „weiter“'); } else { voiceStop(); toast('Sprachsteuerung aus'); }
+      case 'voice': // Antippen startet bzw. beendet das Zuhören
+        if (listening) { settings.voice = false; saveSettings(); voiceStop(); toast('Sprachsteuerung aus'); }
+        else { settings.voice = true; saveSettings(); voiceStart(); toast('Ich höre zu – sag z. B. „weiter“'); }
         updateToggles();
         break;
       case 'drawer': toggleDrawer(); break;
@@ -750,7 +779,8 @@
   document.addEventListener('visibilitychange', () => {
     if (document.hidden || view !== 'cook') return;
     awakeStart();
-    if (settings.voice) voiceStart();
+    // Ohne dauerhafte Mikrofon-Erlaubnis nicht automatisch starten – das würde eine Abfrage aus heiterem Himmel öffnen
+    if (settings.voice && micPermission === 'granted') voiceStart();
   });
   window.addEventListener('resize', () => { if (view === 'cook') fitStep(); });
   window.addEventListener('hashchange', route);

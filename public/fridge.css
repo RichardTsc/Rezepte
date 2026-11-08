@@ -42,7 +42,7 @@ html.fridge [hidden] { display: none !important; }
 .fh-textbtn:active, .fh-awake-btn:active { transform: scale(.96); }
 
 /* ---------- Kopf, Kategorien ---------- */
-.fh-sticky { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 16px 16px 8px; }
+.fh-sticky { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 14px 16px 8px; }
 .fh-top { display: flex; align-items: center; gap: 12px; min-height: 64px; }
 .fh-brand { flex: 1; font-size: 49.5px; line-height: 1.1; font-weight: 800; letter-spacing: -.035em; }
 .fh-dot { color: var(--accent); }
@@ -52,35 +52,39 @@ html.fridge [hidden] { display: none !important; }
   background: var(--surface-2); display: inline-flex; align-items: center; justify-content: center;
 }
 .fh-round[aria-pressed="true"] { background: var(--accent); color: var(--on-accent); }
+html.fridge.fh-fs [data-act="fs"] { display: none; } /* im Vollbild überflüssig; beenden per Wischgeste des Systems */
 .fh-round.is-live { box-shadow: 0 0 0 5px var(--accent-line); }
-.fh-chips { display: flex; gap: 10px; overflow-x: auto; padding: 12px 0 6px; scrollbar-width: none; }
+.fh-chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; }
 .fh-chips::-webkit-scrollbar { display: none; }
 .fh-chip {
-  flex: none; min-height: 64px; padding: 0 24px; border-radius: var(--r-pill);
-  background: var(--surface); border: 1px solid var(--line); font-size: 20px; font-weight: 650;
+  flex: none; min-height: 56px; padding: 0 20px; border-radius: var(--r-pill);
+  background: var(--surface); border: 1px solid var(--line); font-size: 19px; font-weight: 650;
 }
+.fh-chip span { margin-left: 8px; opacity: .6; }
+.fh-chip.is-active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 
 /* ---------- Startseite ---------- */
 #fh-resume { padding: 0 16px; }
 .fh-resume {
-  width: 100%; display: flex; align-items: center; gap: 14px; min-height: 80px; margin-top: 8px; padding: 0 22px;
-  border-radius: var(--r-card); background: var(--accent); color: var(--on-accent); font-size: 21px; text-align: left;
+  width: 100%; display: flex; align-items: center; gap: 14px; min-height: 64px; margin: 4px 0 8px; padding: 0 20px;
+  border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent); font-size: 19px; text-align: left;
 }
 .fh-resume span { flex: 1; min-width: 0; }
-#fh-home { padding: 0 16px calc(var(--dock-total) + 40px); }
-.fh-cat { margin-top: 20px; scroll-margin-top: 182px; }
-.fh-cat-title { font-size: 27px; font-weight: 750; margin: 6px 4px 12px; }
-.fh-cat-title span { color: var(--muted); font-size: 20px; font-weight: 500; margin-left: 6px; }
-.fh-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.fh-card { display: flex; flex-direction: column; background: var(--surface); border-radius: var(--r-card); overflow: hidden; }
-.fh-card-img { display: block; aspect-ratio: 4 / 5; background: var(--plate); }
-.fh-card-img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+/* Übersicht: 5 gleich große, quadratische Kacheln, Titel im Bild → 31 Rezepte passen auf ~1 Bildschirm */
+#fh-home { padding: 4px 16px calc(var(--dock-total) + 24px); }
+.fh-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.fh-card { position: relative; display: block; aspect-ratio: 1 / 1; overflow: hidden; border-radius: var(--r-ctl); background: var(--surface-2); }
+.fh-card img { position: absolute; top: 0; left: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
 .fh-card-title {
-  padding: 12px 14px 2px; font-size: 19px; font-weight: 650; line-height: 1.25; min-height: 2.5em;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 9px 8px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .82));
+  color: #fff; font-size: 14.5px; font-weight: 700; line-height: 1.2; text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
 }
-.fh-card-meta { display: flex; align-items: center; gap: 6px; margin-top: auto; padding: 4px 14px 14px; color: var(--muted); font-size: 16px; }
-.fh-card-meta .fh-ic { width: 18px; height: 18px; }
+.fh-card-title span { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.fh-card-time {
+  position: absolute; top: 6px; left: 6px; padding: 2px 8px; border-radius: var(--r-pill);
+  background: rgba(18, 17, 15, .74); color: var(--text); font-size: 12.5px; font-weight: 700;
+}
 .fh-msg { padding: 48px 12px; color: var(--muted); font-size: 22px; text-align: center; }
 .fh-msg .fh-btn { margin-top: 20px; }
 

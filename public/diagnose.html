@@ -92,9 +92,11 @@ button:disabled { opacity: .45; cursor: default; }
     <button id="b-wake">Bildschirm wachhalten</button>
     <button id="b-tts">Vorlesen testen</button>
     <button id="b-stt">Spracherkennung testen</button>
+    <button id="b-stt3">Sprache: Dauertest (3 Starts)</button>
     <button id="b-frame">Ränder anzeigen</button>
     <button id="b-rerun">Neu messen</button>
     <p class="small">Wachhalten: danach nichts mehr berühren und schauen, ob der Bildschirmschoner trotzdem kommt. Die Seite merkt sich, nach wie vielen Sekunden sie verdeckt wurde.</p>
+    <p class="small">Sprach-Dauertest: startet die Erkennung dreimal hintereinander automatisch. Jedes Mal kurz etwas sagen. Achte darauf, ob jedes Mal eine Mikrofon-Abfrage erscheint. Die Seite misst, wie lange jeder Start dauert, denn eine Abfrage verzögert ihn.</p>
   </div>
 
   <div class="card">
@@ -481,6 +483,12 @@ button:disabled { opacity: .45; cursor: default; }
         req.onerror = function () { put('sto', 'IndexedDB nutzbar', errText(req.error)); };
       } catch (e) { put('sto', 'IndexedDB nutzbar', errText(e)); }
     }
+    if (nav.permissions && nav.permissions.query) {
+      nav.permissions.query({ name: 'microphone' }).then(function (st) {
+        put('api', 'Mikrofon-Erlaubnis (Permissions-API)', st.state);
+        st.onchange = function () { put('api', 'Mikrofon-Erlaubnis (Permissions-API)', st.state + ' (geändert)'); };
+      }, function (e) { put('api', 'Mikrofon-Erlaubnis (Permissions-API)', errText(e)); });
+    }
     if (nav.storage && nav.storage.estimate) {
       nav.storage.estimate().then(function (e) {
         put('sto', 'Speicherkontingent', Math.round(e.quota / 1048576) + ' MB (belegt ' + Math.round(e.usage / 1024) + ' KB)');
@@ -669,6 +677,39 @@ button:disabled { opacity: .45; cursor: default; }
       rec.onend = function () { if (/hört zu/.test(String(get('act', 'Spracherkennung')))) put('act', 'Spracherkennung', 'beendet, nichts erkannt'); };
       rec.start();
     } catch (e) { put('act', 'Spracherkennung', errText(e)); }
+  });
+
+  // Dauertest: 3 automatische Starts hintereinander. Ein langsamer Start (> 1 s bis onstart) deutet auf eine Abfrage hin.
+  function micPermission(key) {
+    if (!navigator.permissions || !navigator.permissions.query) { put('act', key, 'Permissions-API fehlt'); return; }
+    navigator.permissions.query({ name: 'microphone' }).then(function (st) { put('act', key, st.state); }, function (e) { put('act', key, errText(e)); });
+  }
+  on($('b-stt3'), 'click', function () {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { put('act', 'Sprach-Dauertest', 'API fehlt'); return; }
+    var log = [], n = 0, t0 = 0, lat = [];
+    micPermission('Mikrofon-Erlaubnis vorher');
+    var one = function () {
+      n++;
+      t0 = now();
+      var rec = new SR(), started = false;
+      rec.lang = 'de-DE'; rec.continuous = true; rec.interimResults = false;
+      rec.onstart = function () { started = true; var ms = Math.round(now() - t0); lat.push(ms); log.push('Start ' + n + ': ' + ms + ' ms'); put('act', 'Sprach-Dauertest', log.join(' | ') + ' … sprich jetzt'); };
+      rec.onresult = function (e) { var r = e.results[e.results.length - 1]; if (r && r.isFinal) log.push('„' + r[0].transcript + '“'); };
+      rec.onerror = function (e) { log.push('Fehler ' + (e.error || '?')); };
+      rec.onend = function () {
+        log.push('Ende ' + n + ' nach ' + Math.round((now() - t0) / 1000) + ' s' + (started ? '' : ' (nie gestartet)'));
+        put('act', 'Sprach-Dauertest', log.join(' | '));
+        if (n < 3) setTimeout(one, 400);
+        else {
+          put('act', 'Sprach-Dauertest Startzeiten (ms)', lat.join(', ') + (lat.length > 1 && lat[1] > 1000 ? ' → vermutlich Abfrage bei jedem Start' : ''));
+          micPermission('Mikrofon-Erlaubnis nachher');
+        }
+      };
+      try { rec.start(); } catch (e) { log.push(errText(e)); put('act', 'Sprach-Dauertest', log.join(' | ')); }
+    };
+    put('act', 'Sprach-Dauertest', 'startet …');
+    one();
   });
 
   on($('b-frame'), 'click', function () {
