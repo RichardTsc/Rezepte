@@ -203,19 +203,30 @@
     for (const r of recipes) if (!cats.includes(r.category)) cats.push(r.category);
     el.chips.innerHTML = `<button class="fh-chip is-active" data-act="cat" data-cat="-1">Alle<span>${recipes.length}</span></button>` +
       cats.map((c, i) => `<button class="fh-chip" data-act="cat" data-cat="${i}">${esc(c)}</button>`).join('');
+    el.home.dataset.cat = '-1';
     el.home.innerHTML = `<div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>
       <button class="fh-version" data-act="reload">Stand ${esc(BUILD.t || '?')} · ${esc(BUILD.v)} · antippen zum Neuladen</button>`;
+    // Filtern per CSS: eine Regel je Kategorie, umgeschaltet wird nur data-cat am Container (eine Änderung statt 31)
+    const css = cats.map((c, i) => `#fh-home[data-cat="${i}"] .fh-card:not([data-cat="${i}"]){display:none}`).join('');
+    let style = document.getElementById('fh-catcss');
+    if (!style) { style = document.createElement('style'); style.id = 'fh-catcss'; document.head.appendChild(style); }
+    style.textContent = css;
   }
 
   function filterCategory(i) {
-    for (const chip of el.chips.children) chip.classList.toggle('is-active', +chip.dataset.cat === i);
-    for (const a of el.home.querySelectorAll('.fh-card')) a.hidden = i >= 0 && +a.dataset.cat !== i;
-    window.scrollTo(0, 0);
+    if (el.home.dataset.cat === String(i)) return;
+    el.home.dataset.cat = String(i);
+    const prev = el.chips.querySelector('.is-active');
+    if (prev) prev.classList.remove('is-active');
+    const next = el.chips.querySelector(`[data-cat="${i}"]`);
+    if (next) next.classList.add('is-active');
+    if (window.scrollY > 0) window.scrollTo(0, 0);
   }
 
+  // Kacheln: kleine quadratische Bilder (300 px, tiles/), sofort laden – alle 31 sind ohnehin auf dem ersten Bildschirm
   const card = (r, cat) => `
     <a class="fh-card" href="#/r/${r.id}" data-cat="${cat}">
-      ${r.thumb ? `<img src="${esc(r.thumb)}" alt="" loading="lazy" decoding="async">` : ''}
+      ${r.tile || r.thumb ? `<img src="${esc(r.tile || r.thumb)}" alt="" width="300" height="300" decoding="async">` : ''}
       ${r.prepTime ? `<span class="fh-card-time">${esc(shortTime(r.prepTime))}</span>` : ''}
       <span class="fh-card-title"><span>${esc(r.name)}</span></span>
     </a>`;

@@ -203,7 +203,9 @@ html.fridge[data-fh-view="shop"] body { overflow: hidden; }
 html.fridge.fh-awake-on .fh-awake-dot { background: var(--accent); animation: fh-breathe 2s ease-in-out infinite; }
 @keyframes fh-breathe { 0%, 100% { transform: scale(.7); opacity: .6; } 50% { transform: scale(1); opacity: 1; } }
 /* Wachhalte-Video: bildschirmfüllend über allem, 1 % Deckkraft, fängt keine Berührungen ab (für Tizen „sichtbar“, für Menschen nicht) */
-.fh-awake-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; object-fit: fill; z-index: 50; opacity: .01; pointer-events: none; }
+.fh-awake-bg { position: fixed; left: 0; bottom: 0; width: 100%; height: 30%; object-fit: fill; z-index: 50; opacity: .01; pointer-events: none; }
+/* 30 % statt Vollbild und nur 5 Bilder/s: Der Kühlschrank muss sonst 15-mal pro Sekunde den ganzen Bildschirm neu zusammensetzen.
+   Der erfolgreiche Wachtest nutzte 26 % der Fläche. */
 .fh-progress { flex: none; height: 8px; margin-top: 14px; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; }
 .fh-progress i { display: block; height: 100%; width: 0; border-radius: var(--r-pill); background: var(--accent); transition: width .25s ease; }
 .fh-step { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; padding: 8px 6px; touch-action: pan-y; }
