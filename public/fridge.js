@@ -64,6 +64,7 @@
     // Rezepte- und Einkauf-Icon identisch zum Einkaufs-Dienst
     cart: '<path d="M3 9h18l-1.8 9.2A2 2 0 0 1 17.2 20H6.8a2 2 0 0 1-2-1.8L3 9Z"/><path d="m8 9 3-5M16 9l-3-5"/>',
     book: '<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5v-15Z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6"/>',
+    cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
   };
   const icon = (name) => `<svg class="fh-ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
   const pill = (name, text) => (text ? `<span class="fh-pill">${icon(name)}${esc(text)}</span>` : '');
@@ -297,6 +298,8 @@
 
   // ---------- Rezeptansicht ----------
   const ingrRow = (text, i, checks) => {
+    // Zwischenüberschriften wie „Für die Soße:“ sind keine Zutaten: kein Häkchen, kein Einkaufswagen
+    if (/:\s*$/.test(text)) return `<li class="fh-ingr-head">${esc(text.replace(/:\s*$/, ''))}</li>`;
     const term = shopTerm(text);
     return `<li class="fh-ingr-row${checks.has(i) ? ' is-done' : ''}">
       <button class="fh-ingr-main" data-act="ingr" data-i="${i}"><span class="fh-check">${icon('check')}</span><span class="fh-ingr-text">${esc(text)}</span></button>
@@ -315,6 +318,7 @@
           <div class="fh-kicker">${esc(rec.category)}</div>
           <h1>${esc(rec.title)}</h1>
           <div class="fh-pills">${pill('clock', fmtTime(rec.prepTime))}${pill('users', fmtYield(rec.yield))}${pill('pen', rec.author)}</div>
+          ${cookidooBlock(rec)}
         </div>
         <section class="fh-panel">
           <div class="fh-panel-head"><h2>Zutaten</h2>
@@ -326,7 +330,8 @@
           <ol class="fh-steplist">${rec.steps.map((t, i) => `<li data-act="cook-at" data-step="${i + 1}"><span class="fh-num">${i + 1}</span><span>${esc(t)}</span></li>`).join('')}</ol>
         </section>
       </div>
-      <div class="fh-bar"><button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? `Weiter bei Schritt ${resumeStep}` : 'Kochen starten'}</button></div>`;
+      <div class="fh-bar"><button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? `Weiter bei Schritt ${resumeStep}` : 'Kochen starten'}</button></div>
+      <aside class="fh-drawer" id="fh-plan" hidden></aside>`;
     el.recipe.hidden = false;
     const sc = $('#fh-rscroll');
     if (recipeScroll.id === rec.id) sc.scrollTop = recipeScroll.top;
@@ -336,6 +341,76 @@
       big.onload = () => { const h = $('#fh-hero'); if (h && currentId() === rec.id) h.src = rec.image; };
       big.src = rec.image;
     }
+  }
+
+  // ---------- Cookidoo (Planen in „Meine Woche“) ----------
+  // Die ID des eigenen Cookidoo-Rezepts schreibt der picnic-assistent nach dem Anlegen ins Frontmatter (cookidoo: "<id>").
+  // Planen läuft über den Dienst cookidoo-bridge auf dem NAS (same-origin unter /cookidoo/api/, nur unter der Küchen-Adresse):
+  //   GET  /cookidoo/api/geplant?von=YYYY-MM-DD&tage=7  → { tage: { 'YYYY-MM-DD': ['<id>', …] } }
+  //   POST /cookidoo/api/plan  { recipeId, date: 'YYYY-MM-DD', action: 'add' | 'remove' } → { ok: true }
+  //   GET  /cookidoo/api/status → { verbunden: true|false }  (fehlt der Dienst oder der Login, gibt es nur das Tag)
+  const CK_API = '/cookidoo/api/';
+  let ckReady = null; // null = unbekannt, true = Planen möglich, false = Dienst/Login fehlt
+  if (EMBED_SHOP) {
+    fetch(CK_API + 'status', { credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : { verbunden: false }))
+      .then((s) => { ckReady = !!(s && s.verbunden); }, () => { ckReady = false; });
+  }
+  function cookidooBlock(rec) {
+    if (!rec.cookidoo) return `<div class="fh-ck"><span class="fh-tag fh-tag-todo">${icon('cal')}Muss noch in Cookidoo angelegt werden</span></div>`;
+    if (!EMBED_SHOP || ckReady === false) return `<div class="fh-ck"><span class="fh-tag">${icon('cal')}In Cookidoo angelegt</span></div>`;
+    return `<div class="fh-ck"><button class="fh-btn fh-ck-btn" data-act="ck-open">${icon('cal')}In Cookidoo planen</button></div>`;
+  }
+  const isoDate = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
+  function nextDays(n) {
+    const noon = new Date(); noon.setHours(12, 0, 0, 0);
+    const out = [];
+    for (let i = 0; i < n; i++) {
+      const d = new Date(noon.getTime() + i * 86400000);
+      out.push({ iso: isoDate(d), label: i === 0 ? 'Heute' : i === 1 ? 'Morgen' : d.toLocaleDateString('de-DE', { weekday: 'short', day: 'numeric', month: 'numeric' }) });
+    }
+    return out;
+  }
+  function ckFetch(path, opts) {
+    return fetch(CK_API + path, Object.assign({ credentials: 'same-origin', headers: { 'Content-Type': 'application/json' } }, opts || {}))
+      .then((r) => {
+        if (r.ok) return r.json();
+        if (r.status === 404) throw new Error('Cookidoo-Planung ist auf dem NAS noch nicht eingerichtet');
+        return r.json().catch(() => ({})).then((b) => { throw new Error(b.fehler || b.error || 'Cookidoo antwortet mit ' + r.status); });
+      });
+  }
+  function openPlan() {
+    const rec = byId.get(currentId());
+    const panel = $('#fh-plan');
+    if (!rec || !rec.cookidoo || !panel) return;
+    const days = nextDays(7);
+    panel.innerHTML = `<div class="fh-scrim" data-act="ck-close"></div>
+      <div class="fh-drawer-panel">
+        <div class="fh-drawer-head"><h2>In Cookidoo planen</h2><button class="fh-round" data-act="ck-close" aria-label="Schließen">${icon('x')}</button></div>
+        <p class="fh-ck-hint">Erscheint am Thermomix unter „Meine Woche“. Nochmal antippen nimmt es wieder heraus.</p>
+        <div class="fh-ck-days">${days.map((d) => `<button class="fh-chip fh-ck-day" data-act="ck-day" data-date="${d.iso}">${esc(d.label)}</button>`).join('')}</div>
+        <p class="fh-ck-status" id="fh-ck-status">Lade Wochenplan …</p>
+      </div>`;
+    panel.hidden = false;
+    root.classList.add('fh-drawer-open');
+    ckFetch(`geplant?von=${days[0].iso}&tage=7`).then((data) => {
+      const tage = (data && data.tage) || {};
+      for (const b of panel.querySelectorAll('.fh-ck-day')) b.classList.toggle('is-active', (tage[b.dataset.date] || []).includes(rec.cookidoo));
+      $('#fh-ck-status').textContent = '';
+    }, (err) => { $('#fh-ck-status').textContent = err.message; });
+  }
+  function closePlan() { const p = $('#fh-plan'); if (p) p.hidden = true; root.classList.remove('fh-drawer-open'); }
+  function togglePlanDay(btn) {
+    const rec = byId.get(currentId());
+    if (!rec || btn.disabled) return;
+    const planned = btn.classList.contains('is-active');
+    btn.disabled = true;
+    ckFetch('plan', { method: 'POST', body: JSON.stringify({ recipeId: rec.cookidoo, date: btn.dataset.date, action: planned ? 'remove' : 'add' }) })
+      .then(() => {
+        btn.classList.toggle('is-active', !planned);
+        toast(planned ? `Aus „Meine Woche“ entfernt: ${btn.textContent}` : `In Cookidoo geplant: ${btn.textContent}`);
+      }, (err) => toast(err.message, 3500))
+      .finally(() => { btn.disabled = false; });
   }
 
   function toggleIngredient(btn) {
@@ -771,6 +846,9 @@
       }
       case 'close-recipe': goBack('#/'); break;
       case 'ingr': toggleIngredient(t); break;
+      case 'ck-open': openPlan(); break;
+      case 'ck-close': closePlan(); break;
+      case 'ck-day': togglePlanDay(t); break;
       case 'reset-checks': {
         const sc = $('#fh-rscroll');
         if (sc) recipeScroll = { id, top: sc.scrollTop };
@@ -823,8 +901,9 @@
     if (view === 'cook' && e.key === 'ArrowRight') step(1);
     else if (view === 'cook' && e.key === 'ArrowLeft') step(-1);
     else if (e.key === 'Escape') {
-      const d = $('#fh-drawer');
+      const d = $('#fh-drawer'), p = $('#fh-plan');
       if (d && !d.hidden) closeDrawer();
+      else if (p && !p.hidden) closePlan();
       else if (view === 'cook') goBack('#/r/' + cookRecipeId);
       else if (view === 'recipe') goBack('#/');
     }
