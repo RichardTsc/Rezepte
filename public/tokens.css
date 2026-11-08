@@ -1,0 +1,21 @@
+/* Gemeinsame Design-Tokens der Küchen-App (Rezepte + Einkauf).
+   Einzige Quelle: Die Rezepte-App liefert diese Datei als /tokens.css aus, der Einkaufs-Dienst (home-picnic-warenkorb)
+   lädt sie nach seiner style.css. Variablennamen nicht umbenennen – beide Oberflächen hängen daran.
+   Chromium-108-tauglich: keine color-mix(), keine oklch(). */
+:root {
+  --bg: #12110f;
+  --surface: #1c1a17;
+  --surface-2: #26231f;
+  --line: #36312b;
+  --text: #f5f0e8;
+  --muted: #a69d92;
+  --accent: #d4f36a;      /* Limette */
+  --on-accent: #18200a;
+  --warn: #ff9a76;
+  --ok: #86e3a8;
+  --plate: #f7f3ee;       /* helle Teller-Fläche hinter Produkt-/Rezeptfotos */
+  --r-card: 28px;
+  --r-ctl: 20px;
+  --r-pill: 999px;
+  --dock-h: 76px;
+}

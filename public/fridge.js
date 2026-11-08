@@ -9,7 +9,11 @@
   if (!root.classList.contains('fridge')) return;
 
   const IS_FRIDGE = /Family Hub/.test(navigator.userAgent);
-  const SHOP_URL = 'http://192.168.178.100:8090/'; // Picnic-Warenkorb-Dienst im Heimnetz (eigenes Projekt)
+  // Einkauf (Picnic-Warenkorb, eigenes Projekt auf dem NAS). Unter der Küchen-Adresse auf dem NAS (alles außer github.io)
+  // liegt der Einkauf same-origin unter /einkauf/ und wird als Tab eingebettet: eine App, das Vollbild bleibt beim Wechsel.
+  // Auf GitHub Pages bleibt es beim Link ins Heimnetz (http → kein Einbetten möglich, Mixed Content).
+  const EMBED_SHOP = !/github\.io$/.test(location.hostname);
+  const SHOP_URL = EMBED_SHOP ? '/einkauf/' : 'http://192.168.178.100:8090/';
   const SESSION_MAX_AGE = 12 * 3600 * 1000;
 
   // ---------- Speicher ----------
@@ -67,6 +71,8 @@
   }
   const fmtYield = (y) => (/^\d+$/.test(String(y || '').trim()) ? `${y} Portionen` : y || '');
   const shopUrl = (term) => SHOP_URL + (term ? '?suche=' + encodeURIComponent(term) : '');
+  // Ziel für Links/Knöpfe: eingebettet über die Hash-Route #/einkauf[/suche/<wort>], sonst direkt zum NAS
+  const shopLink = (term) => (EMBED_SHOP ? '#/einkauf' + (term ? '/suche/' + encodeURIComponent(term) : '') : shopUrl(term));
 
   // „400 g Kartoffeln“ → „Kartoffeln“, „1 Zoll frischer Ingwer“ → „Ingwer“
   const UNITS = 'g|kg|mg|ml|cl|dl|l|liter|el|tl|esslöffel|teelöffel|msp|prisen?|packung(?:en)?|pck|dosen?|zehen?|bund|stück|stk|scheiben?|zoll|cm|handvoll|becher|gläser|glas|tassen?|blatt|blätter|zweige?|knollen?|würfel|beutel|blöcke|block|köpfe|kopf';
@@ -113,18 +119,19 @@
       <div id="fh-resume"></div>
       <main id="fh-home"><p class="fh-msg">Rezepte werden geladen …</p></main>
       <nav class="fh-dock" aria-label="Bereiche"><div class="fh-dock-inner">
-        <a class="fh-tab is-active" href="#/" data-act="top">${icon('book')}Rezepte</a>
-        <a class="fh-tab" href="${SHOP_URL}">${icon('cart')}Einkauf</a>
+        <a class="fh-tab is-active" id="fh-tab-rezepte" href="#/" data-act="top">${icon('book')}Rezepte</a>
+        <a class="fh-tab" id="fh-tab-einkauf" href="${shopLink('')}">${icon('cart')}Einkauf<span class="fh-badge" id="fh-shop-badge" hidden></span></a>
       </div></nav>
     </div>
     <section class="fh-layer" id="fh-recipe" hidden></section>
     <section class="fh-layer fh-cook" id="fh-cook" hidden></section>
+    <section class="fh-shop" id="fh-shop" hidden></section>
     <div class="fh-timers" id="fh-timers" hidden></div>
     <div class="fh-alarm" id="fh-alarm" hidden></div>
     <div class="fh-toast" id="fh-toast" hidden></div>`);
 
   const el = {
-    home: $('#fh-home'), chips: $('#fh-chips'), resume: $('#fh-resume'), recipe: $('#fh-recipe'), cook: $('#fh-cook'),
+    home: $('#fh-home'), chips: $('#fh-chips'), resume: $('#fh-resume'), recipe: $('#fh-recipe'), cook: $('#fh-cook'), shop: $('#fh-shop'),
     timers: $('#fh-timers'), alarm: $('#fh-alarm'), toast: $('#fh-toast'), clock: $('#fh-clock'),
   };
 
@@ -148,6 +155,8 @@
         byId = new Map(recipes.map((r) => [r.id, r]));
         renderHome();
         route();
+        // Einkauf im Hintergrund vorladen (Badge mit Korb-Anzahl, Tab-Wechsel ohne Ladezeit) – erst wenn die Startseite steht
+        if (EMBED_SHOP) setTimeout(() => ensureShopFrame(''), 3000);
       })
       .catch((err) => {
         el.home.innerHTML = `<div class="fh-msg">Rezepte konnten nicht geladen werden (${esc(err.message)}).<br>
@@ -202,8 +211,39 @@
     let m;
     if ((m = /^\/r\/([a-z0-9-]+)\/k\/(\d+)$/.exec(h))) return { view: 'cook', id: m[1], step: +m[2] };
     if ((m = /^\/r\/([a-z0-9-]+)$/.exec(h))) return { view: 'recipe', id: m[1] };
+    if ((m = /^\/einkauf(?:\/suche\/(.+))?$/.exec(h))) return { view: 'shop', term: m[1] ? decodeURIComponent(m[1]) : '' };
     return { view: 'home' };
   }
+
+  // Einkauf als Tab: das iframe bleibt bestehen (Zustand, keine Ladezeit). Absprache mit dem Einkaufs-Dienst per postMessage
+  // (gleiche Herkunft, immer origin prüfen):
+  //   App → Einkauf:  {typ:'einkauf:suche', q}  sucht ohne Neuladen · {typ:'einkauf:zeigen'}  bei jedem Tab-Wechsel (Korb auffrischen)
+  //   Einkauf → App:  {typ:'einkauf:bereit'}  einmal nach dem Laden · {typ:'einkauf:anzahl', anzahl}  für das Badge im Dock
+  // Bis „bereit“ kommt, gilt als Rückfall src='/einkauf/?suche=…'.
+  let shopFrame = null;
+  let shopReady = false;
+  function ensureShopFrame(term) {
+    if (shopFrame || !EMBED_SHOP) return;
+    el.shop.innerHTML = `<iframe class="fh-shop-frame" title="Einkauf" allow="microphone; autoplay" src="${esc(shopUrl(term))}"></iframe>`;
+    shopFrame = el.shop.firstElementChild;
+  }
+  const toShop = (msg) => { if (shopFrame && shopFrame.contentWindow) shopFrame.contentWindow.postMessage(msg, location.origin); };
+  function showShop(term) {
+    if (!shopFrame) ensureShopFrame(term);
+    else if (shopReady) { if (term) toShop({ typ: 'einkauf:suche', q: term }); toShop({ typ: 'einkauf:zeigen' }); }
+    else if (term) { shopFrame.src = shopUrl(term); }
+    el.shop.hidden = false;
+  }
+  window.addEventListener('message', (e) => {
+    if (e.origin !== location.origin || !shopFrame || e.source !== shopFrame.contentWindow || !e.data) return;
+    if (e.data.typ === 'einkauf:bereit') shopReady = true;
+    else if (e.data.typ === 'einkauf:anzahl') {
+      const n = Math.max(0, parseInt(e.data.anzahl, 10) || 0);
+      const badge = $('#fh-shop-badge');
+      badge.textContent = n > 99 ? '99+' : String(n);
+      badge.hidden = !n;
+    }
+  });
 
   function route() {
     if (!recipes.length) return;
@@ -214,7 +254,8 @@
 
     const r = parseHash();
     const rec = r.id ? byId.get(r.id) : null;
-    if (r.view !== 'home' && !rec) { location.replace('#/'); return; }
+    if ((r.view === 'recipe' || r.view === 'cook') && !rec) { location.replace('#/'); return; }
+    if (r.view === 'shop' && !EMBED_SHOP) { location.href = shopUrl(r.term); return; }
 
     if (view === 'recipe' && r.view !== 'recipe') {
       const sc = $('#fh-rscroll');
@@ -222,15 +263,21 @@
     }
     if (r.view === 'cook') {
       el.recipe.hidden = true;
+      el.shop.hidden = true;
       showCook(rec, r.step);
     } else {
       if (view === 'cook') leaveCook();
       el.cook.hidden = true;
+      el.recipe.hidden = r.view !== 'recipe';
+      el.shop.hidden = r.view !== 'shop';
       if (r.view === 'recipe') showRecipe(rec);
-      else { el.recipe.hidden = true; recipeScroll = { id: null, top: 0 }; renderResume(); }
+      else if (r.view === 'shop') showShop(r.term);
+      else { recipeScroll = { id: null, top: 0 }; renderResume(); }
     }
     view = r.view;
     root.setAttribute('data-fh-view', view);
+    $('#fh-tab-rezepte').classList.toggle('is-active', view !== 'shop');
+    $('#fh-tab-einkauf').classList.toggle('is-active', view === 'shop');
     renderTimers(true);
   }
   const parseHashId = (hash) => { const m = /^#\/r\/([a-z0-9-]+)/.exec(hash || ''); return m ? m[1] : null; };
@@ -246,7 +293,7 @@
     const term = shopTerm(text);
     return `<li class="fh-ingr-row${checks.has(i) ? ' is-done' : ''}">
       <button class="fh-ingr-main" data-act="ingr" data-i="${i}"><span class="fh-check">${icon('check')}</span><span class="fh-ingr-text">${esc(text)}</span></button>
-      <a class="fh-round fh-cart" href="${esc(shopUrl(term))}" aria-label="${esc(term)} im Einkauf suchen">${icon('cart')}</a></li>`;
+      <a class="fh-round fh-cart" href="${esc(shopLink(term))}" aria-label="${esc(term)} im Einkauf suchen">${icon('cart')}</a></li>`;
   };
 
   function showRecipe(rec) {
@@ -553,7 +600,7 @@
     const shop = /^(.+?)\s+(?:auf|zur|in)\s+(?:die\s+)?einkaufsliste/.exec(s);
     if (shop) {
       const term = shop[1].replace(/^(?:bitte|setz\w*|schreib\w*|pack\w*|tu|füg\w*)\s+/g, '').trim();
-      if (term) { speak(`Ich öffne den Einkauf für ${term}.`); setTimeout(() => { location.href = shopUrl(term); }, 1600); }
+      if (term) { speak(`Ich öffne den Einkauf für ${term}.`); setTimeout(() => { location.href = shopLink(term); }, 1600); }
       return;
     }
     if (/\b(weiter|nächste[rnms]?|vorwärts|next)\b/.test(s)) step(1);

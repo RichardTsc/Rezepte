@@ -2,13 +2,9 @@
    Ziel: Samsung Family Hub (Chromium 108, 721×1230 CSS-px). Kein Nesting, kein color-mix, kein backdrop-filter.
    Tokens gemeinsam mit dem Einkaufs-Dienst (Picnic-Warenkorb), damit beides wie eine App wirkt. */
 
+/* Basis-Tokens (Farben, Radien, --dock-h) kommen aus tokens.css – hier nur abgeleitete Werte */
 html.fridge {
-  --bg: #12110f; --surface: #1c1a17; --surface-2: #26231f; --line: #36312b;
-  --text: #f5f0e8; --muted: #a69d92; --accent: #d4f36a; --on-accent: #18200a;
   --accent-soft: rgba(212, 243, 106, .14); --accent-line: rgba(212, 243, 106, .45);
-  --warn: #ff9a76; --ok: #86e3a8; --plate: #f7f3ee;
-  --r-card: 28px; --r-ctl: 20px; --r-pill: 999px;
-  --dock-h: 76px;
   --dock-total: 101px; /* 76 + Innenabstand 10/14 + 1 px Linie */
   background: var(--bg);
   color-scheme: dark;
@@ -105,6 +101,17 @@ html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 }
 .fh-tab .fh-ic { width: 27px; height: 27px; }
 .fh-tab.is-active { background: var(--accent); color: var(--on-accent); }
+.fh-badge {
+  min-width: 30px; height: 30px; box-sizing: border-box; padding: 0 9px; border-radius: var(--r-pill);
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--on-accent); font-size: 16px; font-weight: 800;
+}
+.fh-tab.is-active .fh-badge { background: var(--on-accent); color: var(--accent); }
+
+/* ---------- Einkauf als Tab (same-origin-iframe, nur unter der Küchen-Adresse auf dem NAS) ---------- */
+.fh-shop { position: fixed; top: 0; left: 0; right: 0; bottom: var(--dock-total); z-index: 7; background: var(--bg); }
+.fh-shop-frame { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
+html.fridge[data-fh-view="shop"] body { overflow: hidden; }
 
 /* ---------- Ebenen (Rezept, Kochmodus) ---------- */
 .fh-layer { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; background: var(--bg); animation: fh-in .18s ease-out; }
