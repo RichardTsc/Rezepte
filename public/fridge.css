@@ -9,6 +9,7 @@ html.fridge {
   --warn: #ff9a76; --ok: #86e3a8; --plate: #f7f3ee;
   --r-card: 28px; --r-ctl: 20px; --r-pill: 999px;
   --dock-h: 76px;
+  --dock-total: 101px; /* 76 + Innenabstand 10/14 + 1 px Linie */
   background: var(--bg);
   color-scheme: dark;
 }
@@ -43,7 +44,8 @@ html.fridge [hidden] { display: none !important; }
 /* ---------- Kopf, Kategorien ---------- */
 .fh-sticky { position: sticky; top: 0; z-index: 5; background: var(--bg); padding: 16px 16px 8px; }
 .fh-top { display: flex; align-items: center; gap: 12px; min-height: 64px; }
-.fh-brand { flex: 1; font-size: 36px; font-weight: 800; letter-spacing: -.02em; }
+.fh-brand { flex: 1; font-size: 49.5px; line-height: 1.1; font-weight: 800; letter-spacing: -.035em; }
+.fh-dot { color: var(--accent); }
 .fh-clock { font-size: 28px; font-weight: 650; color: var(--muted); margin-right: 4px; }
 .fh-round {
   width: 64px; height: 64px; flex: none; border-radius: var(--r-pill);
@@ -65,8 +67,8 @@ html.fridge [hidden] { display: none !important; }
   border-radius: var(--r-card); background: var(--accent); color: var(--on-accent); font-size: 21px; text-align: left;
 }
 .fh-resume span { flex: 1; min-width: 0; }
-#fh-home { padding: 0 16px calc(var(--dock-h) + 56px); }
-.fh-cat { margin-top: 20px; scroll-margin-top: 176px; }
+#fh-home { padding: 0 16px calc(var(--dock-total) + 40px); }
+.fh-cat { margin-top: 20px; scroll-margin-top: 182px; }
 .fh-cat-title { font-size: 27px; font-weight: 750; margin: 6px 4px 12px; }
 .fh-cat-title span { color: var(--muted); font-size: 20px; font-weight: 500; margin-left: 6px; }
 .fh-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
@@ -82,17 +84,22 @@ html.fridge [hidden] { display: none !important; }
 .fh-msg { padding: 48px 12px; color: var(--muted); font-size: 22px; text-align: center; }
 .fh-msg .fh-btn { margin-top: 20px; }
 
-/* ---------- Dock ---------- */
+/* ---------- Dock (pixelgleich zum Einkaufs-Dienst) ---------- */
 .fh-dock {
-  position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 6; height: var(--dock-h); box-sizing: border-box;
-  display: flex; gap: 8px; padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-pill);
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; display: flex; justify-content: center;
+  padding: 10px 20px 14px; background: var(--bg); border-top: 1px solid var(--line);
+}
+.fh-dock-inner {
+  display: flex; gap: 6px; width: 100%; max-width: 720px; height: var(--dock-h); box-sizing: border-box;
+  padding: 6px; border-radius: var(--r-pill); background: var(--surface);
 }
 html.fridge[data-fh-view="recipe"] .fh-dock,
 html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 .fh-tab {
   flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px;
-  border-radius: var(--r-pill); font-size: 22px; font-weight: 700; color: var(--muted);
+  border-radius: var(--r-pill); font-size: 20.7px; font-weight: 700; color: var(--muted);
 }
+.fh-tab .fh-ic { width: 27px; height: 27px; }
 .fh-tab.is-active { background: var(--accent); color: var(--on-accent); }
 
 /* ---------- Ebenen (Rezept, Kochmodus) ---------- */
@@ -193,7 +200,7 @@ html.fridge.fh-has-timers .fh-cook .fh-nextstep { margin-bottom: 88px; }
 
 /* ---------- Timer, Alarm, Hinweise ---------- */
 .fh-timers {
-  position: fixed; left: 16px; right: 16px; bottom: calc(var(--dock-h) + 28px); z-index: 12;
+  position: fixed; left: 16px; right: 16px; bottom: calc(var(--dock-total) + 14px); z-index: 12;
   display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; pointer-events: none;
 }
 html.fridge[data-fh-view="recipe"] .fh-timers { bottom: 124px; }

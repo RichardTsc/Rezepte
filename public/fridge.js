@@ -42,8 +42,9 @@
     list: '<path d="M9 6.5h11M9 12h11M9 17.5h11"/><circle cx="4.5" cy="6.5" r="1.2" fill="currentColor"/><circle cx="4.5" cy="12" r="1.2" fill="currentColor"/><circle cx="4.5" cy="17.5" r="1.2" fill="currentColor"/>',
     speaker: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6M18 6.5a8 8 0 0 1 0 11"/>',
     mic: '<rect x="9" y="3" width="6" height="11.5" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"/>',
-    cart: '<path d="M3 4h2.2l2.3 11h10.8l2-7.5H6.4"/><circle cx="9.5" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/>',
-    book: '<path d="M4 4.5h6a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H4zM20 4.5h-6a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H20z"/>',
+    // Rezepte- und Einkauf-Icon identisch zum Einkaufs-Dienst
+    cart: '<path d="M3 9h18l-1.8 9.2A2 2 0 0 1 17.2 20H6.8a2 2 0 0 1-2-1.8L3 9Z"/><path d="m8 9 3-5M16 9l-3-5"/>',
+    book: '<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5v-15Z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6"/>',
   };
   const icon = (name) => `<svg class="fh-ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
   const pill = (name, text) => (text ? `<span class="fh-pill">${icon(name)}${esc(text)}</span>` : '');
@@ -95,7 +96,7 @@
     <div id="fh-app">
       <div class="fh-sticky">
         <header class="fh-top">
-          <div class="fh-brand">Rezepte</div>
+          <div class="fh-brand">Rezepte<span class="fh-dot">.</span></div>
           <div class="fh-clock" id="fh-clock"></div>
           <button class="fh-round" data-act="fs" aria-label="Vollbild">${icon('fullscreen')}</button>
         </header>
@@ -103,10 +104,10 @@
       </div>
       <div id="fh-resume"></div>
       <main id="fh-home"><p class="fh-msg">Rezepte werden geladen …</p></main>
-      <nav class="fh-dock" aria-label="Bereiche">
+      <nav class="fh-dock" aria-label="Bereiche"><div class="fh-dock-inner">
         <a class="fh-tab is-active" href="#/" data-act="top">${icon('book')}Rezepte</a>
         <a class="fh-tab" href="${SHOP_URL}">${icon('cart')}Einkauf</a>
-      </nav>
+      </div></nav>
     </div>
     <section class="fh-layer" id="fh-recipe" hidden></section>
     <section class="fh-layer fh-cook" id="fh-cook" hidden></section>
