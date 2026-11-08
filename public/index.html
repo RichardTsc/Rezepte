@@ -8,6 +8,10 @@
     <meta name="apple-mobile-web-app-title" content="Rezepte">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <!-- iPhone-Home-Bildschirm-App: undurchsichtige dunkle Statusleiste. NICHT black-translucent: iOS 26 meldet damit den
+         Viewport um die Statusleistenhöhe zu kurz, unten bleibt ein ungezeichneter Streifen (WebKit-Bug 301108).
+         iOS liest den Wert beim Hinzufügen zum Home-Bildschirm, Änderungen wirken erst nach Neu-Hinzufügen. -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="manifest" href="app.webmanifest">
     <link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
@@ -18,7 +22,7 @@
     <link rel="stylesheet" href="tokens.css?v=cd5ef79ac8">
     <link rel="stylesheet" href="fridge.css?v=cd5ef79ac8">
     <script>
-        window.FRIDGE_BUILD = { v: "91dd7f8d", t: "08.11. 23:11" };
+        window.FRIDGE_BUILD = { v: "0b01905b", t: "08.11. 23:35" };
         /* Küchen-App (Kühlschrank-Modus) früh aktivieren: Samsung Family Hub, als Home-Bildschirm-App gestartet (iPhone,
            eigener Speicher, deshalb ohne localStorage-Merker) oder per ?fridge (bleibt gemerkt). Abschalten mit ?fridge=0 */
         (function () {
@@ -35,9 +39,6 @@
             document.getElementById('viewport').setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover');
             var tc = document.createElement('meta'); tc.name = 'theme-color'; tc.content = '#12110f';
             document.head.appendChild(tc);
-            /* iPhone als Home-Bildschirm-App: Inhalt läuft unter die Statusleiste, helle Schrift auf dunklem Grund */
-            var sb = document.createElement('meta'); sb.name = 'apple-mobile-web-app-status-bar-style'; sb.content = 'black-translucent';
-            document.head.appendChild(sb);
         })();
     </script>
     <script src="fridge.js?v=cd5ef79ac8" defer></script>
