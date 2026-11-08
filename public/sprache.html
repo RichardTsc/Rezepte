@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#12110f">
+  <title>Sprechen</title>
+  <!--
+    Sprach-Brücke für den Picnic-Warenkorb auf dem NAS (http://192.168.178.100:8090).
+    Spracherkennung gibt der Browser nur unter HTTPS frei, deshalb hört diese Seite auf GitHub Pages
+    zu und springt mit ?suche=<Wort> zurück. Rücksprung nur ins Heimnetz (keine offene Weiterleitung).
+  -->
+  <style>
+    :root {
+      --bg: #12110f; --surface: #1c1a17; --surface-2: #26231f; --line: #36312b;
+      --text: #f5f0e8; --muted: #a69d92; --accent: #d4f36a; --on-accent: #18200a; --warn: #ff9a76;
+      color-scheme: dark;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 36px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    .mic {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--on-accent);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+    .mic svg { width: 92px; height: 92px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .mic::before, .mic::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+      opacity: 0;
+    }
+    .hoert .mic::before { animation: welle 1.6s ease-out infinite; }
+    .hoert .mic::after { animation: welle 1.6s ease-out .8s infinite; }
+    .aus .mic { background: var(--surface-2); color: var(--text); }
+    .mic:active, .knopf:active { transform: scale(.96); }
+    #status { margin: 0; min-height: 1.4em; color: var(--muted); font-size: 24px; }
+    .fehler #status { color: var(--warn); }
+    #text {
+      margin: 0;
+      max-width: 680px;
+      min-height: 1.15em;
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+    .knopf {
+      display: inline-flex;
+      align-items: center;
+      height: 64px;
+      padding: 0 32px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--surface-2);
+      color: var(--text);
+      font: inherit;
+      font-size: 20px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .tipp { margin: 0; max-width: 520px; color: var(--muted); font-size: 18px; }
+    @keyframes welle { from { transform: scale(1); opacity: .6; } to { transform: scale(1.6); opacity: 0; } }
+  </style>
+</head>
+<body class="aus">
+  <p id="status">Einen Moment …</p>
+  <button class="mic" id="mic" type="button" aria-label="Sprechen">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+  </button>
+  <p id="text" aria-live="polite"></p>
+  <a class="knopf" id="abbrechen" href="./">Abbrechen</a>
+  <p class="tipp">Zum Beispiel „Butter“, „Hafermilch“ oder „Bio-Eier“.</p>
+
+  <script>
+    "use strict";
+    const statusEl = document.getElementById("status");
+    const textEl = document.getElementById("text");
+    const micEl = document.getElementById("mic");
+    const abbrechenEl = document.getElementById("abbrechen");
+
+    // Nur Ziele im Heimnetz zulassen, sonst wäre die Seite eine offene Weiterleitung.
+    function sicheresZiel(wert) {
+      try {
+        const url = new URL(wert);
+        if (url.protocol !== "http:" && url.protocol !== "https:") return null;
+        const h = url.hostname;
+        const privat =
+          /^192\.168\.\d{1,3}\.\d{1,3}$/.test(h) ||
+          /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(h) ||
+          /^172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}$/.test(h) ||
+          h === "localhost" || h === "127.0.0.1" || h.endsWith(".local") || h.endsWith(".fritz.box");
+        return privat ? url : null;
+      } catch {
+        return null;
+      }
+    }
+
+    const ziel = sicheresZiel(new URLSearchParams(location.search).get("zurueck"));
+    if (ziel) abbrechenEl.href = ziel.href;
+
+    // „Ich brauche Butter bitte“ → „Butter“
+    function bereinigen(t) {
+      let s = t.trim().replace(/[.!?,;]+$/, "");
+      s = s.replace(/^(ich brauche|wir brauchen|brauche|brauchen|such(e|en)?( nach)?|kauf(e|en)?|bestell(e|en)?|noch|bitte)\s+/i, "");
+      s = s.replace(/\s+(bitte|kaufen|bestellen|auf die (einkaufs)?liste( setzen)?|in den (waren)?korb( legen)?)$/i, "");
+      return s.trim();
+    }
+
+    function zustand(klasse, text) {
+      document.body.className = klasse;
+      statusEl.textContent = text;
+    }
+
+    const MELDUNG = {
+      "no-speech": "Ich habe nichts gehört.",
+      "not-allowed": "Das Mikrofon ist für diese Seite nicht erlaubt.",
+      "service-not-allowed": "Die Spracherkennung ist nicht erlaubt.",
+      "audio-capture": "Kein Mikrofon gefunden.",
+      network: "Keine Verbindung zum Spracherkennungsdienst.",
+    };
+
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let rec = null;
+    let laeuft = false;
+    let fertig = false;
+    let fehler = null;
+
+    function uebernehmen(roh) {
+      const wort = bereinigen(roh);
+      if (!wort) return;
+      fertig = true;
+      textEl.textContent = wort;
+      try { rec.abort(); } catch {}
+      if (!ziel) {
+        zustand("aus", "Erkannt. (Kein Rücksprungziel angegeben.)");
+        return;
+      }
+      zustand("aus", "Suche …");
+      const url = new URL(ziel.href);
+      url.searchParams.set("suche", wort);
+      location.replace(url.href);
+    }
+
+    function starten() {
+      if (!SR) {
+        zustand("aus fehler", "Spracherkennung gibt es in diesem Browser nicht.");
+        return;
+      }
+      if (laeuft) {
+        rec.stop();
+        return;
+      }
+      fertig = false;
+      fehler = null;
+      textEl.textContent = "";
+      rec = new SR();
+      rec.lang = "de-DE";
+      rec.interimResults = true;
+      rec.maxAlternatives = 1;
+      rec.continuous = false;
+      rec.onstart = () => {
+        laeuft = true;
+        zustand("hoert", "Ich höre zu …");
+      };
+      rec.onresult = (e) => {
+        let endgueltig = "";
+        let zwischen = "";
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) endgueltig += e.results[i][0].transcript;
+          else zwischen += e.results[i][0].transcript;
+        }
+        textEl.textContent = (endgueltig || zwischen).trim();
+        if (endgueltig.trim()) uebernehmen(endgueltig);
+      };
+      rec.onerror = (e) => {
+        fehler = e.error;
+      };
+      rec.onend = () => {
+        laeuft = false;
+        if (fertig) return;
+        if (fehler === "aborted") return zustand("aus", "Tippe aufs Mikrofon und sprich.");
+        zustand(fehler ? "aus fehler" : "aus", `${MELDUNG[fehler] ?? "Nichts erkannt."} Tippe aufs Mikrofon.`);
+      };
+      try {
+        rec.start();
+      } catch {
+        zustand("aus", "Tippe aufs Mikrofon und sprich.");
+      }
+    }
+
+    micEl.addEventListener("click", starten);
+    starten();
+  </script>
+</body>
+</html>
