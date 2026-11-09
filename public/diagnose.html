@@ -130,9 +130,10 @@ button:disabled { opacity: .45; cursor: default; }
   var G = {
     pwa: 'Vollbild & App-Modus', act: 'Interaktive Tests', scr: 'Bildschirm & Viewport', sys: 'Browser & System',
     mq: 'Media Queries', perf: 'Leistung', live: 'Live-Beobachtung', js: 'JavaScript', css: 'CSS',
-    api: 'Web-APIs', gfx: 'Grafik & Medien', sto: 'Speicher', hw: 'Hardware-Schnittstellen', vend: 'Tizen/Samsung-spezifisch'
+    api: 'Web-APIs', gfx: 'Grafik & Medien', sto: 'Speicher', hw: 'Hardware-Schnittstellen', vend: 'Tizen/Samsung-spezifisch',
+    app: 'Küchen-App-Protokoll'
   };
-  var ORDER = ['pwa', 'act', 'scr', 'sys', 'mq', 'perf', 'live', 'js', 'css', 'api', 'gfx', 'sto', 'hw', 'vend'];
+  var ORDER = ['app', 'pwa', 'act', 'scr', 'sys', 'mq', 'perf', 'live', 'js', 'css', 'api', 'gfx', 'sto', 'hw', 'vend'];
   var R = { meta: { seite: 'Rezepte-Gerätediagnose', version: VERSION, url: location.href, start: new Date().toISOString() }, gruppen: {} };
 
   function put(g, k, v) {
@@ -458,6 +459,20 @@ button:disabled { opacity: .45; cursor: default; }
     put('sto', 'sessionStorage', val(function () { sessionStorage.setItem('diag-t', '1'); var ok = sessionStorage.getItem('diag-t') === '1'; sessionStorage.removeItem('diag-t'); return ok; }));
     put('sto', 'Cache API', 'caches' in w);
     put('sto', 'IndexedDB vorhanden', 'indexedDB' in w);
+
+    // Protokoll der Küchen-App (fridge.js schreibt es in localStorage, gleiche Herkunft): Abstürze beim Aufwachen, Speicherverlauf
+    var readLs = function (k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+    var crashes = readLs('fridge.crashes') || [], memlog = readLs('fridge.memlog') || [], alive = readLs('fridge.alive');
+    put('app', 'Erkannte Abstürze', crashes.length);
+    for (var ci = Math.max(0, crashes.length - 5); ci < crashes.length; ci++) {
+      var c = crashes[ci];
+      put('app', 'Absturz ' + (ci + 1), 'zuletzt lebend ' + c.zuletztLebend + ', Laufzeit ' + c.laufzeitMin + ' min, Heap ' + c.heapMB + ' MB, Ansicht ' + c.ansicht +
+        ', Standby ' + c.verdeckt + ', Video ' + c.video + ', Einkauf ' + c.einkauf + ' → Neustart ' + c.neustart);
+    }
+    put('app', 'Letztes Lebenszeichen', alive ? new Date(alive.t).toLocaleString('de-DE') + ', Laufzeit ' + alive.up + ' min, Heap ' + alive.heap + ' MB' : null);
+    put('app', 'Speicherverlauf (Uhrzeit Laufzeit Heap Ansicht)', memlog.slice(-24).map(function (m) {
+      return new Date(m.t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }) + ' ' + m.up + 'min ' + m.heap + 'MB ' + m.view + (m.hidden ? ' (Standby)' : '');
+    }).join(' | ') || null);
 
     // Leistung (schnell)
     put('perf', 'JS-Heap-Limit (MB)', val(function () { return performance.memory ? Math.round(performance.memory.jsHeapSizeLimit / 1048576) : null; }));

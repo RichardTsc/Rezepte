@@ -138,7 +138,7 @@
 
   // ---------- Gerüst ----------
   document.body.insertAdjacentHTML('afterbegin', `
-    <video class="fh-awake-bg" id="fh-awake" src="keepawake-bg.mp4" loop playsinline preload="auto" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+    <video class="fh-awake-bg" id="fh-awake" loop playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
     <div id="fh-app">
       <div class="fh-sticky">
         <header class="fh-top">
@@ -191,8 +191,9 @@
         byId = new Map(recipes.map((r) => [r.id, r]));
         renderHome();
         route();
-        // Einkauf im Hintergrund vorladen (Badge mit Korb-Anzahl, Tab-Wechsel ohne Ladezeit) – erst wenn die Startseite steht
-        if (EMBED_SHOP) setTimeout(() => ensureShopFrame(''), 3000);
+        // Korb-Anzahl fürs Badge direkt von der Einkauf-API. Den Einkauf selbst NICHT mehr vorladen: Er blieb sonst dauerhaft
+        // als zweite App im Speicher, und der Kühlschrank beendete den Tab im Standby („Renderer process has crashed“).
+        refreshBadge();
       })
       .catch((err) => {
         el.home.innerHTML = `<div class="fh-msg">Rezepte konnten nicht geladen werden (${esc(err.message)}).<br>
@@ -344,7 +345,8 @@
     return { view: 'home' };
   }
 
-  // Einkauf als Tab: das iframe bleibt bestehen (Zustand, keine Ladezeit). Absprache mit dem Einkaufs-Dienst per postMessage
+  // Einkauf als Tab: Das iframe entsteht beim ersten Öffnen und wird wieder entladen, wenn der Tab 5 Minuten nicht benutzt
+  // wurde oder der Kühlschrank in den Standby geht (Speicher, siehe refreshBadge). Absprache mit dem Einkaufs-Dienst per postMessage
   // (gleiche Herkunft, immer origin prüfen):
   //   App → Einkauf:  {typ:'einkauf:suche', q}  sucht ohne Neuladen · {typ:'einkauf:zeigen'}  bei jedem Tab-Wechsel (Korb auffrischen)
   //   Einkauf → App:  {typ:'einkauf:bereit'}  einmal nach dem Laden · {typ:'einkauf:anzahl', anzahl}  für das Badge im Dock
@@ -375,13 +377,29 @@
   window.addEventListener('message', (e) => {
     if (e.origin !== location.origin || !shopFrame || e.source !== shopFrame.contentWindow || !e.data) return;
     if (e.data.typ === 'einkauf:bereit') shopReady = true;
-    else if (e.data.typ === 'einkauf:anzahl') {
-      const n = Math.max(0, parseInt(e.data.anzahl, 10) || 0);
-      const badge = $('#fh-shop-badge');
-      badge.textContent = n > 99 ? '99+' : String(n);
-      badge.hidden = !n;
-    }
+    else if (e.data.typ === 'einkauf:anzahl') setBadge(e.data.anzahl);
   });
+  function setBadge(anzahl) {
+    const n = Math.max(0, parseInt(anzahl, 10) || 0);
+    const badge = $('#fh-shop-badge');
+    badge.textContent = n > 99 ? '99+' : String(n);
+    badge.hidden = !n;
+  }
+  // Badge ohne geladenes iframe: GET /einkauf/api/warenkorb → totalCount (beim Start, alle 5 min sichtbar, nach dem Aufwachen)
+  function refreshBadge() {
+    if (!EMBED_SHOP) return;
+    fetch('/einkauf/api/warenkorb', { credentials: 'same-origin', cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((k) => { if (k && typeof k.totalCount === 'number') setBadge(k.totalCount); }, () => {});
+  }
+  if (EMBED_SHOP) setInterval(() => { if (!document.hidden) refreshBadge(); }, 5 * 60 * 1000);
+  let shopLeftAt = 0;
+  function unloadShop() {
+    if (!shopFrame) return;
+    el.shop.innerHTML = ''; // iframe samt seinem Speicher freigeben
+    shopFrame = null;
+    shopReady = false;
+  }
 
   function route() {
     if (!recipes.length) return;
@@ -413,6 +431,7 @@
       else if (r.view === 'shop') showShop(r.term);
       else { recipeScroll = { id: null, top: 0 }; renderResume(); }
     }
+    if (view === 'shop' && r.view !== 'shop') shopLeftAt = Date.now();
     view = r.view;
     root.setAttribute('data-fh-view', view);
     $('#fh-tab-rezepte').classList.toggle('is-active', view !== 'shop');
@@ -768,7 +787,8 @@
     lockScreen();
     if (!AWAKE_VIDEO) return;
     const v = awakeVideo();
-    if (!v) return;
+    if (!v || document.hidden) return; // im Standby nutzt das Video nichts (und soll dann entladen bleiben)
+    if (!v.getAttribute('src')) v.src = AWAKE_SRC; // nach dem Freigeben (awakeStop) neu laden
     const audible = canPlayAudible();
     if (!v.paused && (!v.muted || !audible)) return; // läuft schon (mit Ton bzw. stumm, solange Ton nicht erlaubt ist)
     v.muted = !audible;
@@ -776,9 +796,13 @@
     const p = v.play();
     if (p && p.catch) p.catch(() => { if (!v.muted) { v.muted = true; v.play().catch(() => {}); } });
   }
+  // Beim Anhalten das Video ganz entladen (src entfernen): Der Mediaplayer des Kühlschranks hält sonst seine Dekoder-
+  // Ressourcen, auch über den Standby hinweg – ein Kandidat für die Abstürze beim Aufwachen.
+  const AWAKE_SRC = 'keepawake-bg.mp4';
   function awakeStop() {
     const v = awakeVideo();
     if (v && !v.paused) v.pause();
+    if (v && v.getAttribute('src')) { v.removeAttribute('src'); v.load(); }
     if (wakeLock) { const l = wakeLock; wakeLock = null; l.release().catch(() => {}); markAwake(); }
   }
   function syncAwake() { if (wantAwake()) awakeStart(); else awakeStop(); }
@@ -987,6 +1011,8 @@
   function tick() {
     el.clock.textContent = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
     syncAwake(); // 2-Minuten-Regel, Timer und Alarm laufend nachführen
+    if (shopFrame && view !== 'shop' && shopLeftAt && Date.now() - shopLeftAt > 5 * 60 * 1000) unloadShop();
+    heartbeat();
     const now = Date.now();
     let due = null;
     for (const t of timers) if (!t.rung && now >= t.end) { t.rung = true; due = t; }
@@ -1134,9 +1160,11 @@
   });
 
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) return;
+    if (document.hidden) { goingToSleep(); return; }
     lastInteraction = Date.now(); // Aufwecken per Berührung → wieder 2 Minuten wach
     syncAwake();
+    refreshBadge();
+    if (view === 'shop' && !shopFrame) showShop(''); // Einkauf wurde im Standby entladen
     // Ohne dauerhafte Mikrofon-Erlaubnis nicht automatisch starten – das würde eine Abfrage aus heiterem Himmel öffnen
     if (view === 'cook' && settings.voice && micPermission === 'granted') voiceStart();
   });
@@ -1168,6 +1196,48 @@
   setInterval(checkUpdate, 3 * 60 * 1000);
   setInterval(applyUpdate, 15 * 1000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkUpdate(); });
+
+  // ---------- Standby, Speicher und Absturz-Protokoll ----------
+  // Am Kühlschrank erschien alle paar Stunden beim Aufwachen „Renderer process has crashed!“. Wahrscheinlich beendet Tizen im
+  // Standby den Tab, um Speicher zu holen (2 GB RAM). Deshalb beim Einschlafen alles Schwere freigeben, und läuft die Seite schon
+  // länger als 2 h, still neu laden (frische Seite = wenig Speicher), solange nicht gekocht wird und kein Timer läuft.
+  const T_LOAD = Date.now();
+  const LOAD_ID = T_LOAD.toString(36);
+  function goingToSleep() {
+    awakeStop();
+    unloadShop();
+    heartbeat(true);
+    const busy = view === 'cook' || timers.some((t) => !t.rung) || !el.alarm.hidden;
+    if (!busy && Date.now() - T_LOAD > 2 * 3600 * 1000) location.reload();
+  }
+  // Absturz-Erkennung: Jede Minute ein Lebenszeichen, beim regulären Verlassen (pagehide) ein „sauber beendet“. Fehlt das beim
+  // nächsten Start, ist die vorige Seite abgestürzt bzw. vom System beendet worden. Protokoll: fridge.crashes, fridge.memlog
+  // (liest die Diagnose-Seite mit aus).
+  (function detectCrash() {
+    const alive = store.get('alive', null), clean = store.get('clean', null);
+    if (alive && alive.id !== clean) {
+      const crashes = store.get('crashes', []);
+      crashes.push({ zuletztLebend: new Date(alive.t).toISOString(), laufzeitMin: alive.up, heapMB: alive.heap, ansicht: alive.view,
+        verdeckt: alive.hidden, video: alive.video, einkauf: alive.shop, neustart: new Date().toISOString() });
+      store.set('crashes', crashes.slice(-20));
+    }
+  })();
+  let lastBeat = 0, lastLog = 0;
+  function heartbeat(force) {
+    const now = Date.now();
+    if (!force && now - lastBeat < 60000) return;
+    lastBeat = now;
+    const m = window.performance && performance.memory;
+    const v = awakeVideo();
+    const s = { id: LOAD_ID, t: now, up: Math.round((now - T_LOAD) / 60000), heap: m ? Math.round(m.usedJSHeapSize / 1048576) : null,
+      view, hidden: document.hidden, video: !!(v && v.getAttribute('src')), shop: !!shopFrame };
+    store.set('alive', s);
+    if (now - lastLog >= 5 * 60000) { // Speicherverlauf alle 5 min, die letzten 48 Einträge (4 h)
+      lastLog = now;
+      store.set('memlog', store.get('memlog', []).concat([s]).slice(-48));
+    }
+  }
+  window.addEventListener('pagehide', () => store.set('clean', LOAD_ID));
 
   // ---------- Start ----------
   tick();
