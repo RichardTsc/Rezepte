@@ -72,6 +72,7 @@
     cart: '<path d="M3 9h18l-1.8 9.2A2 2 0 0 1 17.2 20H6.8a2 2 0 0 1-2-1.8L3 9Z"/><path d="m8 9 3-5M16 9l-3-5"/>',
     book: '<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5v-15Z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6"/>',
     cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+    search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20.5 20.5"/>',
   };
   const icon = (name) => `<svg class="fh-ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
   const pill = (name, text) => (text ? `<span class="fh-pill">${icon(name)}${esc(text)}</span>` : '');
@@ -143,6 +144,9 @@
         <header class="fh-top">
           <div class="fh-brand">Rezepte<span class="fh-dot">.</span></div>
           <div class="fh-clock" id="fh-clock"></div>
+          <label class="fh-search">${icon('search')}<input id="fh-q" type="search" placeholder="Zutat, z. B. Lachs"
+            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search"><span class="fh-q-count" id="fh-q-count"></span></label>
+          <button class="fh-round" data-act="search" id="fh-search-btn" aria-label="Zutaten suchen" aria-expanded="false">${icon('search')}</button>
           <button class="fh-round" data-act="fs" aria-label="Vollbild">${icon('fullscreen')}</button>
         </header>
         <nav class="fh-chips" id="fh-chips"></nav>
@@ -164,6 +168,7 @@
   const el = {
     home: $('#fh-home'), chips: $('#fh-chips'), resume: $('#fh-resume'), recipe: $('#fh-recipe'), cook: $('#fh-cook'), shop: $('#fh-shop'),
     timers: $('#fh-timers'), alarm: $('#fh-alarm'), toast: $('#fh-toast'), clock: $('#fh-clock'),
+    top: $('.fh-top'), q: $('#fh-q'), qCount: $('#fh-q-count'), searchBtn: $('#fh-search-btn'),
   };
 
   let toastTimer = 0;
@@ -206,20 +211,25 @@
   // Eigene Bereiche (Backen, Kids) erscheinen nur über ihren Knopf, nicht unter „Alle“, und stehen hinten.
   const SEPARATE_CATS = ['Backen', 'Kids'];
   const isSeparate = (c) => SEPARATE_CATS.includes(c);
+  let homeCats = [];
   function renderHome() {
     const cats = [];
     for (const r of recipes) if (!cats.includes(r.category)) cats.push(r.category);
     cats.sort((a, b) => isSeparate(a) - isSeparate(b)); // stabil: sonst bleibt die Reihenfolge aus recipes.json
+    homeCats = cats;
+    searchIndex = null;
     const inAll = recipes.filter((r) => !isSeparate(r.category)).length;
     el.chips.innerHTML = `<button class="fh-chip is-active" data-act="cat" data-cat="-1">Alle<span>${inAll}</span></button>` +
       cats.map((c, i) => `<button class="fh-chip" data-act="cat" data-cat="${i}">${esc(c)}</button>`).join('');
     el.home.dataset.cat = '-1';
     el.home.innerHTML = `<div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>
+      <div class="fh-msg" id="fh-nohit" hidden></div>
       <button class="fh-version" data-act="reload">Stand ${esc(BUILD.t || '?')} · ${esc(BUILD.v)} · antippen zum Neuladen</button>`;
     // Filtern per CSS: eine Regel je Kategorie, umgeschaltet wird nur data-cat am Container (eine Änderung statt 31).
-    // Unter „Alle“ (-1) blendet für jeden eigenen Bereich eine weitere Regel dessen Kacheln aus.
+    // Unter „Alle“ (-1) blendet für jeden eigenen Bereich eine weitere Regel dessen Kacheln aus – außer bei einer Suche
+    // (data-q): Die soll auch Backen und Kids finden.
     const css = cats.map((c, i) => `#fh-home[data-cat="${i}"] .fh-card:not([data-cat="${i}"]){display:none}` +
-      (isSeparate(c) ? `#fh-home[data-cat="-1"] .fh-card[data-cat="${i}"]{display:none}` : '')).join('');
+      (isSeparate(c) ? `#fh-home[data-cat="-1"]:not([data-q]) .fh-card[data-cat="${i}"]{display:none}` : '')).join('');
     let style = document.getElementById('fh-catcss');
     if (!style) { style = document.createElement('style'); style.id = 'fh-catcss'; document.head.appendChild(style); }
     style.textContent = css;
@@ -234,7 +244,76 @@
     if (next) next.classList.add('is-active');
     const scroller = document.getElementById('fh-app'); // die Übersicht scrollt in #fh-app, nicht im Dokument
     if (scroller.scrollTop > 0) scroller.scrollTop = 0;
+    searchInfo();
   }
+
+  // ---------- Zutatensuche ----------
+  // Selten gebraucht, deshalb eingeklappt: Die Lupe im Kopf klappt das Suchfeld anstelle von Titel und Uhr aus, es kostet
+  // also nie eigenen Platz. Gesucht wird in Zutaten und Titel, ohne Groß-/Kleinschreibung und Umlautpunkte („hahnchen“
+  // findet Hähnchen). Mehrere Wörter müssen alle vorkommen. Wörter unter 3 Zeichen zählen nur am Wortanfang, sonst fände
+  // „Ei“ fast alles (Zwiebel, Reis, weiß …). Die Suche wirkt zusätzlich zur Kategorie, unter „Alle“ auch für Backen und
+  // Kids. Gefiltert wird wie bei den Kategorien per CSS: #fh-home[data-q] plus Klasse is-hit an den Treffern.
+  // Zustand bleibt beim Öffnen eines Rezepts erhalten, ein Neuladen setzt ihn zurück (wie die Kategorie).
+  const fold = (s) => String(s).toLowerCase().replace(/ß/g, 'ss').normalize('NFD').replace(/[̀-ͯ]/g, '');
+  let searchIndex = null; // gefalteter Text je Rezept in Kachel-Reihenfolge, erst bei der ersten Suche gebaut
+  let searchTimer = 0;
+  const searchOpen = () => el.top.classList.contains('is-search');
+
+  function toggleSearch(open) {
+    el.top.classList.toggle('is-search', open);
+    el.searchBtn.setAttribute('aria-expanded', String(open));
+    el.searchBtn.setAttribute('aria-label', open ? 'Suche schließen' : 'Zutaten suchen');
+    el.searchBtn.innerHTML = icon(open ? 'x' : 'search');
+    if (open) { el.q.focus(); return; }
+    el.q.value = '';
+    el.q.blur();
+    runSearch();
+  }
+
+  function runSearch() {
+    clearTimeout(searchTimer);
+    const terms = fold(el.q.value).split(/[\s,;+]+/).filter(Boolean);
+    if (!terms.length) { el.home.removeAttribute('data-q'); searchInfo(); return; }
+    if (!searchIndex) {
+      // Zwischenüberschriften („Für die Soße:“) und Artikel („in einem Stück“) gehören nicht dazu
+      searchIndex = recipes.map((r) => fold([r.name, r.title, ...(r.ingredients || []).filter((x) => !/:\s*$/.test(x))].join('\n'))
+        .replace(/\bein(?:e[mnrs]?)?\b/g, ' '));
+    }
+    const tests = terms.map((t) => {
+      if (t.length >= 3) return (s) => s.includes(t);
+      const re = new RegExp('(?:^|[^a-z0-9])' + t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      return (s) => re.test(s);
+    });
+    el.home.querySelectorAll('.fh-card').forEach((c, i) => c.classList.toggle('is-hit', tests.every((f) => f(searchIndex[i]))));
+    el.home.dataset.q = '1';
+    searchInfo();
+    const scroller = document.getElementById('fh-app');
+    if (scroller.scrollTop > 0) scroller.scrollTop = 0;
+  }
+
+  // Trefferzahl im Suchfeld. Passt nichts, ein Hinweis – mit Knopf, falls es nur in anderen Kategorien Treffer gibt.
+  function searchInfo() {
+    const nohit = $('#fh-nohit');
+    if (!nohit) return;
+    if (!el.home.dataset.q) { el.qCount.textContent = ''; nohit.hidden = true; return; }
+    const cat = el.home.dataset.cat;
+    let all = 0, shown = 0;
+    for (const c of el.home.querySelectorAll('.fh-card.is-hit')) { all++; if (cat === '-1' || c.dataset.cat === cat) shown++; }
+    el.qCount.textContent = !shown ? '' : shown === 1 ? '1 Rezept' : `${shown} Rezepte`;
+    nohit.hidden = shown > 0;
+    if (shown) return;
+    nohit.innerHTML = all
+      ? `Kein Treffer in „${esc(homeCats[+cat])}“.<br><button class="fh-btn fh-primary" data-act="cat" data-cat="-1">${all} Treffer in allen Kategorien</button>`
+      : `Kein Rezept mit „${esc(el.q.value.trim())}“.`;
+  }
+
+  el.q.addEventListener('input', () => { clearTimeout(searchTimer); searchTimer = setTimeout(runSearch, 200); });
+  el.q.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    runSearch();
+    el.q.blur(); // Bildschirmtastatur zu, damit die Treffer frei liegen
+  });
 
   // Kacheln: kleine quadratische Bilder (300 px, tiles/), sofort laden – alle 31 sind ohnehin auf dem ersten Bildschirm
   const card = (r, cat) => `
@@ -320,6 +399,7 @@
       const sc = $('#fh-rscroll');
       if (sc) recipeScroll = { id: parseHashId(prev), top: sc.scrollTop };
     }
+    if (r.view !== 'home' && document.activeElement === el.q) el.q.blur(); // Bildschirmtastatur nicht mitnehmen
     if (r.view === 'cook') {
       el.recipe.hidden = true;
       el.shop.hidden = true;
@@ -430,7 +510,7 @@
     if (!ckCanPlan(rec)) return `<span class="fh-tag">${icon('cal')}In Cookidoo angelegt</span>`;
     return '';
   }
-  // Handy mit Picnic-App (iPhone/Android, nicht der Kühlschrank): Haupt-Aktion „In Picnic öffnen“ statt „Kochen starten“
+  // Handy mit Picnic-App (iPhone/Android, nicht der Kühlschrank): Haupt-Aktion „Bei Picnic bestellen“ statt „Kochen starten“
   // (Wunsch des Nutzers). Die ID des eigenen Picnic-Rezepts schreibt der picnic-assistent ins Frontmatter (picnic: "<id>").
   // Deep Link über das App-Schema von Picnic (so leitet auch picnic.app Handys in die App), am iPhone getestet 2026-11-08.
   // Kochen bleibt über die Schritte („Zubereitung“ antippen) und das Weiterkochen-Banner erreichbar.
@@ -441,11 +521,14 @@
     const tags = cookidooTag(rec) + picnicTag(rec);
     return tags ? `<div class="fh-ck fh-tags">${tags}</div>` : '';
   }
+  // Beschriftung der Leisten-Knöpfe in zwei festen Teilen: Stehen zwei Knöpfe nebeneinander, bricht das Handy beide
+  // gleich in zwei Zeilen um (fridge.css). Einzeilig passen die Texte dort nur bei ~15 px, auf kleineren iPhones gar nicht.
+  const barLabel = (a, b) => `<span class="fh-lbl"><span>${a}</span> <span>${b}</span></span>`;
   function mainAction(rec, resumeStep) {
-    if (PICNIC_APP && rec.picnic) return `<a class="fh-btn fh-primary fh-wide" href="${esc(picnicHref(rec.picnic))}">${icon('cart')}In Picnic öffnen</a>`;
-    return `<button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? `Weiter bei Schritt ${resumeStep}` : 'Kochen starten'}</button>`;
+    if (PICNIC_APP && rec.picnic) return `<a class="fh-btn fh-primary fh-wide" href="${esc(picnicHref(rec.picnic))}">${icon('cart')}${barLabel('Bei Picnic', 'bestellen')}</a>`;
+    return `<button class="fh-btn fh-primary fh-wide" data-act="cook"${rec.steps.length ? '' : ' disabled'}>${icon('play')}${resumeStep ? barLabel('Weiter bei', `Schritt ${resumeStep}`) : barLabel('Kochen', 'starten')}</button>`;
   }
-  const cookidooButton = (rec) => (ckCanPlan(rec) ? `<button class="fh-btn fh-ck-btn" data-act="ck-open">${icon('cal')}In Cookidoo planen</button>` : '');
+  const cookidooButton = (rec) => (ckCanPlan(rec) ? `<button class="fh-btn fh-ck-btn" data-act="ck-open">${icon('cal')}${barLabel('In Cookidoo', 'planen')}</button>` : '');
   const isoDate = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
   function nextDays(n) {
     const noon = new Date(); noon.setHours(12, 0, 0, 0);
@@ -977,6 +1060,7 @@
         if (view === 'home') { e.preventDefault(); document.getElementById('fh-app').scrollTo({ top: 0, behavior: 'smooth' }); }
         break;
       case 'cat': filterCategory(+t.dataset.cat); break;
+      case 'search': toggleSearch(!searchOpen()); break;
       case 'resume': {
         const s = session();
         if (s) location.hash = `#/r/${s.id}/k/${s.step}`;
@@ -1045,6 +1129,7 @@
       else if (p && !p.hidden) closePlan();
       else if (view === 'cook') goBack('#/r/' + cookRecipeId);
       else if (view === 'recipe') goBack('#/');
+      else if (view === 'home' && searchOpen()) toggleSearch(false);
     }
   });
 
@@ -1070,7 +1155,9 @@
       .then((v) => { if (v && v.v && v.v !== BUILD.v) { pendingVersion = v.v; applyUpdate(); } }, () => {});
   }
   function applyUpdate() {
-    if (!pendingVersion || view !== 'home' || !el.alarm.hidden || Date.now() - lastInteraction < 20000) return;
+    // Bei einer laufenden Suche länger warten (2 min), sonst verschwinden die Treffer womöglich beim Lesen
+    const quiet = el.home.dataset.q ? 120000 : 20000;
+    if (!pendingVersion || view !== 'home' || !el.alarm.hidden || Date.now() - lastInteraction < quiet) return;
     // Nur ein Versuch pro Version: Liefert ein Cache noch die alte Seite, entsteht keine Neulade-Schleife
     let tried = null;
     try { tried = sessionStorage.getItem('fridge.reloadFor'); sessionStorage.setItem('fridge.reloadFor', pendingVersion); } catch { /* egal */ }

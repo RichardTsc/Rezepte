@@ -66,6 +66,23 @@ html.fridge [hidden] { display: none !important; }
 html.fridge.fh-fs [data-act="fs"] { display: none; } /* im Vollbild überflüssig; beenden per Wischgeste des Systems */
 html.fridge.fh-nofs [data-act="fs"] { display: none; } /* iPhone: keine Fullscreen-API, als Home-Bildschirm-App ohnehin randlos */
 .fh-round.is-live { box-shadow: 0 0 0 5px var(--accent-line); }
+/* Zutatensuche: Die Lupe klappt das Feld anstelle von Titel und Uhr aus – gleiche Höhe wie die Knöpfe, nichts verschiebt sich */
+.fh-search {
+  display: none; flex: 1; min-width: 0; align-items: center; gap: 12px; height: 64px; box-sizing: border-box;
+  padding: 0 22px; border-radius: var(--r-pill); background: var(--surface); border: 1px solid var(--line); color: var(--muted);
+}
+.fh-top.is-search .fh-brand, .fh-top.is-search .fh-clock { display: none; }
+.fh-top.is-search .fh-search { display: flex; }
+.fh-search:focus-within { border-color: var(--accent); }
+.fh-search input {
+  flex: 1; min-width: 0; height: 100%; margin: 0; padding: 0; border: 0; outline: 0; background: none; border-radius: 0;
+  color: var(--text); font: inherit; font-size: 24px; -webkit-appearance: none; appearance: none;
+  -webkit-user-select: text; user-select: text;
+}
+.fh-search input::placeholder { color: var(--muted); opacity: 1; }
+.fh-search input::-webkit-search-cancel-button, .fh-search input::-webkit-search-decoration { -webkit-appearance: none; display: none; }
+.fh-q-count { flex: none; font-size: 18px; font-weight: 650; white-space: nowrap; }
+#fh-home[data-q] .fh-card:not(.is-hit) { display: none; }
 .fh-chips { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; }
 .fh-chips::-webkit-scrollbar { display: none; }
 .fh-chip {
@@ -191,7 +208,11 @@ html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 }
 .fh-bar { flex: none; display: flex; gap: 12px; padding: 14px 16px calc(18px + var(--sysbar)); background: var(--bg); border-top: 1px solid var(--line); }
 .fh-bar .fh-btn { flex: 1 1 0; width: auto; min-width: 0; }
-.fh-bar .fh-ck-btn { min-height: 80px; font-size: 22px; padding: 0 16px; }
+/* Zwei Knöpfe nebeneinander sind gleich gebaut (Schrift, Innenabstand, 1-px-Rand), damit keiner anders umbricht.
+   Die Beschriftung (.fh-lbl) hat zwei feste Teile, am Handy steht jeder in einer eigenen Zeile. */
+.fh-bar .fh-btn:not(:only-child) { padding: 0 16px; font-size: 23px; }
+.fh-bar .fh-primary { border: 1px solid var(--accent); }
+.fh-lbl { line-height: 1.15; text-align: left; }
 .fh-btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-sizing: border-box;
   min-height: 80px; padding: 0 26px; border-radius: var(--r-ctl); background: var(--surface-2); font-size: 25px; font-weight: 750;
@@ -309,6 +330,9 @@ html.fridge.fh-drawer-open .fh-timers { display: none; }
   .fh-clock { display: none; } /* die Uhr zeigt die Statusleiste */
   .fh-round { width: 48px; height: 48px; }
   .fh-ic { width: 24px; height: 24px; }
+  .fh-search { height: 48px; padding: 0 16px; gap: 8px; }
+  .fh-search input { font-size: 17px; } /* ≥ 16 px, sonst zoomt iOS beim Antippen */
+  .fh-q-count { font-size: 14px; }
   .fh-chips { gap: 6px; padding: 6px 0 2px; margin: 0 -16px; padding-left: 16px; padding-right: 16px; scroll-padding: 0 16px; }
   .fh-chip { min-height: 44px; padding: 0 16px; font-size: 16px; }
   .fh-resume { min-height: 52px; gap: 10px; padding: 0 16px; font-size: 16px; }
@@ -352,7 +376,8 @@ html.fridge.fh-drawer-open .fh-timers { display: none; }
   .fh-num { width: 30px; height: 30px; font-size: 15px; }
   .fh-bar { gap: 10px; padding: 10px 12px var(--pad-b); }
   .fh-btn { min-height: 58px; padding: 0 18px; gap: 8px; border-radius: 18px; font-size: 19px; }
-  .fh-bar .fh-ck-btn { min-height: 58px; padding: 0 10px; font-size: 16px; line-height: 1.15; }
+  .fh-bar .fh-btn:not(:only-child) { padding: 0 12px; font-size: 17px; }
+  .fh-bar .fh-btn:not(:only-child) .fh-lbl > span { display: block; }
   .fh-ck-btn { min-height: 52px; font-size: 17px; }
   .fh-ck-hint { font-size: 15px; }
   .fh-ck-days { gap: 8px; }
