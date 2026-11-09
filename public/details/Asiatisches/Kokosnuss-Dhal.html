@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kokosnuss Dhal</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Asiatisches/Kokosnuss-Dhal.jpg" itemprop="image" alt="Kokosnuss
+Dhal"/>
+            <div>
+                <h1 itemprop="name">Kokosnuss Dhal</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">25
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>240 g Zwiebeln,
+halbiert</li>
+                                            <li>1–2 grüne Chilischoten,
+frisch, nach Wunsch entkernt</li>
+                                            <li>150 g Tomaten,
+geviertelt</li>
+                                            <li>250 g rote Linsen,
+getrocknet</li>
+                                            <li>400 g Kokosmilch</li>
+                                            <li>1 TL Kurkuma,
+gemahlen</li>
+                                            <li>2 TL schwarze
+Senfkörner</li>
+                                            <li>300 g Wasser</li>
+                                            <li>½ TL Gewürzpaste für
+Gemüsebrühe, selbst gemacht</li>
+                                            <li>120 g Babyspinat,
+frisch, grob zerkleinert</li>
+                                            <li>2 EL Koriander, frisch,
+grob gehackt, zum Garnieren</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für die Basis Zwiebeln,
+Chilis und Tomaten 5 Sek./Stufe 6 im Mixtopf hacken und anschließend vom
+Rand zusammenschieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Rote Linsen,
+Kokosmilch, Kurkuma, Senfkörner, Wasser und Gewürzpaste für Gemüsebrühe
+in den Mixtopf geben und 15 Min./110°C/Linkslauf/Stufe 1 garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Babyspinat mit dem
+Spatel in das heiße Dhal im Mixtopf rühren, bis er zusammenfällt.
+Abschmecken und mit Koriander bestreut auf den Tisch bringen.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

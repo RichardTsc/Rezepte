@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tomatensauce</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Tomatensauce.jpg" itemprop="image" alt="Tomatensauce"/>
+            <div>
+                <h1 itemprop="name">Tomatensauce</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">1
+Portion (ca. 300 g)</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">25
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>1 Knoblauchzehe</li>
+                                            <li>½ Zwiebel</li>
+                                            <li>2 TL Olivenöl</li>
+                                            <li>250 g Tomaten,
+geviertelt</li>
+                                            <li>1 TL Pizzagewürz</li>
+                                            <li>¾ TL Gewürzpaste für
+Gemüsebrühe, selbst gemacht</li>
+                                            <li>1 Prise Salz</li>
+                                            <li>1 Prise Pfeffer</li>
+                                            <li>¼ TL Balsamico,
+dunkel</li>
+                                            <li>1 Prise Zucker</li>
+                                            <li>1 EL Tomatenmark</li>
+                                            <li>1 EL Crème fraîche</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zwiebel und Knoblauch
+schälen, im Mixtopf 3 Sek./Stufe 5 hacken und vom Rand nach unten
+schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Olivenöl dazugeben
+und 3 Min./120°C/Stufe 1 andünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Tomatenviertel
+dazugeben und 8 Sek./Stufe 5 klein hacken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Pizzagewürz,
+Gewürzpaste, Salz, Pfeffer, Balsamico, Zucker und Tomatenmark dazugeben.
+Statt des Messbechers den Gareinsatz als Spritzschutz auf den Deckel
+setzen. Die Sauce 12 Min./100°C/Stufe 2 im Mixtopf einkochen
+lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Crème fraîche dazugeben
+und 15 Sek./Stufe 3 unterrühren. Passt zu Nudeln oder Reis. Wer mag,
+gibt Oliven, Kapern, Thunfisch oder Schinken dazu.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

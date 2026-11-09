@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Erbsen-Cremesuppe</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Erbsen-Cremesuppe.jpg" itemprop="image" alt="Erbsen-Cremesuppe"/>
+            <div>
+                <h1 itemprop="name">Erbsen-Cremesuppe</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">8
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">10
+Minuten (plus ca. 30 Min. Köcheln)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>150 g Zwiebeln,
+halbiert</li>
+                                            <li>30 g Butter</li>
+                                            <li>1000 g Erbsen, TK</li>
+                                            <li>500 g Wasser</li>
+                                            <li>2 TL Gewürzpaste für
+Hühnerbrühe, selbst gemacht (gehäuft)</li>
+                                            <li>300 g Crème fraîche</li>
+                                            <li>½ TL Zitronenschale</li>
+                                            <li>2 Prisen schwarzer
+Pfeffer, frisch gemahlen</li>
+                                            <li>½ TL Salz</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Zwiebelhälften im
+Mixtopf 5 Sek./Stufe 5 hacken und mit dem Spatel vom Rand
+schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Butter dazugeben und
+ohne Messbecher 3 Min./120°C/Sanftrührstufe andünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Hälfte der Erbsen
+(500 g) dazugeben und ohne Messbecher 4 Min./120°C/Sanftrührstufe
+garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Wasser und Gewürzpaste
+dazugeben und 15 Min./100°C/Stufe 1 kochen. Für eine vegetarische Suppe
+Gemüse- statt Hühnerbrühe nehmen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Crème fraîche,
+Zitronenschale, Pfeffer und Salz dazugeben und 1 Min./Stufe 10 fein
+pürieren. Statt Crème fraîche gehen auch saure Sahne, griechischer
+Joghurt oder Sahne mit ein paar Tropfen Zitronensaft.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die übrigen 500 g
+Erbsen in die Suppe geben und 5 Min./90°C/Linkslauf/Stufe 1 erwärmen, so
+bleiben sie ganz. Abschmecken und servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

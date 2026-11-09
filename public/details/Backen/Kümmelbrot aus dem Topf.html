@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rundes Kümmelbrot aus dem Topf</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Backen/K%C3%BCmmelbrot%20aus%20dem%20Topf.jpg" itemprop="image" alt="Rundes
+Kümmelbrot aus dem Topf"/>
+            <div>
+                <h1 itemprop="name">Rundes Kümmelbrot aus dem Topf</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">1
+Brot (15 Scheiben)</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">20
+Minuten (plus ca. 6½ Std. Gehen und Backen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>10 g Öl</li>
+                                            <li>400 g Weizenmehl Type
+405</li>
+                                            <li>150 g Roggenkörner</li>
+                                            <li>¼ Würfel Hefe (10
+g)</li>
+                                            <li>320 g Wasser</li>
+                                            <li>2 TL Salz</li>
+                                            <li>1 TL Honig</li>
+                                            <li>20 g Apfelessig</li>
+                                            <li>1 TL Kümmel,
+gemahlen</li>
+                                            <li>2–3 TL Kümmelsamen, nach
+Geschmack</li>
+                                            <li>1 TL grobes Meersalz,
+zum Bestreuen</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Eine Rührschüssel dünn
+mit Öl auspinseln und mit Mehl ausstäuben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Roggenkörner 20
+Sek./Stufe 10 im Mixtopf fein mahlen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Weizenmehl, Hefe,
+Wasser, 10 g Öl, Salz, Honig, Apfelessig, gemahlenen Kümmel und
+Kümmelsamen dazugeben und im Mixtopf im Modus Teig kneten 4 Min.
+verarbeiten. Den Teig in die Schüssel geben, mit Mehl bestäuben und rund
+6 Stunden gehen lassen, bis er sich verdoppelt hat. Alternativ abends
+ansetzen und über Nacht (etwa 8 Std.) im Kühlschrank gehen lassen. Gegen
+Ende einen ofenfesten Topf mit Deckel (3–4 l) vorbereiten: Tontopf nach
+Gebrauchsanweisung, ggf. vorher wässern, einen neuen Gusseisentopf mit
+hoch erhitzbarem Öl einfetten. Den Topf dann mit Mehl
+ausstreuen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Teig auf die
+bemehlte Arbeitsfläche geben, einige Male übereinanderfalten und zu
+einem runden Laib formen. In den Topf setzen, über Kreuz einschneiden,
+mit Wasser einpinseln und mit grobem Meersalz und Kümmelsamen bestreuen.
+Mit Deckel auf der untersten Schiene in den kalten Backofen stellen und
+50 Minuten bei 230 °C backen. Den Deckel abnehmen und das Brot weitere
+10 Minuten bei 230 °C bräunen. 5 Minuten im Topf ruhen lassen, dann
+herausheben und auf einem Kuchengitter vollständig auskühlen
+lassen.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

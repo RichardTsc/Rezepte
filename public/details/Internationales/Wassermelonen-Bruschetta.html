@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wassermelonen-Bruschetta</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Internationales/Wassermelonen-Bruschetta.jpg" itemprop="image" alt="Wassermelonen-Bruschetta"/>
+            <div>
+                <h1 itemprop="name">Wassermelonen-Bruschetta</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">12
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">20
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>12 Scheiben
+Ciabatta</li>
+                                            <li>2 EL Butter, zum
+Rösten</li>
+                                            <li>4 Zweige Minze,
+abgezupft</li>
+                                            <li>1 Knoblauchzehe,
+klein</li>
+                                            <li>20 g Limettensaft</li>
+                                            <li>30 g Olivenöl</li>
+                                            <li>10 g Honig</li>
+                                            <li>¼ TL Salz</li>
+                                            <li>2 Prisen Pfeffer</li>
+                                            <li>500 g Wassermelone, in
+kleinen Würfeln (ca. 5 mm)</li>
+                                            <li>150 g Feta, grob
+zerbröselt</li>
+                                            <li>2 EL Crema di Balsamico,
+zum Garnieren</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Ciabattascheiben in
+einer Pfanne mit etwas Butter von beiden Seiten goldbraun
+rösten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Minzblätter und
+Knoblauch im Mixtopf 5 Sek./Stufe 6 hacken. Die Reste von der Wand mit
+dem Spatel nach unten schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für das Dressing
+Limettensaft, Olivenöl, Honig, Salz und Pfeffer hinzufügen und im
+Mixtopf 10 Sek./Stufe 4 verrühren.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Wassermelone und Feta
+in einer Schüssel mit dem Dressing vermengen und auf die gerösteten
+Brotscheiben häufen. Mit etwas Crema di Balsamico beträufeln und gleich
+servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

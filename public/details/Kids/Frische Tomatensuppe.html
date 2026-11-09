@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frische Tomatensuppe</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Frische%20Tomatensuppe.jpg" itemprop="image" alt="Frische
+Tomatensuppe"/>
+            <div>
+                <h1 itemprop="name">Frische Tomatensuppe</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">6
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">30
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>60 g Zwiebel,
+halbiert</li>
+                                            <li>1 Knoblauchzehe</li>
+                                            <li>30 g Olivenöl</li>
+                                            <li>50 g Rotwein,
+trocken</li>
+                                            <li>100 g Tomatenmark</li>
+                                            <li>800 g Tomaten, in
+Stücken (4 cm)</li>
+                                            <li>1 TL Zucker</li>
+                                            <li>1 TL Salz
+(gestrichen)</li>
+                                            <li>3 Prisen Pfeffer</li>
+                                            <li>1 TL getrocknetes
+Basilikum</li>
+                                            <li>1 TL Gewürzpaste für
+Gemüsebrühe, selbst gemacht (gehäuft)</li>
+                                            <li>1 TL getrockneter
+Oregano (gehäuft)</li>
+                                            <li>300 g Wasser</li>
+                                            <li>100 g Sahne</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zwiebel und Knoblauch
+im Mixtopf 3 Sek./Stufe 6 hacken und mit dem Spatel vom Rand
+schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Olivenöl dazugeben
+und 3 Min./120°C/Stufe 1 andünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Rotwein, Tomatenmark,
+Tomatenstücke, Zucker, Salz, Pfeffer, Basilikum, Gewürzpaste, Oregano
+und Wasser dazugeben und alles 13 Min./100°C/Stufe 1 kochen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Sahne dazugeben und
+die Suppe im Modus Pürieren 30 Sek. glatt mixen. Abschmecken und heiß
+auf den Tisch bringen.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

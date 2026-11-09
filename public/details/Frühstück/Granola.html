@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Granola</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Fr%C3%BChst%C3%BCck/Granola.jpg" itemprop="image" alt="Granola"/>
+            <div>
+                <h1 itemprop="name">Granola</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">14
+Portionen (ca. 700 g)</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">10
+Minuten (plus ca. 1 Std. 30 Min. Backen und Abkühlen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>100 g Nüsse, ganz,
+gemischt (z. B. Haselnüsse, Mandeln, Walnüsse)</li>
+                                            <li>250 g Haferflocken,
+kernig</li>
+                                            <li>100 g Dinkelflocken</li>
+                                            <li>50 g
+Buchweizenflocken</li>
+                                            <li>15 g Amaranth,
+gepufft</li>
+                                            <li>40 g Kürbiskerne</li>
+                                            <li>40 g
+Sonnenblumenkerne</li>
+                                            <li>10 g Leinsamen</li>
+                                            <li>200 g Ahornsirup</li>
+                                            <li>40 g Kokosöl</li>
+                                            <li>1 TL Zimt
+(gestrichen)</li>
+                                            <li>1 Msp. Salz</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Backofen auf 160 °C
+vorheizen und ein Blech mit Backpapier auslegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Nüsse 2 Sek./Stufe
+6 im Mixtopf grob hacken und in eine große Schüssel umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Schüssel auf den
+Mixtopfdeckel stellen. Hafer-, Dinkel- und Buchweizenflocken, Amaranth,
+Kürbis- und Sonnenblumenkerne sowie Leinsamen dazuwiegen, mit den Nüssen
+mischen und beiseitestellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ahornsirup, Kokosöl,
+Zimt und Salz in den Mixtopf geben und 3 Min./100°C/Stufe 2 erhitzen.
+Über die Flocken gießen und mit dem Spatel gründlich vermengen. Die
+Masse gleichmäßig auf dem Blech verteilen und im unteren Drittel des
+Backofens bei 160 °C 25–30 Min. backen. Dabei alle 5–10 Minuten
+durchmischen, damit das Granola gleichmäßig bräunt und nicht zu dunkel
+wird.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Granola auf dem
+Blech vollständig auskühlen lassen, erst dann wird es fest und knusprig.
+Trockenfrüchte nach Wunsch erst jetzt untermischen, mitgebacken werden
+sie hart. Mit Joghurt und Obst essen oder in einem Schraubglas
+aufbewahren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

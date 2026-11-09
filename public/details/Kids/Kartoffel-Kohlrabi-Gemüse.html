@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kartoffel-Kohlrabi-Gemüse</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Kartoffel-Kohlrabi-Gem%C3%BCse.jpg" itemprop="image" alt="Kartoffel-Kohlrabi-Gemüse"/>
+            <div>
+                <h1 itemprop="name">Kartoffel-Kohlrabi-Gemüse</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">25
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>4 Zweige Petersilie,
+abgezupft</li>
+                                            <li>40 g Butter, in
+Stücken</li>
+                                            <li>2–3 TL Zucker, nach
+Geschmack</li>
+                                            <li>500 g Kartoffeln, in
+Würfeln (1,5 cm)</li>
+                                            <li>500 g Kohlrabi, in
+Würfeln (1,5 cm)</li>
+                                            <li>140 g Sahne</li>
+                                            <li>80 g Milch</li>
+                                            <li>1–2 TL Gewürzpaste für
+Gemüsebrühe, selbst gemacht</li>
+                                            <li>1 TL Salz</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Petersilienblätter
+im Mixtopf 2 Sek./Stufe 8 hacken und für den Schluss
+beiseitestellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Butter mit dem Zucker
+im Mixtopf 3 Min./100°C/Stufe 1 schmelzen lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Kartoffel- und
+Kohlrabiwürfel, Sahne, Milch, Gewürzpaste und Salz dazugeben. Zuerst 10
+Min./120°C/Linkslauf/Sanftrührstufe im Mixtopf garen. Anschließend 10–15
+Min./98°C/Linkslauf/Sanftrührstufe weitergaren, bis die Würfel weich
+sind (an einem Stück prüfen).</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Petersilie mit dem
+Spatel unterheben, nachwürzen und servieren. Passt zum Beispiel zu kurz
+gebratenem Fleisch.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

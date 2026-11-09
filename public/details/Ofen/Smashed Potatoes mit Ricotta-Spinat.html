@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smashed Potatoes mit Ricotta-Spinat</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Ofen/Smashed%20Potatoes%20mit%20Ricotta-Spinat.jpg" itemprop="image" alt="Smashed
+Potatoes mit Ricotta-Spinat"/>
+            <div>
+                <h1 itemprop="name">Smashed Potatoes mit
+Ricotta-Spinat</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">6
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">15
+Minuten (plus ca. 30 Min. Dämpfen und Backen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>500 g Blattspinat, TK,
+aufgetaut</li>
+                                            <li>100 g Zwiebeln,
+halbiert</li>
+                                            <li>2 Knoblauchzehen</li>
+                                            <li>30 g Olivenöl (plus 3 EL
+zum Beträufeln)</li>
+                                            <li>1 TL Meersalzflocken
+(plus 3–5 Prisen zum Bestreuen)</li>
+                                            <li>¼ TL Pfeffer</li>
+                                            <li>¼ TL Muskat</li>
+                                            <li>10 g Ingwer, frisch, in
+dünnen Scheiben (2-5 mm)</li>
+                                            <li>300 g Wasser</li>
+                                            <li>1000 g Drillinge,
+gewaschen, ungeschält</li>
+                                            <li>2 TL Rosmarinnadeln,
+gehackt</li>
+                                            <li>50 g Weißwein</li>
+                                            <li>100 g Sahne</li>
+                                            <li>½ TL Zitronenschale,
+gerieben</li>
+                                            <li>15 g Speisestärke</li>
+                                            <li>200 g Ricotta</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Spinat gut
+ausdrücken und zur Seite stellen. Für die Sauce Zwiebeln, Knoblauch,
+Ingwer, 30 g Olivenöl, 1 TL Meersalzflocken, Pfeffer und Muskat im
+Mixtopf 4 Sek./Stufe 7 hacken. Danach im Mixtopf 4
+Min./120°C/Linkslauf/Stufe 1 andünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Wasser in den
+Mixtopf gießen, den Varoma mit den Drillingen aufsetzen und 22
+Min./Varoma/Stufe 1 dämpfen. In der Zeit den Backofen auf 220 °C Umluft
+vorheizen und zwei Bleche mit Backpapier auslegen. Anschließend den
+Varoma abnehmen, der Sud bleibt im Mixtopf.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Kartoffeln auf
+beide Bleche verteilen und mit dem Boden eines Einmachglases platt
+drücken. 3 EL Olivenöl darüberträufeln, Rosmarin und 3–5 Prisen
+Meersalzflocken darüberstreuen. Bei 220 °C Umluft 20–25 Min. backen und
+in der Zeit die Sauce fertig machen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Weißwein, Sahne,
+Zitronenschale und Speisestärke zum Sud in den Mixtopf geben und im
+Modus Andicken bei 100 °C binden.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ricotta und den
+ausgedrückten Spinat in den Mixtopf geben und im Modus Erwärmen bei 90
+°C auf Stufe 1 durchwärmen. Die Kartoffeln aus dem Ofen holen und mit
+dem Ricotta-Spinat anrichten. Passt als Snack oder als Beilage zu Fisch
+und Fleisch.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

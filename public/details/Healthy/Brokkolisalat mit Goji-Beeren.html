@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Brokkolisalat mit Goji Beeren</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Healthy/Brokkolisalat%20mit%20Goji-Beeren.jpg" itemprop="image" alt="Brokkolisalat
+mit Goji Beeren"/>
+            <div>
+                <h1 itemprop="name">Brokkolisalat mit Goji Beeren</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">10
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>300 g Brokkoli, in
+Röschen</li>
+                                            <li>50 g Apfel, säuerlich,
+geviertelt, Kerngehäuse entfernt</li>
+                                            <li>30–40 g rote Zwiebeln,
+halbiert, nach Geschmack</li>
+                                            <li>30 g Cashewkerne,
+geröstet, ungesalzen</li>
+                                            <li>30 g Cranberrys,
+getrocknet</li>
+                                            <li>30 g Gojibeeren,
+getrocknet</li>
+                                            <li>100 g Mayonnaise,
+vegan</li>
+                                            <li>15 g weißer
+Balsamico-Essig</li>
+                                            <li>½ TL Rohrzucker</li>
+                                            <li>½ TL Salz</li>
+                                            <li>¼ TL schwarzer Pfeffer,
+gemahlen</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Sämtliche Zutaten auf
+einmal in den Mixtopf geben: Brokkoli, Apfel, Zwiebel, Cashews,
+Cranberrys, Gojibeeren, vegane Mayonnaise, Balsamico, Rohrzucker, Salz
+und Pfeffer. Alles im Mixtopf 8 Sek./Stufe 4 grob zerkleinern und dabei
+vermengen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Salat abschmecken,
+in hohe Gläser oder kleine Schalen füllen, mit ein paar zusätzlichen
+Gojibeeren bestreuen und servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rahmspinat mit Kartoffelpüree und Ei</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Rahmspinat%20mit%20Kartoffelp%C3%BCree%20und%20Ei.jpg" itemprop="image" alt="Rahmspinat
+mit Kartoffelpüree und Ei"/>
+            <div>
+                <h1 itemprop="name">Rahmspinat mit Kartoffelpüree und
+Ei</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">15
+Minuten (plus ca. 30 Min. Garen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>150 g Zwiebeln,
+halbiert</li>
+                                            <li>2 Knoblauchzehen</li>
+                                            <li>110 g Butter, in
+Stücken</li>
+                                            <li>750 g Kartoffeln,
+mehligkochend, in Stücken</li>
+                                            <li>2½–3 TL Salz</li>
+                                            <li>500 g Wasser</li>
+                                            <li>500 g Blattspinat,
+frisch, ggf. grob gehackt</li>
+                                            <li>300 g Milch</li>
+                                            <li>¾ TL Pfeffer</li>
+                                            <li>½ TL Muskat</li>
+                                            <li>150 g Sahne</li>
+                                            <li>4 Eier</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zwiebeln und Knoblauch
+im Mixtopf 3 Sek./Stufe 6 fein hacken, dann mit dem Spatel nach unten
+streichen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit 60 g Butter im
+Mixtopf 5 Min./120°C/Linkslauf/Stufe 1 andünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Gareinsatz einsetzen
+und mit den Kartoffeln füllen. Wasser und 1 TL Salz angießen. Die
+Kartoffeln im Mixtopf 15 Min./Varoma/Linkslauf/Stufe 1 garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Spinat in den
+Varoma-Behälter füllen, Varoma aufsetzen und schließen. Kartoffeln und
+Spinat zusammen im Mixtopf noch 10 Min./Varoma/Linkslauf/Stufe 1 garen.
+Varoma beiseitestellen und den Gareinsatz mit dem Spatel herausheben.
+Den Sud aus dem Mixtopf in ein Gefäß gießen und aufheben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für das Püree den
+Rühraufsatz einsetzen. Kartoffeln mit Milch, 50 g Butter, 1 TL Salz und
+je ¼ TL Pfeffer und Muskat in den Mixtopf geben. Im Mixtopf 30
+Sek./80°C/Stufe 3 cremig rühren. Rühraufsatz abnehmen, das Püree in eine
+Schüssel geben und abgedeckt warm halten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für den Rahmspinat
+Spinat, 100 g vom Sud und die Sahne in den Mixtopf geben und mit ½–1 TL
+Salz, ½ TL Pfeffer und ¼ TL Muskat würzen. Den Gareinsatz statt des
+Messbechers als Spritzschutz auf den Deckel stellen und im Mixtopf 5
+Min./110°C/Linkslauf/Stufe 2 garen. Gleichzeitig in einer Pfanne auf dem
+Herd vier Spiegeleier in etwas Butter braten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Gareinsatz abnehmen und
+den Messbecher einsetzen. Den Spinat im Mixtopf 10 Sek./Stufe 6 fein
+pürieren und nachwürzen. Mit dem Püree und je einem Spiegelei auf die
+Teller verteilen.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

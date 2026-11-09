@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Caesar-Salat-Dressing (eifrei)</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Healthy/Caesar-Dressing%20ohne%20Ei.jpg" itemprop="image" alt="Caesar-Salat-Dressing
+(eifrei)"/>
+            <div>
+                <h1 itemprop="name">Caesar-Salat-Dressing (eifrei)</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">10
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>40 g Parmesan, in
+Stücken</li>
+                                            <li>4 Sardellenfilets, in
+Salz eingelegt (Anchovis), abgespült</li>
+                                            <li>1 Knoblauchzehe</li>
+                                            <li>100 g Sahne</li>
+                                            <li>15 g Zitronensaft</li>
+                                            <li>15 g Dijon-Senf</li>
+                                            <li>1 TL Zucker</li>
+                                            <li>2 Prisen Salz</li>
+                                            <li>¼ TL Pfeffer</li>
+                                            <li>100 g natives
+Olivenöl</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Parmesan im Mixtopf
+8 Sek./Stufe 8 fein reiben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die abgespülten
+Sardellen und den Knoblauch auf den Käse geben und im Mixtopf 4
+Sek./Stufe 6 hacken.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für die Basis Sahne,
+Zitronensaft, Senf, Zucker, Salz und Pfeffer hinzufügen und alles im
+Mixtopf 8 Sek./Stufe 5 glatt rühren.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ein kleines Kännchen
+auf den Mixtopfdeckel stellen, das Olivenöl hineinwiegen und
+beiseitestellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Dressing im Mixtopf
+1 Min./Stufe 4,5 emulgieren. Währenddessen das Öl langsam auf den Deckel
+gießen, sodass es am laufenden Messer vorbei nach unten rinnt.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Dressing
+abschmecken und zu knackigen Blattsalaten servieren, zum Beispiel zu
+Romanasalat.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

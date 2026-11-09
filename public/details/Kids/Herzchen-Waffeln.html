@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Herzchen-Waffeln</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Herzchen-Waffeln.jpg" itemprop="image" alt="Herzchen-Waffeln"/>
+            <div>
+                <h1 itemprop="name">Herzchen-Waffeln</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">8
+Waffeln</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">20
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>120 g Butter, weich, in
+Stücken</li>
+                                            <li>130 g Zucker</li>
+                                            <li>1 TL Vanillezucker
+(gehäuft), selbst gemacht</li>
+                                            <li>2 Eier</li>
+                                            <li>250 g Buttermilch</li>
+                                            <li>250 g Mehl</li>
+                                            <li>½ TL Backpulver
+(gestrichen)</li>
+                                            <li>2 Prisen Salz</li>
+                                            <li>1 EL Puderzucker, zum
+Bestäuben</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zuerst das Waffeleisen
+aufheizen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die weiche Butter mit
+Zucker, Vanillezucker und Eiern im Mixtopf 30 Sek./Stufe 5 cremig
+aufschlagen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Nun Buttermilch, Mehl,
+Backpulver und Salz einwiegen und alles im Mixtopf 10 Sek./Stufe 5 zu
+einem glatten Teig verbinden. Den Teig zum Ausbacken in eine Schüssel
+geben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Teig nach und nach
+im Waffeleisen goldbraun backen. Je nach Beschichtung das Eisen
+zwischendurch leicht fetten. Die Waffeln nach Belieben mit Puderzucker
+bestäuben.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

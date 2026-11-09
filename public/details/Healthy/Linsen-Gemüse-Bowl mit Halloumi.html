@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Linsen-Gemüse-Bowl mit Halloumi</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Healthy/Linsen-Gem%C3%BCse-Bowl%20mit%20Halloumi.jpg" itemprop="image" alt="Linsen-Gemüse-Bowl
+mit Halloumi"/>
+            <div>
+                <h1 itemprop="name">Linsen-Gemüse-Bowl mit Halloumi</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">35
+Minuten (plus ca. 20 Min. Backen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>500 g Süßkartoffeln, in
+Würfeln (2–3 cm)</li>
+                                            <li>500 g
+Blumenkohlröschen</li>
+                                            <li>25 g Öl</li>
+                                            <li>2 TL Salz</li>
+                                            <li>¾ TL Pfeffer</li>
+                                            <li>1 TL Chili,
+gemahlen</li>
+                                            <li>60 g Pinienkerne</li>
+                                            <li>1 Knoblauchzehe</li>
+                                            <li>250 g weiße Bohnen, aus
+der Dose, abgetropft</li>
+                                            <li>150 g Schmand</li>
+                                            <li>30 g Zitronensaft</li>
+                                            <li>30–50 g Wasser</li>
+                                            <li>½ TL Kümmel,
+gemahlen</li>
+                                            <li>250 g Halloumi</li>
+                                            <li>265 g Linsen, aus der
+Dose (z. B. von Bonduelle), abgetropft</li>
+                                            <li>2 EL Petersilienblätter,
+grob gehackt, zum Bestreuen</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Backofen auf 200 °C
+vorheizen und ein Backblech mit Backpapier auslegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Eine große Schüssel auf
+den Mixtopfdeckel stellen und Süßkartoffeln, Blumenkohl und Öl
+hineinwiegen. Mit 1 TL Salz, ¼ TL Pfeffer und dem Chili würzen, gut
+durchmischen und auf dem Blech ausbreiten. Das Gemüse etwa 40 Minuten im
+Ofen backen und in der Zeit mit dem Dip weitermachen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Pinienkerne in
+einer Pfanne ohne Fett anrösten. 40 g davon mit dem Knoblauch in den
+Mixtopf geben und 3 Sek./Stufe 8 zerkleinern. Mit dem Spatel nach unten
+schieben, die übrigen Pinienkerne für später beiseitelegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Bohnen, Schmand,
+Zitronensaft, Wasser, Kümmel, 1 TL Salz und ½ TL Pfeffer in den Mixtopf
+geben und 6 Sek./Stufe 3,5 verrühren. Über die Wassermenge lässt sich
+steuern, wie cremig der Dip wird. Abschmecken, umfüllen und bis zum
+Anrichten kalt stellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Halloumi mit
+Küchenpapier gründlich trocken tupfen, in etwa 2 cm große Würfel
+schneiden und in einer Pfanne in etwas Öl rundum knusprig
+braten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zum Anrichten einen
+Klecks Bohnendip in die Mitte jeder Bowl setzen, Ofengemüse und Linsen
+außen herum verteilen und den übrigen Dip darübergeben. Halloumi
+dazulegen, mit den restlichen Pinienkernen und der Petersilie bestreuen
+und servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Lachsfilet mit Brokkoli, Kartoffeln und Dillsauce</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Lachs%20mit%20Brokkoli%20und%20Dillsauce.jpg" itemprop="image" alt="Lachsfilet
+mit Brokkoli, Kartoffeln und Dillsauce"/>
+            <div>
+                <h1 itemprop="name">Lachsfilet mit Brokkoli, Kartoffeln
+und Dillsauce</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">45
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>500 g Wasser</li>
+                                            <li>1 TL Gewürzpaste für
+Gemüsebrühe (gehäuft), selbst gemacht</li>
+                                            <li>800 g Kartoffeln, in
+Stücken (2–3 cm)</li>
+                                            <li>500 g Brokkoliröschen (4
+cm)</li>
+                                            <li>600 g Lachsfilet,
+frisch, ohne Haut, in 4 Stücken (à 150 g)</li>
+                                            <li>½ TL Salz</li>
+                                            <li>¼ TL Pfeffer</li>
+                                            <li>1 Zitrone, unbehandelt,
+Schale abgerieben und Saft ausgepresst</li>
+                                            <li>4 Zweige Dill, davon 2
+abgezupft</li>
+                                            <li>100 g Sahne</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Wasser und Gewürzpaste
+in den Mixtopf geben und das Garkörbchen einhängen. Die Kartoffeln
+hineinwiegen, den Varoma-Behälter mit dem Brokkoli aufsetzen und
+schließen. Im Mixtopf 11 Min./Varoma/Stufe 1 garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">In der Garzeit die
+Lachsstücke salzen, pfeffern und mit der Zitronenschale und einem Teil
+des Saftes würzen. Nebeneinander auf den Einlegeboden des Varoma legen
+und mit 2 ganzen Dillzweigen belegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Einlegeboden mit
+dem Lachs in den Varoma einsetzen, Deckel auflegen und alles zusammen im
+Mixtopf 12 Min./Varoma/Stufe 1 fertig dämpfen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Varoma abnehmen und
+das Garkörbchen mit dem Spatel herausheben. Die Garflüssigkeit aus dem
+Mixtopf in ein Gefäß gießen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">300 g Garflüssigkeit
+(falls nötig mit Wasser ergänzt), 100 g der gegarten Kartoffeln, Sahne
+und die abgezupften Dillspitzen in den Mixtopf geben und im Modus
+Pürieren 30 Sek. glatt mixen. Die Sauce mit Salz, Pfeffer und dem
+restlichen Zitronensaft abschmecken und zu Lachs, Brokkoli und
+Kartoffeln servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

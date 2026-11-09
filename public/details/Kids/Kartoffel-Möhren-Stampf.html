@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kartoffel-Möhren-Stampf</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Kartoffel-M%C3%B6hren-Stampf.jpg" itemprop="image" alt="Kartoffel-Möhren-Stampf"/>
+            <div>
+                <h1 itemprop="name">Kartoffel-Möhren-Stampf</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">10
+Minuten (plus ca. 25 Min. Garen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>800 g Kartoffeln,
+mehligkochend, in Stücken (4 cm)</li>
+                                            <li>400 g Möhren, in Stücken
+(3 cm)</li>
+                                            <li>1 TL Gewürzpaste für
+Gemüsebrühe (gehäuft), selbst gemacht</li>
+                                            <li>100 g Wasser</li>
+                                            <li>250 g Milch</li>
+                                            <li>2 TL Senf</li>
+                                            <li>2 TL Salz</li>
+                                            <li>½ TL Pfeffer</li>
+                                            <li>½ TL Muskat</li>
+                                            <li>1 TL Majoran</li>
+                                            <li>3 Lorbeerblätter</li>
+                                            <li>60 g Butter, in
+Stücken</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Kartoffeln und Möhren
+mit Gewürzpaste, Wasser, Milch, Senf, Salz, Pfeffer, Muskat, Majoran und
+Lorbeer in den Mixtopf füllen. Im Mixtopf 25 Min./98°C/Stufe 0,5 weich
+garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Lorbeer
+herausfischen. Mit der Butter im Mixtopf 4 Sek./Stufe 6 zu einem groben
+Stampf verarbeiten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Heiß servieren, dazu
+passen zum Beispiel Bratwurst oder Frikadellen.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

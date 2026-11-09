@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Möhren-Kohlrabi-Topf</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/M%C3%B6hren-Kohlrabi-Topf.jpg" itemprop="image" alt="Möhren-Kohlrabi-Topf"/>
+            <div>
+                <h1 itemprop="name">Möhren-Kohlrabi-Topf</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">10
+Minuten (plus ca. 40 Min. Garen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>½ Bund Petersilie,
+abgezupft</li>
+                                            <li>1 Zwiebel, klein,
+halbiert</li>
+                                            <li>10 g Öl</li>
+                                            <li>300 g Kohlrabi, in
+Stücken (2-3 cm)</li>
+                                            <li>250 g Möhren, in Stücken
+(2-3 cm)</li>
+                                            <li>500 g Kartoffeln, in
+Stücken (2-3 cm)</li>
+                                            <li>800 g Wasser</li>
+                                            <li>1–2 TL Gewürzpaste für
+Gemüsebrühe (gehäuft), selbst gemacht</li>
+                                            <li>1 TL Salz</li>
+                                            <li>4 Brühwürstchen, in
+Scheiben (ca. 1 cm)</li>
+                                            <li>1 Prise Pfeffer, zum
+Abschmecken</li>
+                                            <li>200 g Schmelzkäse</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Petersilie im
+Mixtopf 2 Sek./Stufe 8 hacken und in ein Schälchen umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Zwiebelhälften im
+Mixtopf 3 Sek./Stufe 5 hacken und mit dem Spatel zurück nach unten
+schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit dem Öl im Mixtopf 3
+Min./120°C/Stufe 1 glasig dünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Gemüse (Kohlrabi,
+Möhren, Kartoffeln) mit Wasser, Gewürzpaste und Salz dazugeben. Im
+Mixtopf 30–35 Min./100°C/Linkslauf/Sanftrührstufe garen, bis alles weich
+ist.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Gehackte Petersilie und
+Schmelzkäse mit dem Spatel unterrühren, mit Pfeffer abschmecken und den
+Eintopf in eine große Schüssel füllen. Die geschnittenen Brühwürstchen
+hineingeben, 5 Minuten darin warm ziehen lassen und servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

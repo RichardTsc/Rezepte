@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Knoblauch-Parmesan-Orzotto</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Knoblauch-Parmesan-Orzotto.jpg" itemprop="image" alt="Knoblauch-Parmesan-Orzotto"/>
+            <div>
+                <h1 itemprop="name">Knoblauch-Parmesan-Orzotto</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">30
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>100 g Parmesan, in
+Stücken (1–2 cm)</li>
+                                            <li>3–4 Knoblauchzehen</li>
+                                            <li>250 g Risoni-Nudeln</li>
+                                            <li>40 g Butter, in
+Stücken</li>
+                                            <li>50 g Weißwein,
+trocken</li>
+                                            <li>500 g Wasser</li>
+                                            <li>1½ TL Gewürzpaste für
+Gemüsebrühe (gehäuft), selbst gemacht</li>
+                                            <li>¼ TL Pfeffer</li>
+                                            <li>1 EL Crème fraîche
+(gehäuft)</li>
+                                            <li>20 g Schnittlauch, in
+feinen Röllchen</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Parmesan im Mixtopf 10
+Sek./Stufe 10 fein reiben und in einer großen Servierschüssel
+bereitstellen. Den Mixtopf danach ausspülen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Knoblauch im
+Mixtopf 3 Sek./Stufe 6 hacken und vom Rand nach unten schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Risoni, Butter,
+Weißwein, Wasser, Gewürzpaste und Pfeffer in den Mixtopf geben und im
+Modus Reis kochen garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die fertigen Risoni mit
+der Crème fraîche zum Parmesan in die Schüssel geben und gut
+durchmischen. Abschmecken, mit Schnittlauch bestreuen und gleich
+servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

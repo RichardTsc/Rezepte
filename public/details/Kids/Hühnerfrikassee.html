@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hühnerfrikassee aus Hähnchenkeulen</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/H%C3%BChnerfrikassee.jpg" itemprop="image" alt="Hühnerfrikassee
+aus Hähnchenkeulen"/>
+            <div>
+                <h1 itemprop="name">Hühnerfrikassee aus
+Hähnchenkeulen</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">25
+Minuten (plus ca. 1 Std. 35 Min. Garen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>½ Bund Petersilie,
+abgezupft</li>
+                                            <li>1200 g Wasser</li>
+                                            <li>2½ TL Salz</li>
+                                            <li>2 Lorbeerblätter,
+getrocknet</li>
+                                            <li>2 Hähnchenschenkel, mit
+Haut (ca. 800 g), halbiert</li>
+                                            <li>2–3 Möhren (ca. 200 g),
+geschält, am Stück</li>
+                                            <li>1¼ TL Pfeffer</li>
+                                            <li>50 g Butter, in
+Stücken</li>
+                                            <li>50 g Mehl</li>
+                                            <li>50 g trockener Weißwein
+(alternativ Garflüssigkeit)</li>
+                                            <li>100 g Sahne</li>
+                                            <li>150 g Erbsen, TK</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Als Erstes die
+Petersilie im Mixtopf 3 Sek./Stufe 8 hacken und in ein Schälchen
+umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Hähnchenschenkel am
+Gelenk in Ober- und Unterschenkel teilen, damit die Stücke nicht zu groß
+sind und später frei im Sud schwimmen. Messerabdeckung einsetzen.
+Fleisch, Möhren, Wasser, 2 TL Salz, 1 TL Pfeffer und Lorbeerblätter in
+den Mixtopf geben und im Modus Slow Cooking 90 Min. bei 98 °C
+auskochen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Fleisch und Möhren mit
+der Zange herausheben und beiseitelegen. Die Brühe durch ein Sieb in
+eine Schüssel gießen und aufheben, das Sieb fängt die Messerabdeckung
+ab, falls sie dabei herausrutscht. Danach die Messerabdeckung vorsichtig
+herausnehmen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für die Sauce die
+Butter im leeren Mixtopf 3 Min./100°C/Stufe 1 zerlassen. Wer Reis dazu
+möchte, setzt ihn jetzt in einem Topf auf dem Herd nach Packungsangabe
+auf.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mehl einstreuen und mit
+der Butter im Mixtopf 3 Min./100°C/Stufe 1 zu einer hellen Mehlschwitze
+anschwitzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit 500 g der Brühe,
+dem Wein und der Sahne auffüllen, ½ TL Salz und ¼ TL Pfeffer dazu. Die
+Sauce im Mixtopf 5 Min./100°C/Stufe 3 aufkochen lassen. Für Kinder statt
+Wein einfach entsprechend mehr Brühe nehmen. Die Zeit nutzen, um das
+Fleisch von den Knochen zu zupfen und in Happen zu schneiden und die
+Möhren in Scheiben zu schneiden.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zum Schluss kommen
+Fleisch, Möhren, Erbsen und Petersilie in die Sauce. Kurz mit dem Spatel
+durchmischen und im Mixtopf 4 Min./100°C/Linkslauf/Sanftrührstufe warm
+werden lassen. Nachwürzen, Reis passt gut dazu.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

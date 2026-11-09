@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quetsch-Kartoffeln mit scharfer Aioli</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Ofen/Quetsch-Kartoffeln%20mit%20Aioli.jpg" itemprop="image" alt="Quetsch-Kartoffeln
+mit scharfer Aioli"/>
+            <div>
+                <h1 itemprop="name">Quetsch-Kartoffeln mit scharfer
+Aioli</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">15
+Minuten (plus ca. 45 Min. Dämpfen und Backen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>500 g Wasser</li>
+                                            <li>1¾ TL Salz</li>
+                                            <li>1000 g Drillinge</li>
+                                            <li>250 g Öl</li>
+                                            <li>1 TL grobes Salz</li>
+                                            <li>2 Prisen Pfeffer</li>
+                                            <li>1 Knoblauchzehe</li>
+                                            <li>1 Ei</li>
+                                            <li>2–3 TL
+Sriracha-Sauce</li>
+                                            <li>1 TL Zitronensaft</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Mixtopf mit dem
+Wasser und 1 TL Salz füllen, den Varoma mit den Drillingen daraufsetzen
+und 30 Min./Varoma/Stufe 1 dämpfen. Die Kartoffeln zur Halbzeit einmal
+umschichten. In der Zeit ein Backblech einölen und den Backofengrill
+vorheizen. Danach den Varoma abnehmen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Kartoffeln auf dem
+Blech kurz ausdampfen lassen und jede mit dem Handballen flach
+quetschen. Mit etwas Öl beträufeln, mit dem groben Salz und Pfeffer
+würzen und unter dem Grill 12–15 Min. goldbraun backen. Währenddessen
+den Mixtopf kalt ausspülen und die Aioli machen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">250 g Öl in einer Kanne
+auf dem Mixtopfdeckel abwiegen und bereitstellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Knoblauch 3
+Sek./Stufe 8 im Mixtopf hacken und vom Rand zusammenschieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ei, Sriracha-Sauce,
+Zitronensaft, Pfeffer und ¾ TL Salz in den Mixtopf geben und 2
+Min./Stufe 4 aufschlagen. Dabei das Öl langsam auf den Deckel gießen,
+sodass es am Messbecher vorbei auf das laufende Messer rinnt. Die Aioli
+zu den Quetsch-Kartoffeln reichen.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

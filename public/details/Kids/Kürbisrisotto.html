@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>G’schwindes Kürbisrisotto</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/K%C3%BCrbisrisotto.jpg" itemprop="image" alt="G’schwindes
+Kürbisrisotto"/>
+            <div>
+                <h1 itemprop="name">G’schwindes Kürbisrisotto</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">2
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">25
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>60 g Hartkäse (z. B.
+Parmesan oder Montello), in Stücken</li>
+                                            <li>250 g Hokkaidokürbis, in
+Stücken</li>
+                                            <li>80–100 g Zwiebeln,
+halbiert</li>
+                                            <li>125 g Risottoreis
+Arborio</li>
+                                            <li>90 g Weißwein</li>
+                                            <li>280 g Wasser</li>
+                                            <li>¼ TL Kreuzkümmel,
+gemahlen</li>
+                                            <li>2–3 TL Gewürzpaste für
+Gemüsebrühe, selbst gemacht, nach Geschmack</li>
+                                            <li>20 g Butter, in
+Stücken</li>
+                                            <li>2 Prisen Pfeffer, frisch
+gemahlen</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Hartkäse im Mixtopf
+10 Sek./Stufe 8 reiben und beiseitestellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Kürbis und Zwiebeln im
+Mixtopf 5 Sek./Stufe 5 zerkleinern und nach unten schieben. Hokkaido
+muss nicht geschält werden, die dünne Schale gart mit.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Reis, Weißwein, Wasser,
+Kreuzkümmel und Gewürzpaste dazugeben und 16 Min./100°C/Linkslauf/Stufe
+1 garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Butter und 40 g vom
+geriebenen Käse mit dem Spatel unterrühren und abschmecken. In tiefen
+Tellern anrichten, den übrigen Käse und frisch gemahlenen Pfeffer
+darüberstreuen und gleich essen. Dazu passen gehackte Petersilie oder
+knusprig gebratener Speck.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

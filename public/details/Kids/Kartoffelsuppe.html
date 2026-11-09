@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kartoffelsuppe</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Kartoffelsuppe.jpg" itemprop="image" alt="Kartoffelsuppe"/>
+            <div>
+                <h1 itemprop="name">Kartoffelsuppe</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">60
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>500 g Wasser</li>
+                                            <li>1 TL Salz</li>
+                                            <li>80 g Möhren, in Würfeln
+(1 cm)</li>
+                                            <li>200 g Staudensellerie,
+in Würfeln (1 cm)</li>
+                                            <li>400 g Kartoffeln, in
+Würfeln (1 cm)</li>
+                                            <li>150 g Porree, in Ringen
+(5 mm)</li>
+                                            <li>1 Zwiebel (ca. 50 g),
+halbiert</li>
+                                            <li>20 g Butter</li>
+                                            <li>2 TL Gewürzpaste für
+Gemüsebrühe (gehäuft), selbst gemacht</li>
+                                            <li>50 g Sahne</li>
+                                            <li>75 g Crème fraîche</li>
+                                            <li>3 Prisen Pfeffer</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Wasser und Salz in den
+Mixtopf geben, das Garkörbchen einhängen und Möhren, Sellerie, 100 g
+Kartoffeln und 100 g Porree darin 14 Min./Varoma/Stufe 1 dämpfen. Das
+Körbchen mit dem Spatel herausheben und das Gemüse beiseitestellen. Die
+Garflüssigkeit in einem Gefäß aufheben, sie wird für die Suppe
+gebraucht.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zwiebel mit 50 g Porree
+im Mixtopf 8 Sek./Stufe 5 hacken, dann vom Rand nach unten
+schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit der Butter im
+Mixtopf 3 Min./120°C/Stufe 2 andünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die übrigen 300 g
+Kartoffeln, 600 g Garflüssigkeit und die Gewürzpaste in den Mixtopf
+geben und 18 Min./100°C/Stufe 1 kochen. Reicht die Garflüssigkeit nicht,
+mit Wasser auf 600 g ergänzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für die Cremigkeit
+Sahne, Crème fraîche und Pfeffer zufügen und die Suppe im Mixtopf 30
+Sek./Stufe 5–9 schrittweise ansteigend fein pürieren.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die gedämpften
+Gemüsewürfel zurück in den Mixtopf geben und 2
+Min./100°C/Linkslauf/Stufe 2 in der Suppe erwärmen. Nach Geschmack
+nachwürzen und heiß servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

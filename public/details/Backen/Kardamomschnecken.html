@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kardamomschnecken</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Backen/Kardamomschnecken.jpg" itemprop="image" alt="Kardamomschnecken"/>
+            <div>
+                <h1 itemprop="name">Kardamomschnecken</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">9
+Stück</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">40
+Minuten (plus ca. 2 Std. Gehen und Backen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>500 g Mehl</li>
+                                            <li>130 g Zucker</li>
+                                            <li>160 g Butter, weich, in
+Stücken</li>
+                                            <li>2½ TL Kardamom,
+gemahlen</li>
+                                            <li>300 g Milch</li>
+                                            <li>20 g frische Hefe</li>
+                                            <li>70 g brauner Zucker</li>
+                                            <li>1 TL Zimt</li>
+                                            <li>70 g Wasser</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für den Hefeteig Mehl,
+60 g Zucker, 60 g Butter, 1 TL Kardamom, Milch und Hefe im Mixtopf im
+Modus Teig kneten 4 Min. verarbeiten. Den Teig in eine Schüssel geben
+und zugedeckt etwa 1 Stunde gehen lassen. Solange den Mixtopf spülen und
+ein Blech mit Backpapier auslegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für die Füllung die
+restliche Butter (100 g), braunen Zucker, ½–1 TL Kardamom und Zimt 20
+Sek./Stufe 3 im Mixtopf verrühren. Den Teig auf bemehlter Fläche auf
+etwa 40 × 60 cm ausrollen und, von einer kurzen Seite ausgehend, zwei
+Drittel der Fläche mit der Füllung bestreichen. Wie einen Brief falten:
+zuerst das unbestrichene Drittel zur Mitte klappen, dann das
+gegenüberliegende darüberlegen. So entsteht ein dreilagiges Stück von
+etwa 20 × 40 cm. Kurz nachrollen und von der kurzen Seite her in 18
+Streifen à 1 cm schneiden. Jeweils zwei Streifen umeinanderdrehen und zu
+einem Knoten schlingen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Knoten auf das
+Blech setzen und weitere 30 Minuten gehen lassen. Gegen Ende den
+Backofen auf 180 °C vorheizen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Schnecken rund 20
+Minuten bei 180 °C backen. Währenddessen den Mixtopf spülen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für den Sirup den
+restlichen Zucker (70 g), Wasser und ½ TL Kardamom 5 Min./100°C/Stufe 1
+im Mixtopf kochen. Die Schnecken noch warm damit einpinseln und
+servieren.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

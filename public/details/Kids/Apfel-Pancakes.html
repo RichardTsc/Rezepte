@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Apfel-Pancakes</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Apfel-Pancakes.jpg" itemprop="image" alt="Apfel-Pancakes"/>
+            <div>
+                <h1 itemprop="name">Apfel-Pancakes</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">24
+Stück</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">30
+Minuten</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>300 g Mandeldrink</li>
+                                            <li>50 g Öl (plus etwas zum
+Backen)</li>
+                                            <li>100 g Apfel, in Stücken
+(3 cm)</li>
+                                            <li>30 g Zucker</li>
+                                            <li>220 g Mehl</li>
+                                            <li>10 g Backpulver</li>
+                                            <li>½ TL Salz</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Alle Teigzutaten
+(Mandeldrink, Öl, Apfelstücke, Zucker, Mehl, Backpulver, Salz) im
+Mixtopf im Modus Pürieren 30 Sek. zu einem glatten Teig mixen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Eine beschichtete
+Pfanne mit 1 TL Öl bei mittlerer Hitze heiß werden lassen. Je Pancake
+eine kleine Kelle Teig hineingeben und 2–3 Minuten backen, bis die
+Oberfläche Blasen wirft. Wenden und noch 1–2 Minuten backen. Mit dem
+restlichen Teig genauso weitermachen. Schmeckt zum Beispiel mit
+Ahornsirup, Beeren oder pflanzlichem Joghurt.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>

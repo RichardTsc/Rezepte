@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Germknödel</title>
+    <link rel="stylesheet" href="../../styles_detail.css">
+    <script async src="//platform.getbring.com/widgets/import.js"></script>
+</head>
+<body>
+    <div class="recipe" itemscope itemtype="http://schema.org/Recipe">
+
+        <div class="recipe-header">
+            <a href="#" class="close" onclick="history.back(); return false;"></a>
+
+            <img src="../../images/Kids/Germkn%C3%B6del.jpg" itemprop="image" alt="Germknödel"/>
+            <div>
+                <h1 itemprop="name">Germknödel</h1>
+                <p><span>Von </span><span itemprop="author">Cookidoo</span></p>
+                <p><span>Portionen: </span><span itemprop="recipeYield">4
+Portionen</span></p>
+                <p><span>Zubereitungszeit: </span><span itemprop="prepTime">20
+Minuten (plus ca. 40 Min. Gehen und Dämpfen)</span></p>
+            </div>
+        </div>
+
+        <div class="ingredients-steps">
+            <div class="ingredients">
+                <h2>Zutaten</h2>
+                <ul itemprop="recipeIngredient">
+                                            <li>40 g Mohn</li>
+                                            <li>30 g Zucker</li>
+                                            <li>100 g Milch</li>
+                                            <li>20 g frische Hefe (½
+Würfel)</li>
+                                            <li>270 g Mehl</li>
+                                            <li>1 Ei</li>
+                                            <li>130 g Butter, in
+Stücken</li>
+                                            <li>½ TL Salz</li>
+                                            <li>40 g Pflaumenmus</li>
+                                            <li>500 g Wasser</li>
+                                    </ul>
+            </div>
+
+            <div class="steps">
+                <h2>Zubereitung</h2>
+                <ul class="check-list" itemprop="recipeInstructions">
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für das Topping Mohn
+mit 20 g Zucker im Mixtopf 30 Sek./Stufe 10 fein mahlen und in ein
+Schälchen geben. Den Mixtopf danach kurz mit Wasser ausspülen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Hefe mit Milch und
+den restlichen 10 g Zucker im Mixtopf 1 Min./37°C/Stufe 3 lauwarm
+auflösen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mehl, Ei, Salz und 30 g
+Butter einwiegen und im Modus Teig kneten 90 Sek. durchkneten
+lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Varoma-Behälter mit
+etwas Butter auspinseln. Den Teig vierteln, jedes Stück flach drücken,
+je 10 g Pflaumenmus in die Mitte geben und den Teig rundherum darüber
+schließen, sodass eine Kugel entsteht.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Knödel mit Abstand
+in den Varoma setzen, sodass genug Bodenschlitze für den Dampf frei
+bleiben, und an einem warmen Ort 30 Min. gehen lassen. Währenddessen den
+Mixtopf auswaschen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">500 g Wasser in den
+Mixtopf füllen, den Varoma aufsetzen und die Knödel 20 Min./Varoma/Stufe
+1 dämpfen. Danach den Varoma abnehmen und das Wasser weggießen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im leeren Mixtopf die
+übrigen 100 g Butter 90 Sek./80°C/Stufe 1 schmelzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Knödel auf Teller
+verteilen, mit der heißen Butter beträufeln und großzügig mit Mohnzucker
+bestreuen. Warm servieren. Als süßes Hauptgericht reicht die Menge für 4
+Kinder oder 2–3 Erwachsene.</label>
+                        </li>
+                                    </ul>
+            </div>
+        </div>
+
+        <div data-bring-import style="display:none">
+            <a href="https://www.getbring.com">Bring! Einkaufsliste App für iPhone und Android</a>
+        </div>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.check-list li');
+        
+            items.forEach((li, index) => {
+                const checkbox = li.querySelector('input[type="checkbox"]');
+                const label = li.querySelector('label');
+        
+                const uniqueId = "step-"+(index + 1); // creates step-1, step-2, etc.
+                
+                checkbox.id = uniqueId;
+                label.htmlFor = uniqueId;
+            });
+        });
+        </script>
+
+</body>
+</html>
