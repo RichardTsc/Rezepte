@@ -148,6 +148,142 @@ html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 .fh-shop { position: fixed; top: var(--safe-t); left: 0; right: 0; bottom: var(--dock-total); z-index: 7; background: var(--bg); }
 .fh-shop-frame { display: block; width: 100%; height: 100%; border: 0; background: var(--bg); }
 
+/* ---------- Planen (Tab #/planen): Cookidoo „Meine Woche“ ----------
+   Eigene Scroll-Ebene zwischen Bildschirmrand und Dock, Kopf wie bei den Rezepten (gleiche Position von Titel und Uhr).
+   Höhen hängen am Viewport (vh), damit Bühne, Blatt und der Beginn der Zeitleiste am Kühlschrank auf einen Bildschirm passen. */
+.fh-pv { position: fixed; top: 0; left: 0; right: 0; bottom: var(--dock-total); z-index: 7; overflow-y: auto; overscroll-behavior: contain; background: var(--bg); }
+.fh-pv-body { padding: 0 16px 28px; }
+.fh-pv-status { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; margin: 0 0 2px 2px; color: var(--muted); font-size: 17px; font-weight: 600; }
+.fh-pv-status .fh-ic { width: 20px; height: 20px; }
+.fh-pv-status.is-error { color: var(--warn); }
+.fh-pv-status.is-loading .fh-ic { animation: fh-spin 1s linear infinite; }
+@keyframes fh-spin { to { transform: rotate(360deg); } }
+.fh-sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin: 10px 2px 14px; }
+.fh-sec-head h2 { margin: 3px 0 0; font-size: 31px; line-height: 1.12; font-weight: 800; letter-spacing: -.02em; }
+.fh-sec-head .fh-kicker { font-size: 15px; }
+.fh-sec-aside { flex: none; padding-bottom: 4px; color: var(--muted); font-size: 17px; font-weight: 650; }
+.fh-stage, .fh-ag-row { scroll-margin-top: 104px; }
+.fh-pv .is-flash { animation: fh-flash .9s ease-out; }
+@keyframes fh-flash { 0%, 30% { opacity: .35; } 100% { opacity: 1; } }
+
+/* Bühne: große Fotos in einem Bento-Raster, Höhe aus dem Viewport */
+.fh-bento { display: grid; gap: 10px; height: clamp(260px, 36vh, 470px); }
+.fh-bento.fh-n1 { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+.fh-bento.fh-n2 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); }
+.fh-bento.fh-n3 { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.fh-bento.fh-n3 > :first-child { grid-row: span 2; }
+.fh-bento.fh-n4 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.fh-bento.fh-n5 { height: auto; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: clamp(150px, 17vh, 220px); }
+.fh-hcard {
+  position: relative; display: block; min-width: 0; min-height: 0; overflow: hidden; border-radius: var(--r-card);
+  background: var(--surface-2); text-align: left; animation: fh-rise .34s ease-out backwards;
+}
+.fh-bento > :nth-child(2) { animation-delay: .05s; }
+.fh-bento > :nth-child(3) { animation-delay: .1s; }
+.fh-bento > :nth-child(4) { animation-delay: .15s; }
+@keyframes fh-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.fh-hcard > img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+.fh-hcard .fh-card-time { top: 12px; left: 12px; padding: 4px 12px; font-size: 15px; }
+.fh-hcard-cap {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 56px 18px 16px; color: #fff;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .55) 45%, rgba(0, 0, 0, .86));
+}
+.fh-hcard-meta { display: block; color: var(--accent); font-size: 14px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.fh-hcard-title {
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-top: 3px;
+  font-size: 21px; font-weight: 750; line-height: 1.18; text-shadow: 0 1px 2px rgba(0, 0, 0, .5);
+}
+.fh-hcard.is-big .fh-hcard-cap { padding: 90px 24px 22px; }
+.fh-hcard.is-big .fh-hcard-meta { font-size: 16px; }
+.fh-hcard.is-big .fh-hcard-title { font-size: 33px; line-height: 1.12; letter-spacing: -.015em; }
+.fh-ph { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; color: var(--line); }
+.fh-ph .fh-ic { width: 44%; height: 44%; max-width: 72px; max-height: 72px; stroke-width: 1.5; }
+.fh-skel { animation: fh-skel 1.4s ease-in-out infinite alternate; }
+@keyframes fh-skel { from { opacity: .45; } to { opacity: .9; } }
+/* Leerer Plan bzw. Fehler: ruhige Karte in Bühnenhöhe */
+.fh-stage-empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-sizing: border-box;
+  min-height: clamp(260px, 36vh, 470px); margin-top: 10px; padding: 28px; border-radius: var(--r-card);
+  background: var(--surface); text-align: center;
+}
+.fh-stage-empty h2 { margin: 14px 0 0; font-size: 31px; font-weight: 800; letter-spacing: -.02em; }
+.fh-stage-empty p { max-width: 470px; margin: 8px 0 20px; color: var(--muted); font-size: 19px; line-height: 1.45; }
+.fh-empty-art {
+  width: 104px; height: 104px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent-soft); color: var(--accent); box-shadow: 0 0 0 12px rgba(212, 243, 106, .06);
+}
+.fh-empty-art .fh-ic { width: 48px; height: 48px; }
+.fh-empty-art.is-warn { background: rgba(255, 154, 118, .12); color: var(--warn); box-shadow: 0 0 0 12px rgba(255, 154, 118, .05); }
+
+/* Zwei-Wochen-Blatt */
+.fh-cal { margin-top: 24px; padding: 6px 12px 12px; border-radius: var(--r-card); background: var(--surface); }
+.fh-cal .fh-sec-head { align-items: center; margin: 12px 6px 10px; }
+.fh-cal .fh-sec-head h2 { font-size: 27px; }
+.fh-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.fh-cal-wd { padding-bottom: 2px; text-align: center; color: var(--muted); font-size: 14px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+.fh-cal-wd.is-we { color: var(--text); opacity: .55; }
+.fh-cal-day {
+  --cell: var(--surface-2);
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  height: clamp(62px, 6.9vh, 92px); padding: 7px 2px 9px; box-sizing: border-box;
+  border: 2px solid transparent; border-radius: var(--r-ctl); background: var(--cell);
+}
+.fh-cal-day.has-plan { --cell: #34351f; }
+.fh-cal-day.is-today { border-color: var(--accent); }
+.fh-cal-day.is-past { --cell: var(--surface); opacity: .4; }
+.fh-cal-num { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; border-radius: var(--r-pill); font-size: 22px; font-weight: 750; }
+.fh-cal-day.is-today .fh-cal-num { background: var(--accent); color: var(--on-accent); }
+.fh-cal-mon { position: absolute; top: 5px; right: 8px; color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.fh-cal-stack { display: flex; align-items: center; height: 34px; }
+.fh-cal-stack > img, .fh-cal-stack > i {
+  width: 34px; height: 34px; flex: none; box-sizing: border-box; margin-left: -12px; border-radius: 50%;
+  border: 2px solid var(--cell); background: var(--accent); object-fit: cover;
+}
+.fh-cal-stack > :first-child { margin-left: 0; }
+.fh-cal-stack > .fh-cal-more {
+  display: inline-flex; align-items: center; justify-content: center; background: var(--text); color: var(--bg);
+  font-size: 13px; font-style: normal; font-weight: 800;
+}
+
+/* Zeitleiste der folgenden Tage */
+.fh-agenda { margin-top: 26px; }
+.fh-pv-rest {
+  display: flex; align-items: center; min-height: 56px; margin-top: 16px; padding: 0 22px; box-sizing: border-box;
+  border: 1px dashed var(--line); border-radius: var(--r-pill); color: var(--muted); font-size: 18px;
+}
+.fh-agenda .fh-sec-head { margin-bottom: 6px; }
+.fh-ag-row { display: grid; grid-template-columns: 62px minmax(0, 1fr); }
+.fh-ag-when { padding-top: 16px; text-align: center; }
+.fh-ag-num { display: block; font-size: 34px; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
+.fh-ag-mon { display: block; margin-top: 3px; color: var(--muted); font-size: 13px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+.fh-ag-row.is-free .fh-ag-num { color: var(--muted); }
+.fh-ag-body { position: relative; min-width: 0; margin-left: 10px; padding: 12px 0 14px 26px; border-left: 2px solid var(--line); }
+.fh-ag-body::before {
+  content: ''; position: absolute; left: -9px; top: 26px; width: 16px; height: 16px; box-sizing: border-box;
+  border-radius: 50%; border: 2px solid var(--muted); background: var(--bg);
+}
+.fh-ag-row.has-plan .fh-ag-body::before { border-color: var(--accent); background: var(--accent); }
+.fh-ag-label { margin: 8px 0 12px; font-size: 22px; font-weight: 750; }
+.fh-ag-label span { color: var(--muted); font-weight: 600; }
+.fh-ag-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+.fh-rcard {
+  display: flex; align-items: center; gap: 14px; min-width: 0; min-height: 96px; padding: 8px 16px 8px 8px; box-sizing: border-box;
+  border-radius: var(--r-ctl); background: var(--surface); text-align: left;
+}
+.fh-rcard-img { position: relative; flex: none; width: 80px; height: 80px; overflow: hidden; border-radius: 14px; background: var(--surface-2); }
+.fh-rcard-img img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+.fh-rcard-body { min-width: 0; }
+.fh-rcard-title { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 19px; font-weight: 700; line-height: 1.22; }
+.fh-rcard-meta { display: flex; align-items: center; gap: 6px; margin-top: 5px; color: var(--muted); font-size: 15px; white-space: nowrap; }
+.fh-rcard-meta .fh-ic { width: 17px; height: 17px; }
+.fh-rcard-meta b { font-weight: 400; opacity: .6; }
+.fh-ag-free {
+  display: inline-flex; align-items: center; min-height: 52px; margin: 2px 0; padding: 0 20px; box-sizing: border-box;
+  border: 1px dashed var(--line); border-radius: var(--r-pill); color: var(--muted); font-size: 18px;
+}
+.fh-hcard:active, .fh-rcard:active, .fh-cal-day:active, .fh-pv-status:active { transform: scale(.97); }
+.fh-cal-day, .fh-pv-status { transition: transform .12s ease; }
+
 /* ---------- Ebenen (Rezept, Kochmodus) ---------- */
 .fh-layer { position: fixed; inset: 0; z-index: 10; display: flex; flex-direction: column; background: var(--bg); animation: fh-in .18s ease-out; }
 @keyframes fh-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
@@ -353,6 +489,59 @@ html.fridge.fh-drawer-open .fh-timers { display: none; }
   .fh-tab .fh-ic { width: 24px; height: 24px; }
   .fh-badge { min-width: 26px; height: 26px; padding: 0 8px; font-size: 14px; }
 
+  /* Planen: Bühne flacher, Blatt mit kleinen Bildpunkten, Zeitleiste einspaltig */
+  .fh-pv-body { padding: 0 16px 20px; }
+  .fh-pv-status { min-height: 36px; font-size: 14px; }
+  .fh-pv-status .fh-ic { width: 17px; height: 17px; }
+  .fh-sec-head { margin: 6px 2px 10px; }
+  .fh-sec-head h2 { font-size: 24px; }
+  .fh-sec-head .fh-kicker { font-size: 12px; }
+  .fh-sec-aside { font-size: 14px; padding-bottom: 2px; }
+  .fh-stage, .fh-ag-row { scroll-margin-top: 72px; }
+  .fh-bento { gap: 8px; height: clamp(230px, 36vh, 380px); }
+  .fh-bento.fh-n3 { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+  .fh-bento.fh-n5 { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: clamp(130px, 18vh, 180px); }
+  .fh-hcard { border-radius: 20px; }
+  .fh-hcard .fh-card-time { top: 8px; left: 8px; padding: 2px 9px; font-size: 12.5px; }
+  .fh-hcard-cap { padding: 40px 12px 11px; }
+  .fh-hcard-meta { font-size: 11px; }
+  .fh-hcard-title { font-size: 15.5px; }
+  .fh-hcard.is-big .fh-hcard-cap { padding: 64px 16px 15px; }
+  .fh-hcard.is-big .fh-hcard-meta { font-size: 12.5px; }
+  .fh-hcard.is-big .fh-hcard-title { font-size: 23px; }
+  .fh-stage-empty { padding: 22px 18px; border-radius: 22px; min-height: clamp(230px, 36vh, 380px); }
+  .fh-stage-empty h2 { font-size: 24px; }
+  .fh-stage-empty p { font-size: 16px; margin-bottom: 16px; }
+  .fh-empty-art { width: 80px; height: 80px; box-shadow: 0 0 0 9px rgba(212, 243, 106, .06); }
+  .fh-empty-art .fh-ic { width: 38px; height: 38px; }
+  .fh-cal { margin-top: 18px; padding: 4px 8px 8px; border-radius: 22px; }
+  .fh-cal .fh-sec-head { margin: 8px 4px 8px; }
+  .fh-cal-grid { gap: 4px; }
+  .fh-cal-wd { font-size: 11px; letter-spacing: .04em; }
+  .fh-cal-day { height: clamp(54px, 7.4vh, 76px); padding: 5px 1px 7px; border-radius: 14px; }
+  .fh-cal-num { min-width: 30px; height: 30px; font-size: 16px; }
+  .fh-cal-mon { top: 2px; right: 4px; font-size: 9px; }
+  .fh-cal-stack { height: 20px; }
+  .fh-cal-stack > img, .fh-cal-stack > i { width: 20px; height: 20px; margin-left: -8px; border-width: 1.5px; }
+  .fh-cal-stack > .fh-cal-more { font-size: 9px; }
+  .fh-agenda { margin-top: 20px; }
+  .fh-pv-rest { min-height: 46px; margin-top: 12px; padding: 0 16px; font-size: 15px; }
+  .fh-cal .fh-sec-head h2 { font-size: 22px; }
+  .fh-ag-row { grid-template-columns: 42px minmax(0, 1fr); }
+  .fh-ag-when { padding-top: 13px; }
+  .fh-ag-num { font-size: 25px; }
+  .fh-ag-mon { font-size: 11px; }
+  .fh-ag-body { margin-left: 6px; padding: 10px 0 10px 18px; }
+  .fh-ag-body::before { left: -8px; top: 20px; width: 14px; height: 14px; }
+  .fh-ag-label { margin: 5px 0 9px; font-size: 18px; }
+  .fh-ag-cards { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .fh-rcard { min-height: 72px; gap: 12px; padding: 6px 12px 6px 6px; border-radius: 16px; }
+  .fh-rcard-img { width: 60px; height: 60px; border-radius: 11px; }
+  .fh-rcard-title { font-size: 16px; }
+  .fh-rcard-meta { font-size: 13px; margin-top: 3px; }
+  .fh-rcard-meta .fh-ic { width: 15px; height: 15px; }
+  .fh-ag-free { min-height: 44px; padding: 0 16px; font-size: 15px; }
+
   /* Rezept: Foto läuft unter die Statusleiste */
   .fh-hero { height: calc(260px + var(--safe-t)); }
   .fh-hero-back { top: calc(12px + var(--safe-t)); left: 12px; }
@@ -419,4 +608,21 @@ html.fridge.fh-drawer-open .fh-timers { display: none; }
   .fh-alarm-title { font-size: 34px; }
   .fh-alarm-item { font-size: 18px; }
   .fh-toast { top: calc(64px + var(--safe-t)); padding: 12px 18px; font-size: 16px; }
+}
+
+/* ---------- Breite Bildschirme (iPad quer, Mac mit ?fridge) ----------
+   Planen zweispaltig: links die Bühne in voller Fensterhöhe, rechts Blatt und Zeitleiste. Der Kühlschrank (721 px) ist
+   davon nicht betroffen. */
+@media (min-width: 1000px) {
+  .fh-pv-body {
+    display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr;
+    column-gap: 28px; align-items: start; max-width: 1500px; margin: 0 auto;
+  }
+  .fh-pv-status { grid-column: 1 / -1; justify-self: start; }
+  .fh-stage { grid-column: 1; grid-row: 2 / span 2; position: sticky; top: 96px; } /* bleibt stehen, rechts scrollt die Zeitleiste */
+  .fh-cal { grid-column: 2; grid-row: 2; margin-top: 10px; }
+  .fh-agenda, .fh-pv-rest { grid-column: 2; grid-row: 3; }
+  .fh-bento { height: clamp(320px, calc(100vh - var(--dock-total) - 250px), 880px); }
+  .fh-stage-empty { min-height: clamp(320px, calc(100vh - var(--dock-total) - 190px), 880px); }
+  .fh-bento.fh-n5 { height: auto; }
 }

@@ -73,6 +73,7 @@
     book: '<path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v15H6.5A1.5 1.5 0 0 0 5 19.5v-15Z"/><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19M9 7.5h6"/>',
     cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
     search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20.5 20.5"/>',
+    refresh: '<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4.5H15"/>',
   };
   const icon = (name) => `<svg class="fh-ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
   const pill = (name, text) => (text ? `<span class="fh-pill">${icon(name)}${esc(text)}</span>` : '');
@@ -155,9 +156,20 @@
       <main id="fh-home"><p class="fh-msg">Rezepte werden geladen …</p></main>
       <nav class="fh-dock" aria-label="Bereiche"><div class="fh-dock-inner">
         <a class="fh-tab is-active" id="fh-tab-rezepte" href="#/" data-act="top">${icon('book')}Rezepte</a>
+        <a class="fh-tab" id="fh-tab-planen" href="#/planen" data-act="pv-top"${EMBED_SHOP ? '' : ' hidden'}>${icon('cal')}Planen</a>
         <a class="fh-tab" id="fh-tab-einkauf" href="${shopLink('')}">${icon('cart')}Einkauf<span class="fh-badge" id="fh-shop-badge" hidden></span></a>
       </div></nav>
     </div>
+    <section class="fh-pv" id="fh-pv" hidden>
+      <div class="fh-sticky">
+        <header class="fh-top">
+          <div class="fh-brand">Planen<span class="fh-dot">.</span></div>
+          <div class="fh-clock"></div>
+          <button class="fh-round" data-act="fs" aria-label="Vollbild">${icon('fullscreen')}</button>
+        </header>
+      </div>
+      <div class="fh-pv-body" id="fh-pv-body"></div>
+    </section>
     <section class="fh-layer" id="fh-recipe" hidden></section>
     <section class="fh-layer fh-cook" id="fh-cook" hidden></section>
     <section class="fh-shop" id="fh-shop" hidden></section>
@@ -167,8 +179,9 @@
 
   const el = {
     home: $('#fh-home'), chips: $('#fh-chips'), resume: $('#fh-resume'), recipe: $('#fh-recipe'), cook: $('#fh-cook'), shop: $('#fh-shop'),
-    timers: $('#fh-timers'), alarm: $('#fh-alarm'), toast: $('#fh-toast'), clock: $('#fh-clock'),
+    timers: $('#fh-timers'), alarm: $('#fh-alarm'), toast: $('#fh-toast'), clocks: document.querySelectorAll('.fh-clock'),
     top: $('.fh-top'), q: $('#fh-q'), qCount: $('#fh-q-count'), searchBtn: $('#fh-search-btn'),
+    pv: $('#fh-pv'), pvBody: $('#fh-pv-body'),
   };
 
   let toastTimer = 0;
@@ -182,6 +195,7 @@
   // ---------- Daten ----------
   let recipes = [];
   let byId = new Map();
+  let byCookidoo = new Map(); // Cookidoo-ID (Frontmatter cookidoo:) → Rezept, für den Planen-Tab
 
   function load() {
     fetch('recipes.json', { cache: 'no-cache' })
@@ -189,6 +203,7 @@
       .then((data) => {
         recipes = data.recipes || [];
         byId = new Map(recipes.map((r) => [r.id, r]));
+        byCookidoo = new Map(recipes.filter((r) => r.cookidoo).map((r) => [r.cookidoo, r]));
         renderHome();
         route();
         // Korb-Anzahl fürs Badge direkt von der Einkauf-API. Den Einkauf selbst NICHT mehr vorladen: Er blieb sonst dauerhaft
@@ -342,6 +357,7 @@
     if ((m = /^\/r\/([a-z0-9-]+)\/k\/(\d+)$/.exec(h))) return { view: 'cook', id: m[1], step: +m[2] };
     if ((m = /^\/r\/([a-z0-9-]+)$/.exec(h))) return { view: 'recipe', id: m[1] };
     if ((m = /^\/einkauf(?:\/suche\/(.+))?$/.exec(h))) return { view: 'shop', term: m[1] ? decodeURIComponent(m[1]) : '' };
+    if (h === '/planen') return { view: 'plan' };
     return { view: 'home' };
   }
 
@@ -412,6 +428,7 @@
     const rec = r.id ? byId.get(r.id) : null;
     if ((r.view === 'recipe' || r.view === 'cook') && !rec) { location.replace('#/'); return; }
     if (r.view === 'shop' && !EMBED_SHOP) { location.href = shopUrl(r.term); return; }
+    if (r.view === 'plan' && !EMBED_SHOP) { location.replace('#/'); return; } // ohne Cookidoo-Brücke (GitHub Pages) kein Plan
 
     if (view === 'recipe' && r.view !== 'recipe') {
       const sc = $('#fh-rscroll');
@@ -421,20 +438,24 @@
     if (r.view === 'cook') {
       el.recipe.hidden = true;
       el.shop.hidden = true;
+      el.pv.hidden = true;
       showCook(rec, r.step);
     } else {
       if (view === 'cook') leaveCook();
       el.cook.hidden = true;
       el.recipe.hidden = r.view !== 'recipe';
       el.shop.hidden = r.view !== 'shop';
+      el.pv.hidden = r.view !== 'plan';
       if (r.view === 'recipe') showRecipe(rec);
       else if (r.view === 'shop') showShop(r.term);
+      else if (r.view === 'plan') showPlanView();
       else { recipeScroll = { id: null, top: 0 }; renderResume(); }
     }
     if (view === 'shop' && r.view !== 'shop') shopLeftAt = Date.now();
     view = r.view;
     root.setAttribute('data-fh-view', view);
-    $('#fh-tab-rezepte').classList.toggle('is-active', view !== 'shop');
+    $('#fh-tab-rezepte').classList.toggle('is-active', view !== 'shop' && view !== 'plan');
+    $('#fh-tab-planen').classList.toggle('is-active', view === 'plan');
     $('#fh-tab-einkauf').classList.toggle('is-active', view === 'shop');
     renderTimers(true);
     syncAwake();
@@ -445,6 +466,8 @@
     if (history.state && history.state.from === parentHash) history.back();
     else location.replace(parentHash);
   }
+  // Ein Rezept, das aus dem Planen-Tab geöffnet wurde, führt mit „Zurück“ wieder dorthin
+  const recipeParent = () => (history.state && history.state.from === '#/planen' ? '#/planen' : '#/');
   const currentId = () => parseHash().id;
 
   // ---------- Rezeptansicht ----------
@@ -498,7 +521,8 @@
   // ---------- Cookidoo (Planen in „Meine Woche“) ----------
   // Die ID des eigenen Cookidoo-Rezepts schreibt der picnic-assistent nach dem Anlegen ins Frontmatter (cookidoo: "<id>").
   // Planen läuft über den Dienst cookidoo-bridge auf dem NAS (same-origin unter /cookidoo/api/, nur unter der Küchen-Adresse):
-  //   GET  /cookidoo/api/geplant?von=YYYY-MM-DD&tage=9  → { tage: { 'YYYY-MM-DD': ['<id>', …] } }
+  //   GET  /cookidoo/api/geplant?von=YYYY-MM-DD&tage=9  → { tage: { 'YYYY-MM-DD': ['<id>', …] },
+  //        rezepte: { '<id>': {titel, minuten, bild, bildGross} } }  (Steckbriefe nur für Katalog-Rezepte, siehe Planen-Tab)
   //   POST /cookidoo/api/plan  { recipeId, date: 'YYYY-MM-DD', action: 'add' | 'remove' } → { ok: true }
   //   GET  /cookidoo/api/status → { verbunden: true|false }  (fehlt der Dienst oder der Login, gibt es nur das Tag)
   const CK_API = '/cookidoo/api/';
@@ -595,10 +619,223 @@
     ckFetch('plan', { method: 'POST', body: JSON.stringify({ recipeId: rec.cookidoo, date: btn.dataset.date, action: planned ? 'remove' : 'add' }) })
       .then(() => {
         btn.classList.toggle('is-active', !planned);
+        notePlanChange(btn.dataset.date, rec.cookidoo, !planned);
         toast(planned ? `Aus „Meine Woche“ entfernt: ${btn.textContent}` : `In Cookidoo geplant: ${btn.textContent}`);
       }, (err) => toast(err.message, 3500))
       .finally(() => { btn.disabled = false; });
   }
+
+  // ---------- Planen (Tab #/planen): Cookidoo „Meine Woche“ als Kalender ----------
+  // Vorerst nur eine Ansicht, geplant wird weiter im Rezept über „In Cookidoo planen“. Daten: GET geplant der Brücke für
+  // diese und die nächste Woche (Mo–So, 14 Tage = Höchstwert der Brücke). Eigene Rezepte kommen über ihre Cookidoo-ID aus
+  // recipes.json (Name, Bilder, Zeit, Kategorie), Katalog-Rezepte über den Steckbrief der Brücke
+  // (rezepte: {id: {titel, minuten, bild, bildGross}}). Fehlt er (ältere Brücke), steht dort „Rezept aus Cookidoo“.
+  // Aufbau: Bühne mit großen Fotos für heute (oder den nächsten geplanten Tag), darunter das Zwei-Wochen-Blatt und die
+  // Zeitleiste der folgenden Tage. Freie Tage am Stück fasst die Zeitleiste zu einer Zeile zusammen.
+  // Der letzte Stand liegt in localStorage (fridge.plan), damit der Tab nach dem Aufwachen sofort etwas zeigt.
+  const PV_DAYS = 14;
+  const KATALOG_ID = /^r\d+$/;
+  const WD_LONG = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+  const WD_SHORT = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+  const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+  const MONTHS_SHORT = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+  let plan = store.get('plan', null); // { von, tage: {iso: [ids]}, rezepte: {id: steckbrief}, t, stale }
+  let planLoading = false;
+  let planError = '';
+  let planSig = '';
+  let planDay = ''; // Datum der letzten Darstellung, um Mitternacht wird neu aufgebaut
+
+  function weekStart() { // Montag dieser Woche, 12 Uhr (Sommerzeit-Wechsel verschieben so nie das Datum)
+    const d = new Date(); d.setHours(12, 0, 0, 0);
+    d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
+    return d;
+  }
+  function isoWeek(d) {
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+    return Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
+  }
+  const hhmm = (t) => new Date(t).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  const minutes = (m) => (m < 60 ? `${m}′` : m % 60 ? `${Math.floor(m / 60)} h ${m % 60}′` : `${m / 60} h`);
+  const dayName = (x) => `${WD_LONG[x.d.getDay()]}, ${x.d.getDate()}. ${MONTHS[x.d.getMonth()]}`;
+  const countText = (n) => (n === 1 ? '1 Rezept' : `${n} Rezepte`);
+
+  function loadPlan(force) {
+    if (!EMBED_SHOP || planLoading) return;
+    const von = isoDate(weekStart());
+    if (!force && plan && plan.von === von && !plan.stale && Date.now() - plan.t < 60000) return;
+    planLoading = true;
+    renderPlanStatus();
+    ckFetch(`geplant?von=${von}&tage=${PV_DAYS}`)
+      .then((data) => {
+        plan = { von, tage: (data && data.tage) || {}, rezepte: (data && data.rezepte) || {}, t: Date.now() };
+        planError = '';
+        store.set('plan', plan);
+      }, (err) => { planError = err instanceof TypeError ? 'NAS nicht erreichbar' : err.message; })
+      .finally(() => { planLoading = false; if (view === 'plan') renderPlan(); });
+  }
+  // „In Cookidoo planen“ im Rezept: Zwischenstand sofort anpassen, beim nächsten Öffnen des Tabs frisch laden
+  function notePlanChange(iso, id, add) {
+    if (!plan || !plan.tage) return;
+    const list = plan.tage[iso];
+    if (list) {
+      const i = list.indexOf(id);
+      if (add && i < 0) list.push(id); else if (!add && i >= 0) list.splice(i, 1);
+    }
+    plan.stale = true;
+    store.set('plan', plan);
+  }
+
+  function planItem(id) {
+    const r = byCookidoo.get(id);
+    if (r) return { rec: r, title: r.name, time: r.prepTime ? shortTime(r.prepTime) : '', meta: r.category, img: r.tile || r.thumb || '', big: r.thumb || r.tile || '' };
+    const s = (plan && plan.rezepte && plan.rezepte[id]) || {};
+    return { rec: null, title: s.titel || (KATALOG_ID.test(id) ? 'Rezept aus Cookidoo' : 'Eigenes Cookidoo-Rezept'),
+      time: s.minuten ? minutes(s.minuten) : '', meta: 'Cookidoo', img: s.bild || '', big: s.bildGross || s.bild || '' };
+  }
+  function planDays() {
+    const start = weekStart(), today = isoDate(new Date());
+    const tm = new Date(); tm.setHours(12, 0, 0, 0); tm.setDate(tm.getDate() + 1);
+    const tomorrow = isoDate(tm);
+    const out = [];
+    for (let i = 0; i < PV_DAYS; i++) {
+      const d = new Date(start); d.setDate(start.getDate() + i);
+      const iso = isoDate(d);
+      const ids = (plan && plan.tage && plan.tage[iso]) || [];
+      out.push({ d, iso, past: iso < today, today: iso === today, tomorrow: iso === tomorrow, items: ids.map(planItem) });
+    }
+    return out;
+  }
+
+  // Eigene Rezepte öffnen sich, Katalog-Rezepte gibt es nur in Cookidoo bzw. am Thermomix
+  const itemTag = (it, cls, inner) => (it.rec
+    ? `<a class="${cls}" href="#/r/${esc(it.rec.id)}">${inner}</a>`
+    : `<button class="${cls} is-foreign" data-act="pv-foreign">${inner}</button>`);
+  const pvImg = (src) => (src ? `<img src="${esc(src)}" alt="" decoding="async" referrerpolicy="no-referrer">` : '');
+  const pvPh = () => `<span class="fh-ph">${icon('cal')}</span>`;
+  const secHead = (kicker, title, aside) => `<div class="fh-sec-head"><div>${kicker ? `<div class="fh-kicker">${esc(kicker)}</div>` : ''}<h2>${esc(title)}</h2></div>${aside ? `<span class="fh-sec-aside">${esc(aside)}</span>` : ''}</div>`;
+
+  // Bühne: Bento je nach Anzahl (1 groß · 2 nebeneinander · 1 groß + 2 · 2 × 2 · ab 5 drei Spalten). Große Kacheln
+  // bekommen das 640-px-Vorschaubild, kleine die 300-px-Kachel.
+  function stageHtml(day) {
+    if (!day) {
+      return `<section class="fh-stage fh-stage-empty"><span class="fh-empty-art">${icon('cal')}</span>
+        <h2>Noch nichts geplant</h2>
+        <p>Im Rezept unten auf „In Cookidoo planen“ tippen. Geplantes erscheint hier und am Thermomix unter „Meine Woche“.</p>
+        <a class="fh-btn fh-primary" href="#/">${icon('book')}Rezepte ansehen</a></section>`;
+    }
+    const n = day.items.length;
+    const bigFirst = n === 1 || n === 3;
+    const cards = day.items.map((it, i) => {
+      const small = (n === 3 && i > 0) || n >= 5;
+      return itemTag(it, 'fh-hcard' + (bigFirst && i === 0 ? ' is-big' : ''), `${pvPh()}${pvImg(small ? it.img : it.big)}
+        ${it.time ? `<span class="fh-card-time">${esc(it.time)}</span>` : ''}
+        <span class="fh-hcard-cap"><span class="fh-hcard-meta">${esc(it.meta)}</span><span class="fh-hcard-title">${esc(it.title)}</span></span>`);
+    }).join('');
+    return `<section class="fh-stage" id="fh-pv-${day.iso}">
+      ${secHead(day.today ? 'Heute' : 'Als Nächstes', (day.tomorrow ? 'Morgen · ' : '') + dayName(day), countText(n))}
+      <div class="fh-bento fh-n${Math.min(n, 5)}">${cards}</div></section>`;
+  }
+
+  // Zwei-Wochen-Blatt (Mo–So): je Tag die Zahl und ein Stapel runder Vorschaubilder (ab 4 Rezepten „+n“)
+  function calHtml(days) {
+    const first = days[0].d, last = days[days.length - 1].d;
+    const month = first.getMonth() === last.getMonth() ? MONTHS[first.getMonth()] : `${MONTHS[first.getMonth()]} / ${MONTHS[last.getMonth()]}`;
+    const total = days.reduce((s, d) => s + (d.past ? 0 : d.items.length), 0);
+    const wds = WD_SHORT.slice(1).concat(WD_SHORT[0]).map((w, i) => `<span class="fh-cal-wd${i >= 5 ? ' is-we' : ''}">${w}</span>`).join('');
+    const kw = `KW ${isoWeek(first)}–${isoWeek(last)}`;
+    return `<section class="fh-cal">
+      ${secHead('', month, plan ? `${kw} · ${total ? countText(total) : 'alles frei'}` : kw)}
+      <div class="fh-cal-grid">${wds}${days.map(calCell).join('')}</div></section>`;
+  }
+  function calCell(day) {
+    const n = day.items.length;
+    const cls = 'fh-cal-day' + (day.past ? ' is-past' : '') + (day.today ? ' is-today' : '') + (n ? ' has-plan' : '');
+    const stack = (n > 3 ? day.items.slice(0, 2) : day.items).map((it) => (it.img ? pvImg(it.img) : '<i></i>')).join('') +
+      (n > 3 ? `<i class="fh-cal-more">+${n - 2}</i>` : '');
+    const mon = day.d.getDate() === 1 ? `<span class="fh-cal-mon">${MONTHS_SHORT[day.d.getMonth()]}</span>` : '';
+    return `<button class="${cls}" data-act="pv-day" data-date="${day.iso}"${day.past ? ' disabled' : ''}
+      aria-label="${esc(dayName(day))}: ${n ? countText(n) : 'nichts geplant'}">${mon}<span class="fh-cal-num">${day.d.getDate()}</span><span class="fh-cal-stack">${stack}</span></button>`;
+  }
+
+  // Zeitleiste nach dem Bühnen-Tag: geplante Tage mit Karten, freie Tage am Stück als eine gestrichelte Zeile.
+  // Ist danach gar nichts mehr geplant, genügt eine Zeile (spart am Kühlschrank das Scrollen).
+  function agendaHtml(days, afterIso) {
+    const rest = days.filter((d) => d.iso > afterIso);
+    if (!rest.length) return '';
+    const last = rest[rest.length - 1];
+    if (!rest.some((d) => d.items.length)) {
+      return `<div class="fh-pv-rest" id="fh-pv-${rest[0].iso}" data-to="${last.iso}">Danach bis ${esc(dayName(last))} noch nichts geplant</div>`;
+    }
+    let rows = '', run = [];
+    const flush = () => { if (run.length) { rows += freeRow(run); run = []; } };
+    for (const d of rest) { if (d.items.length) { flush(); rows += dayRow(d); } else run.push(d); }
+    flush();
+    return `<section class="fh-agenda">${secHead(`Bis ${dayName(last)}`, 'Demnächst')}${rows}</section>`;
+  }
+  const when = (d) => `<div class="fh-ag-when"><span class="fh-ag-num">${d.d.getDate()}</span><span class="fh-ag-mon">${MONTHS_SHORT[d.d.getMonth()]}</span></div>`;
+  function dayRow(d) {
+    const n = d.items.length;
+    return `<div class="fh-ag-row has-plan" id="fh-pv-${d.iso}">${when(d)}
+      <div class="fh-ag-body"><div class="fh-ag-label">${d.tomorrow ? 'Morgen · ' : ''}${WD_LONG[d.d.getDay()]}${n > 1 ? `<span> · ${countText(n)}</span>` : ''}</div>
+        <div class="fh-ag-cards">${d.items.map(rowCard).join('')}</div></div></div>`;
+  }
+  const rowCard = (it) => itemTag(it, 'fh-rcard', `<span class="fh-rcard-img">${pvPh()}${pvImg(it.img)}</span>
+    <span class="fh-rcard-body"><span class="fh-rcard-title">${esc(it.title)}</span>
+      <span class="fh-rcard-meta">${it.time ? `${icon('clock')}${esc(it.time)}<b>·</b>` : ''}${esc(it.meta)}</span></span>`);
+  function freeRow(run) {
+    const a = run[0], b = run[run.length - 1];
+    const text = run.length === 1 ? `${WD_LONG[a.d.getDay()]} · frei`
+      : `${run.length} Tage frei · ${WD_SHORT[a.d.getDay()]} – ${WD_SHORT[b.d.getDay()]} ${b.d.getDate()}.`;
+    return `<div class="fh-ag-row is-free" id="fh-pv-${a.iso}" data-to="${b.iso}">${when(a)}
+      <div class="fh-ag-body"><div class="fh-ag-free">${esc(text)}</div></div></div>`;
+  }
+
+  function renderPlan() {
+    planDay = isoDate(new Date());
+    const sig = JSON.stringify([planDay, plan && plan.tage, plan && plan.rezepte, !plan && (planLoading || planError)]);
+    if (sig !== planSig) {
+      planSig = sig;
+      const days = planDays();
+      const stage = plan ? days.find((d) => !d.past && d.items.length) || null : undefined;
+      const today = days.find((d) => d.today);
+      let body;
+      if (stage !== undefined) body = stageHtml(stage);
+      else if (planError) {
+        body = `<section class="fh-stage fh-stage-empty"><span class="fh-empty-art is-warn">${icon('cal')}</span>
+          <h2>Wochenplan nicht erreichbar</h2><p>${esc(planError)}</p>
+          <button class="fh-btn fh-primary" data-act="pv-refresh">${icon('refresh')}Erneut versuchen</button></section>`;
+      } else {
+        body = `<section class="fh-stage">${secHead('Heute', dayName(today))}<div class="fh-bento fh-n1"><span class="fh-hcard fh-skel"></span></div></section>`;
+      }
+      el.pvBody.innerHTML = `<button class="fh-pv-status" id="fh-pv-status" data-act="pv-refresh"></button>${body}${calHtml(days)}${stage ? agendaHtml(days, stage.iso) : ''}`;
+    }
+    renderPlanStatus();
+  }
+  function renderPlanStatus() {
+    const s = document.getElementById('fh-pv-status');
+    if (!s) return;
+    const stand = plan ? ` · Stand ${hhmm(plan.t)}` : '';
+    s.className = 'fh-pv-status' + (planLoading ? ' is-loading' : planError ? ' is-error' : '');
+    s.innerHTML = `${icon('refresh')}<span>${planLoading ? 'Cookidoo wird gelesen …' : planError ? `${esc(planError)}${stand}` : `Cookidoo · Meine Woche${stand}`}</span>`;
+  }
+  function showPlanView() {
+    renderPlan();
+    loadPlan(false);
+  }
+  // Tag im Blatt antippen: zur passenden Stelle (Bühne, Tag oder Zeile mit freien Tagen) scrollen und sie kurz aufleuchten lassen
+  function pvJump(iso) {
+    const target = document.getElementById('fh-pv-' + iso) ||
+      [...el.pvBody.querySelectorAll('[data-to]')].find((r) => r.id.slice(6) <= iso && iso <= r.dataset.to);
+    if (!target) { el.pv.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+    target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    target.classList.remove('is-flash');
+    void target.offsetWidth; // Animation neu starten
+    target.classList.add('is-flash');
+  }
+  // Fremde Bilder (Cookidoo-Katalog) können fehlen: dann bleibt der Platzhalter darunter sichtbar
+  el.pv.addEventListener('error', (e) => { if (e.target && e.target.tagName === 'IMG') e.target.remove(); }, true);
+  if (EMBED_SHOP) setInterval(() => { if (view === 'plan' && !document.hidden) loadPlan(true); }, 5 * 60 * 1000);
 
   function toggleIngredient(btn) {
     const id = currentId(), row = btn.closest('li'), i = +btn.dataset.i;
@@ -1009,7 +1246,9 @@
   }
 
   function tick() {
-    el.clock.textContent = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    const clock = new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+    for (const c of el.clocks) c.textContent = clock;
+    if (view === 'plan' && planDay && planDay !== isoDate(new Date())) { renderPlan(); loadPlan(true); } // Mitternacht
     syncAwake(); // 2-Minuten-Regel, Timer und Alarm laufend nachführen
     if (shopFrame && view !== 'shop' && shopLeftAt && Date.now() - shopLeftAt > 5 * 60 * 1000) unloadShop();
     heartbeat();
@@ -1092,7 +1331,13 @@
         if (s) location.hash = `#/r/${s.id}/k/${s.step}`;
         break;
       }
-      case 'close-recipe': goBack('#/'); break;
+      case 'close-recipe': goBack(recipeParent()); break;
+      case 'pv-top': // Planen-Tab erneut antippen: nach oben und auffrischen
+        if (view === 'plan') { e.preventDefault(); el.pv.scrollTo({ top: 0, behavior: 'smooth' }); loadPlan(false); }
+        break;
+      case 'pv-refresh': loadPlan(true); break;
+      case 'pv-day': pvJump(t.dataset.date); break;
+      case 'pv-foreign': toast('Rezept aus dem Cookidoo-Katalog – am Thermomix unter „Meine Woche“', 3200); break;
       case 'ingr': toggleIngredient(t); break;
       case 'ck-open': openPlan(); break;
       case 'ck-close': closePlan(); break;
@@ -1154,7 +1399,7 @@
       if (d && !d.hidden) closeDrawer();
       else if (p && !p.hidden) closePlan();
       else if (view === 'cook') goBack('#/r/' + cookRecipeId);
-      else if (view === 'recipe') goBack('#/');
+      else if (view === 'recipe') goBack(recipeParent());
       else if (view === 'home' && searchOpen()) toggleSearch(false);
     }
   });
@@ -1165,6 +1410,7 @@
     syncAwake();
     refreshBadge();
     if (view === 'shop' && !shopFrame) showShop(''); // Einkauf wurde im Standby entladen
+    if (view === 'plan') loadPlan(false);
     // Ohne dauerhafte Mikrofon-Erlaubnis nicht automatisch starten – das würde eine Abfrage aus heiterem Himmel öffnen
     if (view === 'cook' && settings.voice && micPermission === 'granted') voiceStart();
   });
@@ -1185,7 +1431,8 @@
   function applyUpdate() {
     // Bei einer laufenden Suche länger warten (2 min), sonst verschwinden die Treffer womöglich beim Lesen
     const quiet = el.home.dataset.q ? 120000 : 20000;
-    if (!pendingVersion || view !== 'home' || !el.alarm.hidden || Date.now() - lastInteraction < quiet) return;
+    // Auch im Planen-Tab: Der Kühlschrank kann dort lange stehen, das Neuladen behält die Hash-Route
+    if (!pendingVersion || (view !== 'home' && view !== 'plan') || !el.alarm.hidden || Date.now() - lastInteraction < quiet) return;
     // Nur ein Versuch pro Version: Liefert ein Cache noch die alte Seite, entsteht keine Neulade-Schleife
     let tried = null;
     try { tried = sessionStorage.getItem('fridge.reloadFor'); sessionStorage.setItem('fridge.reloadFor', pendingVersion); } catch { /* egal */ }
