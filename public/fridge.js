@@ -74,6 +74,7 @@
     cal: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
     search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20.5 20.5"/>',
     refresh: '<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4.5H15"/>',
+    move: '<path d="M4 8h13M13.5 4.5 17 8l-3.5 3.5M20 16H7M10.5 12.5 7 16l3.5 3.5"/>',
   };
   const icon = (name) => `<svg class="fh-ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
   const pill = (name, text) => (text ? `<span class="fh-pill">${icon(name)}${esc(text)}</span>` : '');
@@ -169,6 +170,7 @@
         </header>
       </div>
       <div class="fh-pv-body" id="fh-pv-body"></div>
+      <div class="fh-pv-bar" id="fh-pv-bar" hidden></div>
     </section>
     <section class="fh-layer" id="fh-recipe" hidden></section>
     <section class="fh-layer fh-cook" id="fh-cook" hidden></section>
@@ -181,7 +183,7 @@
     home: $('#fh-home'), chips: $('#fh-chips'), resume: $('#fh-resume'), recipe: $('#fh-recipe'), cook: $('#fh-cook'), shop: $('#fh-shop'),
     timers: $('#fh-timers'), alarm: $('#fh-alarm'), toast: $('#fh-toast'), clocks: document.querySelectorAll('.fh-clock'),
     top: $('.fh-top'), q: $('#fh-q'), qCount: $('#fh-q-count'), searchBtn: $('#fh-search-btn'),
-    pv: $('#fh-pv'), pvBody: $('#fh-pv-body'),
+    pv: $('#fh-pv'), pvBody: $('#fh-pv-body'), pvBar: $('#fh-pv-bar'),
   };
 
   let toastTimer = 0;
@@ -452,6 +454,7 @@
       else { recipeScroll = { id: null, top: 0 }; renderResume(); }
     }
     if (view === 'shop' && r.view !== 'shop') shopLeftAt = Date.now();
+    if (view === 'plan' && r.view !== 'plan') { cancelMove(); clearDone(); renderPvBar(); } // Umplanen endet mit dem Tabwechsel
     view = r.view;
     root.setAttribute('data-fh-view', view);
     $('#fh-tab-rezepte').classList.toggle('is-active', view !== 'shop' && view !== 'plan');
@@ -688,9 +691,9 @@
 
   function planItem(id) {
     const r = byCookidoo.get(id);
-    if (r) return { rec: r, title: r.name, time: r.prepTime ? shortTime(r.prepTime) : '', meta: r.category, img: r.tile || r.thumb || '', big: r.thumb || r.tile || '' };
+    if (r) return { id, rec: r, title: r.name, time: r.prepTime ? shortTime(r.prepTime) : '', meta: r.category, img: r.tile || r.thumb || '', big: r.thumb || r.tile || '' };
     const s = (plan && plan.rezepte && plan.rezepte[id]) || {};
-    return { rec: null, title: s.titel || (KATALOG_ID.test(id) ? 'Rezept aus Cookidoo' : 'Eigenes Cookidoo-Rezept'),
+    return { id, rec: null, title: s.titel || (KATALOG_ID.test(id) ? 'Rezept aus Cookidoo' : 'Eigenes Cookidoo-Rezept'),
       time: s.minuten ? minutes(s.minuten) : '', meta: 'Cookidoo', img: s.bild || '', big: s.bildGross || s.bild || '' };
   }
   function planDays() {
@@ -707,10 +710,13 @@
     return out;
   }
 
-  // Eigene Rezepte öffnen sich, Katalog-Rezepte gibt es nur in Cookidoo bzw. am Thermomix
-  const itemTag = (it, cls, inner) => (it.rec
-    ? `<a class="${cls}" href="#/r/${esc(it.rec.id)}">${inner}</a>`
-    : `<button class="${cls} is-foreign" data-act="pv-foreign">${inner}</button>`);
+  // Karte eines geplanten Gerichts. Die Fläche öffnet eigene Rezepte, bei Katalog-Rezepten (gibt es nur in Cookidoo bzw. am
+  // Thermomix) kommt ein Hinweis. Der Knopf oben rechts nimmt das Gericht zum Verschieben auf. Link und Knopf liegen als
+  // Geschwister über der Karte (ein Knopf in einem Link wäre ungültig).
+  const itemTag = (it, iso, cls, inner) => `<div class="${cls}${it.rec ? '' : ' is-foreign'}" data-ck="${esc(it.id)}" data-day="${iso}">${inner}
+    ${it.rec ? `<a class="fh-stretch" href="#/r/${esc(it.rec.id)}" aria-label="${esc(it.title)} öffnen"></a>`
+      : `<button class="fh-stretch" data-act="pv-foreign" aria-label="${esc(it.title)}"></button>`}
+    <button class="fh-mv" data-act="pv-move" data-id="${esc(it.id)}" data-day="${iso}" aria-label="${esc(it.title)} verschieben">${icon('move')}</button></div>`;
   const pvImg = (src) => (src ? `<img src="${esc(src)}" alt="" decoding="async" referrerpolicy="no-referrer">` : '');
   const pvPh = () => `<span class="fh-ph">${icon('cal')}</span>`;
   const secHead = (kicker, title, aside) => `<div class="fh-sec-head"><div>${kicker ? `<div class="fh-kicker">${esc(kicker)}</div>` : ''}<h2>${esc(title)}</h2></div>${aside ? `<span class="fh-sec-aside">${esc(aside)}</span>` : ''}</div>`;
@@ -728,7 +734,7 @@
     const bigFirst = n === 1 || n === 3;
     const cards = day.items.map((it, i) => {
       const small = (n === 3 && i > 0) || n >= 5;
-      return itemTag(it, 'fh-hcard' + (bigFirst && i === 0 ? ' is-big' : ''), `${pvPh()}${pvImg(small ? it.img : it.big)}
+      return itemTag(it, day.iso, 'fh-hcard' + (bigFirst && i === 0 ? ' is-big' : ''), `${pvPh()}${pvImg(small ? it.img : it.big)}
         ${it.time ? `<span class="fh-card-time">${esc(it.time)}</span>` : ''}
         <span class="fh-hcard-cap"><span class="fh-hcard-meta">${esc(it.meta)}</span><span class="fh-hcard-title">${esc(it.title)}</span></span>`);
     }).join('');
@@ -778,9 +784,9 @@
     const n = d.items.length;
     return `<div class="fh-ag-row has-plan" id="fh-pv-${d.iso}">${when(d)}
       <div class="fh-ag-body"><div class="fh-ag-label">${d.tomorrow ? 'Morgen · ' : ''}${WD_LONG[d.d.getDay()]}${n > 1 ? `<span> · ${countText(n)}</span>` : ''}</div>
-        <div class="fh-ag-cards">${d.items.map(rowCard).join('')}</div></div></div>`;
+        <div class="fh-ag-cards">${d.items.map((it) => rowCard(it, d.iso)).join('')}</div></div></div>`;
   }
-  const rowCard = (it) => itemTag(it, 'fh-rcard', `<span class="fh-rcard-img">${pvPh()}${pvImg(it.img)}</span>
+  const rowCard = (it, iso) => itemTag(it, iso, 'fh-rcard', `<span class="fh-rcard-img">${pvPh()}${pvImg(it.img)}</span>
     <span class="fh-rcard-body"><span class="fh-rcard-title">${esc(it.title)}</span>
       <span class="fh-rcard-meta">${it.time ? `${icon('clock')}${esc(it.time)}<b>·</b>` : ''}${esc(it.meta)}</span></span>`);
   function freeRow(run) {
@@ -811,6 +817,7 @@
       el.pvBody.innerHTML = `<button class="fh-pv-status" id="fh-pv-status" data-act="pv-refresh"></button>${body}${calHtml(days)}${stage ? agendaHtml(days, stage.iso) : ''}`;
     }
     renderPlanStatus();
+    applyMoveUi(); // aufgenommenes Gericht und Zieltage auch nach dem Neuaufbau markieren
   }
   function renderPlanStatus() {
     const s = document.getElementById('fh-pv-status');
@@ -833,6 +840,120 @@
     void target.offsetWidth; // Animation neu starten
     target.classList.add('is-flash');
   }
+
+  // ---------- Umplanen: Gericht aufnehmen und auf einem Tag im Blatt ablegen ----------
+  // „Aufnehmen und Ablegen“ statt Ziehen (Wunsch des Nutzers: ein Gericht nach dem anderen auf andere Tage legen). Ziehen
+  // taugt am Kühlschrank wenig: Der Touchscreen meldet sich als Maus, große Karten ruckeln beim Ziehen auf seiner GPU, und
+  // Ziehen und Scrollen kämen sich in die Quere. Ablauf: Verschieben-Knopf auf der Karte → das Gericht ist aufgenommen, das
+  // Blatt zeigt die möglichen Zieltage → Tag antippen → in Cookidoo verschoben. Reihenfolge: erst am Zieltag eintragen,
+  // dann am alten Tag austragen. Scheitert das Austragen, steht das Gericht an beiden Tagen statt an keinem.
+  // Danach bietet die Leiste 6 s lang „Rückgängig“. Abbrechen: Leiste, derselbe Knopf noch einmal, Esc oder Tabwechsel.
+  let pvMove = null; // { id, from, title, busy, to }
+  let pvDone = null; // { id, from, to, title, undo, timer }
+  const isoDay = (iso) => new Date(iso + 'T12:00:00');
+  const barDay = (iso) => { const d = isoDay(iso); return `${WD_LONG[d.getDay()]}, ${d.getDate()}.`; };
+  function canDrop(iso) {
+    if (!pvMove || iso < isoDate(new Date()) || iso === pvMove.from) return false;
+    return !((plan && plan.tage && plan.tage[iso]) || []).includes(pvMove.id); // steht dort schon
+  }
+  function applyMoveUi() {
+    const m = pvMove;
+    root.classList.toggle('fh-moving', !!m);
+    el.pv.classList.toggle('is-moving', !!m);
+    for (const c of el.pvBody.querySelectorAll('[data-ck]')) c.classList.toggle('is-picked', !!m && c.dataset.ck === m.id && c.dataset.day === m.from);
+    for (const b of el.pvBody.querySelectorAll('.fh-cal-day')) {
+      b.classList.toggle('is-drop', !!m && !m.busy && canDrop(b.dataset.date));
+      b.classList.toggle('is-source', !!m && b.dataset.date === m.from);
+      b.classList.toggle('is-target', !!m && b.dataset.date === m.to);
+    }
+    renderPvBar();
+  }
+  function renderPvBar() {
+    const bar = el.pvBar, m = pvMove, d = pvDone;
+    el.pv.classList.toggle('has-bar', !!(m || d));
+    if (m) {
+      bar.className = 'fh-pv-bar' + (m.busy ? ' is-busy' : '');
+      bar.innerHTML = `${icon('move')}<span class="fh-pv-bar-text"><b>${esc(m.title)}</b><span>${m.busy ? 'wird verschoben …' : 'Neuen Tag im Kalender antippen'}</span></span>` +
+        (m.busy ? '' : '<button class="fh-pv-bar-btn" data-act="pv-move-cancel">Abbrechen</button>');
+    } else if (d) {
+      bar.className = 'fh-pv-bar is-done';
+      bar.innerHTML = `${icon('check')}<span class="fh-pv-bar-text"><b>${esc(d.title)}</b><span>liegt ${d.undo ? 'wieder' : 'jetzt'} auf ${esc(barDay(d.to))}</span></span>` +
+        (d.undo ? '' : '<button class="fh-pv-bar-btn" data-act="pv-undo">Rückgängig</button>');
+    }
+    bar.hidden = !(m || d);
+  }
+  function clearDone() { if (pvDone) { clearTimeout(pvDone.timer); pvDone = null; } }
+  function startMove(id, from) {
+    if (pvMove && pvMove.busy) return;
+    if (pvMove && pvMove.id === id && pvMove.from === from) { cancelMove(); return; } // gleicher Knopf = abbrechen
+    clearDone();
+    pvMove = { id, from, title: planItem(id).title, busy: false, to: null };
+    applyMoveUi();
+    // Das Blatt muss sichtbar sein (am Handy liegt es unter der Bühne, aus der Zeitleiste heraus darüber)
+    const cal = el.pvBody.querySelector('.fh-cal');
+    if (cal) {
+      const r = cal.getBoundingClientRect(), box = el.pv.getBoundingClientRect();
+      if (r.top < box.top + 90 || r.bottom > box.bottom - 110) cal.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }
+  function cancelMove() {
+    if (!pvMove || pvMove.busy) return;
+    pvMove = null;
+    applyMoveUi();
+  }
+  function doMove(to, undo) {
+    const m = pvMove;
+    if (!m || m.busy) return;
+    m.busy = true;
+    m.to = to;
+    applyMoveUi();
+    const post = (date, action) => ckFetch('plan', { method: 'POST', body: JSON.stringify({ recipeId: m.id, date, action }) });
+    post(to, 'add')
+      .then(() => post(m.from, 'remove').then(() => true, (err) => {
+        toast(`Am neuen Tag eingeplant, am alten Tag aber nicht entfernt: ${err.message}`, 5000);
+        return false;
+      }))
+      .then((removed) => {
+        // Zwischenstand sofort anpassen, danach frisch aus Cookidoo laden
+        if (plan && plan.tage) {
+          const t = plan.tage;
+          if (removed && t[m.from]) { const i = t[m.from].indexOf(m.id); if (i >= 0) t[m.from].splice(i, 1); }
+          (t[to] = t[to] || []).push(m.id);
+          plan.stale = true;
+          store.set('plan', plan);
+        }
+        pvMove = null;
+        clearDone();
+        if (removed) {
+          pvDone = { id: m.id, from: m.from, to, title: m.title, undo: !!undo };
+          pvDone.timer = setTimeout(() => { pvDone = null; renderPvBar(); }, 6000);
+        }
+        renderPlan();
+        const cell = el.pvBody.querySelector(`.fh-cal-day[data-date="${to}"]`);
+        if (cell) cell.classList.add('is-flash');
+        loadPlan(true);
+      }, (err) => {
+        m.busy = false;
+        m.to = null;
+        applyMoveUi();
+        toast(err.message, 3500);
+      });
+  }
+  function undoMove() {
+    const d = pvDone;
+    if (!d || pvMove) return;
+    clearDone();
+    pvMove = { id: d.id, from: d.to, title: d.title, busy: false, to: null };
+    doMove(d.from, true);
+  }
+  function tapPlanDay(btn) {
+    const iso = btn.dataset.date;
+    if (!pvMove) { pvJump(iso); return; }
+    if (pvMove.busy) return;
+    if (canDrop(iso)) doMove(iso);
+    else toast(iso === pvMove.from ? 'Das ist der bisherige Tag' : 'Steht an diesem Tag schon im Plan');
+  }
+
   // Fremde Bilder (Cookidoo-Katalog) können fehlen: dann bleibt der Platzhalter darunter sichtbar
   el.pv.addEventListener('error', (e) => { if (e.target && e.target.tagName === 'IMG') e.target.remove(); }, true);
   if (EMBED_SHOP) setInterval(() => { if (view === 'plan' && !document.hidden) loadPlan(true); }, 5 * 60 * 1000);
@@ -1336,7 +1457,10 @@
         if (view === 'plan') { e.preventDefault(); el.pv.scrollTo({ top: 0, behavior: 'smooth' }); loadPlan(false); }
         break;
       case 'pv-refresh': loadPlan(true); break;
-      case 'pv-day': pvJump(t.dataset.date); break;
+      case 'pv-day': tapPlanDay(t); break;
+      case 'pv-move': startMove(t.dataset.id, t.dataset.day); break;
+      case 'pv-move-cancel': cancelMove(); break;
+      case 'pv-undo': undoMove(); break;
       case 'pv-foreign': toast('Rezept aus dem Cookidoo-Katalog – am Thermomix unter „Meine Woche“', 3200); break;
       case 'ingr': toggleIngredient(t); break;
       case 'ck-open': openPlan(); break;
@@ -1396,7 +1520,8 @@
     else if (view === 'cook' && e.key === 'ArrowLeft') step(-1);
     else if (e.key === 'Escape') {
       const d = $('#fh-drawer'), p = $('#fh-plan');
-      if (d && !d.hidden) closeDrawer();
+      if (view === 'plan' && pvMove) cancelMove();
+      else if (d && !d.hidden) closeDrawer();
       else if (p && !p.hidden) closePlan();
       else if (view === 'cook') goBack('#/r/' + cookRecipeId);
       else if (view === 'recipe') goBack(recipeParent());
