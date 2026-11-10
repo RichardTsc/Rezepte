@@ -158,23 +158,6 @@ h2 {
     transition: color 0.3s ease;
 }
 
-/* Einwiege-Schritt (Thermomix-Waage): eigener Schritt „… in den Mixtopf wiegen“ */
-.check-list li.is-weigh label {
-    font-weight: 600;
-}
-.weigh-ic {
-    width: 1.15em;
-    height: 1.15em;
-    flex: none;
-    vertical-align: -0.2em;
-    margin-right: 7px;
-    fill: none;
-    stroke: #5a6e1c;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
 /* Responsive Anpassungen */
 
 /* Mobilgeräte */

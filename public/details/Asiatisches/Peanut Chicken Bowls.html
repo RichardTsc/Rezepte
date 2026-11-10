@@ -166,13 +166,6 @@ Soße servieren.</label>
 
                 checkbox.id = uniqueId;
                 label.htmlFor = uniqueId;
-
-                // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/wiegen\b/i.test(label.textContent)) {
-                    li.classList.add('is-weigh');
-                    label.insertAdjacentHTML('afterbegin',
-                        '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');
-                }
             });
         });
         </script>

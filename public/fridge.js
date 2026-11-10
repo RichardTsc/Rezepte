@@ -60,7 +60,6 @@
     fullscreen: '<path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5"/>',
     clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
     timer: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 1.5M9.5 2.5h5M19 5.5l1.5 1.5"/>',
-    scale: '<rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/>',
     users: '<circle cx="9" cy="8.5" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-3.5-5.8"/>',
     pen: '<path d="M4 20h4L18.5 9.5l-4-4L4 16v4zM13 7l4 4"/>',
     play: '<path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/>',
@@ -128,9 +127,6 @@
   const toNum = (s) => NUM_WORDS[s.toLowerCase()] || parseFloat(s.replace(',', '.'));
   const unitSeconds = (u) => (/^(stu|std|h)/i.test(u) ? 3600 : /^m/i.test(u) ? 60 : 1);
 
-  // Einwiege-Schritt (Thermomix-Waage): eigener Schritt „… in den Mixtopf wiegen“ – wird optisch als Waage markiert.
-  const isWeigh = (t) => /wiegen\b/i.test(t);
-
   function stepHtml(text, stepNo) {
     let out = '', last = 0;
     for (const m of text.matchAll(TIME_RE)) {
@@ -140,8 +136,7 @@
         `<button class="fh-timechip" data-act="timer" data-sec="${sec}" data-step="${stepNo}" data-label="${esc(m[0])}">${icon('timer')}${esc(m[0])}</button>`;
       last = m.index + m[0].length;
     }
-    const body = out + esc(text.slice(last));
-    return isWeigh(text) ? `<span class="fh-weighchip">${icon('scale')}Einwiegen</span>${body}` : body;
+    return out + esc(text.slice(last));
   }
 
   // ---------- Gerüst ----------
@@ -510,7 +505,7 @@
         </section>
         <section class="fh-panel">
           <h2>Zubereitung</h2>
-          <ol class="fh-steplist">${rec.steps.map((t, i) => `<li data-act="cook-at" data-step="${i + 1}"${isWeigh(t) ? ' class="is-weigh"' : ''}><span class="fh-num">${i + 1}</span><span>${isWeigh(t) ? icon('scale') : ''}${esc(t)}</span></li>`).join('')}</ol>
+          <ol class="fh-steplist">${rec.steps.map((t, i) => `<li data-act="cook-at" data-step="${i + 1}"><span class="fh-num">${i + 1}</span><span>${esc(t)}</span></li>`).join('')}</ol>
         </section>
       </div>
       <div class="fh-bar">${cookidooButton(rec)}${mainAction(rec, resumeStep)}</div>
