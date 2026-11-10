@@ -365,9 +365,20 @@ html.fridge.fh-moving .fh-timers { display: none; }
 .fh-tag-todo { border-color: rgba(255, 154, 118, .55); color: var(--warn); background: rgba(255, 154, 118, .1); }
 .fh-ck-btn { min-height: 64px; font-size: 21px; border: 1px solid var(--accent-line); color: var(--accent); background: var(--accent-soft); }
 .fh-ck-hint { margin: 0 0 14px; color: var(--muted); font-size: 18px; }
-.fh-ck-days { display: flex; flex-wrap: wrap; gap: 10px; }
-.fh-ck-day { min-width: 120px; }
-.fh-ck-day.is-active { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+/* Tageskacheln: Beschriftung links, rechts die Bildpunkte der anderen schon geplanten Gerichte (wie im Kalenderblatt) */
+.fh-ck-days { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.fh-ck-day {
+  --cell: var(--surface);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; min-height: 64px;
+  padding: 0 12px 0 18px; border-radius: var(--r-ctl); text-align: left;
+}
+.fh-ck-day > span { margin-left: 0; opacity: 1; } /* .fh-chip span setzt sonst Einzug und 60 % Deckkraft */
+.fh-ck-lbl { min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.fh-ck-day .fh-cal-stack { flex: none; height: 32px; }
+.fh-ck-day .fh-cal-stack > img, .fh-ck-day .fh-cal-stack > i { width: 32px; height: 32px; margin-left: -11px; }
+.fh-ck-day .fh-cal-stack > :first-child { margin-left: 0; }
+.fh-ck-day.is-active { --cell: var(--accent); background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.fh-ck-day.is-active .fh-cal-stack > i:not(.fh-cal-more) { background: var(--on-accent); }
 .fh-ck-day:disabled { opacity: .5; }
 .fh-ck-status { min-height: 1.4em; margin: 14px 0 0; color: var(--muted); font-size: 17px; }
 .fh-panel { margin: 16px; padding: 18px 18px 6px; background: var(--surface); border-radius: var(--r-card); }
@@ -635,7 +646,12 @@ html.fridge.fh-drawer-open .fh-timers { display: none; }
   .fh-ck-btn { min-height: 52px; font-size: 17px; }
   .fh-ck-hint { font-size: 15px; }
   .fh-ck-days { gap: 8px; }
-  .fh-ck-day { flex: 1 1 calc(33.333% - 8px); min-width: 0; padding: 0 8px; }
+  .fh-ck-day { flex-direction: column; justify-content: center; gap: 4px; min-height: 66px; padding: 6px 6px; border-radius: 16px; text-align: center; }
+  .fh-ck-lbl { max-width: 100%; }
+  .fh-ck-day .fh-cal-stack { height: 22px; }
+  .fh-ck-day .fh-cal-stack:empty { display: none; }
+  .fh-ck-day .fh-cal-stack > img, .fh-ck-day .fh-cal-stack > i { width: 22px; height: 22px; margin-left: -8px; border-width: 1.5px; }
+  .fh-ck-day .fh-cal-stack > .fh-cal-more { font-size: 9px; }
   .fh-ck-status { font-size: 15px; }
 
   /* Kochmodus */

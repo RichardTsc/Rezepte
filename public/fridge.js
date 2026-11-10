@@ -594,6 +594,26 @@
         return r.json().catch(() => ({})).then((b) => { throw new Error(b.fehler || b.error || 'Cookidoo antwortet mit ' + r.status); });
       });
   }
+  // Tagesauswahl: je Tag die Beschriftung und, wie im Kalenderblatt des Planen-Tabs, ein Stapel runder Vorschaubilder der
+  // anderen Gerichte, die dort schon geplant sind (Wunsch des Nutzers). Ob DIESES Rezept dort steht, zeigt die Limetten-Füllung.
+  // Sofort aus dem Zwischenstand des Planen-Tabs (fridge.plan), nach dem Laden frisch; der Zwischenstand wird dabei mit aufgefrischt.
+  const ckThumb = (id, rezepte) => {
+    const r = byCookidoo.get(id);
+    return r ? r.tile || r.thumb || '' : (rezepte && rezepte[id] && rezepte[id].bild) || '';
+  };
+  function ckStack(ids, rezepte) {
+    const n = ids.length;
+    return (n > 3 ? ids.slice(0, 2) : ids).map((id) => { const src = ckThumb(id, rezepte); return src ? pvImg(src) : '<i></i>'; }).join('') +
+      (n > 3 ? `<i class="fh-cal-more">+${n - 2}</i>` : '');
+  }
+  function fillPlanDays(panel, rec, tage, rezepte) {
+    for (const b of panel.querySelectorAll('.fh-ck-day')) {
+      const ids = tage[b.dataset.date];
+      if (!ids) continue; // Tag liegt nicht im (Zwischen-)Stand
+      b.classList.toggle('is-active', ids.includes(rec.cookidoo));
+      b.querySelector('.fh-cal-stack').innerHTML = ckStack(ids.filter((id) => id !== rec.cookidoo), rezepte);
+    }
+  }
   function openPlan() {
     const rec = byId.get(currentId());
     const panel = $('#fh-plan');
@@ -603,15 +623,22 @@
       <div class="fh-drawer-panel">
         <div class="fh-drawer-head"><h2>In Cookidoo planen</h2><button class="fh-round" data-act="ck-close" aria-label="Schließen">${icon('x')}</button></div>
         <p class="fh-ck-hint">Erscheint am Thermomix unter „Meine Woche“. Nochmal antippen nimmt es wieder heraus.</p>
-        <div class="fh-ck-days">${days.map((d) => `<button class="fh-chip fh-ck-day" data-act="ck-day" data-date="${d.iso}">${esc(d.label)}</button>`).join('')}</div>
+        <div class="fh-ck-days">${days.map((d) => `<button class="fh-chip fh-ck-day" data-act="ck-day" data-date="${d.iso}" data-label="${esc(d.label)}">
+          <span class="fh-ck-lbl">${esc(d.label)}</span><span class="fh-cal-stack"></span></button>`).join('')}</div>
         <p class="fh-ck-status" id="fh-ck-status">Lade Wochenplan …</p>
       </div>`;
     panel.hidden = false;
     root.classList.add('fh-drawer-open');
+    if (plan && plan.tage) fillPlanDays(panel, rec, plan.tage, plan.rezepte);
     ckFetch(`geplant?von=${days[0].iso}&tage=${PLAN_DAYS}`).then((data) => {
-      const tage = (data && data.tage) || {};
-      for (const b of panel.querySelectorAll('.fh-ck-day')) b.classList.toggle('is-active', (tage[b.dataset.date] || []).includes(rec.cookidoo));
+      const tage = (data && data.tage) || {}, rezepte = (data && data.rezepte) || {};
+      fillPlanDays(panel, rec, tage, rezepte);
       $('#fh-ck-status').textContent = '';
+      if (plan && plan.tage) { // überlappende Tage in den Zwischenstand des Planen-Tabs übernehmen
+        for (const iso of Object.keys(tage)) if (iso in plan.tage) plan.tage[iso] = tage[iso];
+        plan.rezepte = Object.assign(plan.rezepte || {}, rezepte);
+        store.set('plan', plan);
+      }
     }, (err) => { $('#fh-ck-status').textContent = err.message; });
   }
   function closePlan() { const p = $('#fh-plan'); if (p) p.hidden = true; root.classList.remove('fh-drawer-open'); }
@@ -624,7 +651,7 @@
       .then(() => {
         btn.classList.toggle('is-active', !planned);
         notePlanChange(btn.dataset.date, rec.cookidoo, !planned);
-        toast(planned ? `Aus „Meine Woche“ entfernt: ${btn.textContent}` : `In Cookidoo geplant: ${btn.textContent}`);
+        toast(planned ? `Aus „Meine Woche“ entfernt: ${btn.dataset.label}` : `In Cookidoo geplant: ${btn.dataset.label}`);
       }, (err) => toast(err.message, 3500))
       .finally(() => { btn.disabled = false; });
   }
@@ -1002,6 +1029,7 @@
 
   // Fremde Bilder (Cookidoo-Katalog) können fehlen: dann bleibt der Platzhalter darunter sichtbar
   el.pv.addEventListener('error', (e) => { if (e.target && e.target.tagName === 'IMG') e.target.remove(); }, true);
+  el.recipe.addEventListener('error', (e) => { const t = e.target; if (t && t.tagName === 'IMG' && t.closest('.fh-cal-stack')) t.remove(); }, true);
   if (EMBED_SHOP) setInterval(() => { if (view === 'plan' && !document.hidden) loadPlan(true); }, 5 * 60 * 1000);
 
   function toggleIngredient(btn) {
