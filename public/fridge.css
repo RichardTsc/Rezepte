@@ -454,6 +454,16 @@ html.fridge.fh-awake-on .fh-awake-dot { background: var(--accent); animation: fh
   color: var(--accent); font-weight: 750; line-height: 1.35;
 }
 .fh-timechip .fh-ic { width: .85em; height: .85em; }
+/* Einwiege-Schritt (Thermomix-Waage): im Kochmodus als Chip vor dem Text, in der Übersicht mit Waage-Icon */
+.fh-weighchip {
+  display: inline-flex; align-items: center; gap: 8px; margin: 0 12px 4px 0; padding: 2px 15px 2px 11px;
+  border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent);
+  font-size: .5em; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; vertical-align: middle;
+}
+.fh-weighchip .fh-ic { width: 1.5em; height: 1.5em; stroke-width: 2.4; }
+.fh-steplist .is-weigh .fh-num { background: var(--accent); color: var(--on-accent); }
+.fh-steplist .is-weigh > span:last-child { display: flex; gap: 8px; }
+.fh-steplist .is-weigh .fh-ic { width: 22px; height: 22px; flex: none; color: var(--accent); margin-top: 1px; }
 .fh-nextstep {
   flex: none; margin: 0 6px 12px; color: var(--muted); font-size: 19px;
   display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
