@@ -75,6 +75,7 @@
     search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L20.5 20.5"/>',
     refresh: '<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4.5H15"/>',
     move: '<path d="M4 8h13M13.5 4.5 17 8l-3.5 3.5M20 16H7M10.5 12.5 7 16l3.5 3.5"/>',
+    trash: '<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10 11v5.5M14 11v5.5"/>',
   };
   const icon = (name) => `<svg class="fh-ic" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name]}</svg>`;
   const pill = (name, text) => (text ? `<span class="fh-pill">${icon(name)}${esc(text)}</span>` : '');
@@ -847,9 +848,11 @@
   // Ziehen und Scrollen kämen sich in die Quere. Ablauf: Verschieben-Knopf auf der Karte → das Gericht ist aufgenommen, das
   // Blatt zeigt die möglichen Zieltage → Tag antippen → in Cookidoo verschoben. Reihenfolge: erst am Zieltag eintragen,
   // dann am alten Tag austragen. Scheitert das Austragen, steht das Gericht an beiden Tagen statt an keinem.
-  // Danach bietet die Leiste 6 s lang „Rückgängig“. Abbrechen: Leiste, derselbe Knopf noch einmal, Esc oder Tabwechsel.
-  let pvMove = null; // { id, from, title, busy, to }
-  let pvDone = null; // { id, from, to, title, undo, timer }
+  // Danach bietet die Leiste 6 s lang „Rückgängig“. Abbrechen: ✕ in der Leiste, derselbe Knopf noch einmal, Esc oder Tabwechsel.
+  // Rausnehmen (Wunsch des Nutzers, im selben Dialog): „Rausnehmen“ in der Leiste trägt das aufgenommene Gericht am bisherigen
+  // Tag aus. Ohne Rückfrage, weil danach ebenfalls 6 s „Rückgängig“ kommt (plant es am selben Tag wieder ein).
+  let pvMove = null; // { id, from, title, busy, removing, to }
+  let pvDone = null; // { kind: 'moved' | 'removed' | 'busy', id, from, to, title, undo, timer }
   const isoDay = (iso) => new Date(iso + 'T12:00:00');
   const barDay = (iso) => { const d = isoDay(iso); return `${WD_LONG[d.getDay()]}, ${d.getDate()}.`; };
   function canDrop(iso) {
@@ -873,16 +876,35 @@
     el.pv.classList.toggle('has-bar', !!(m || d));
     if (m) {
       bar.className = 'fh-pv-bar' + (m.busy ? ' is-busy' : '');
-      bar.innerHTML = `${icon('move')}<span class="fh-pv-bar-text"><b>${esc(m.title)}</b><span>${m.busy ? 'wird verschoben …' : 'Neuen Tag im Kalender antippen'}</span></span>` +
-        (m.busy ? '' : '<button class="fh-pv-bar-btn" data-act="pv-move-cancel">Abbrechen</button>');
+      bar.innerHTML = `${icon('move')}<span class="fh-pv-bar-text"><b>${esc(m.title)}</b><span>${m.busy ? (m.removing ? 'wird herausgenommen …' : 'wird verschoben …')
+        : 'Neuen Tag<span class="fh-wide-only"> im Kalender</span> antippen'}</span></span>` + (m.busy ? ''
+        : `<button class="fh-pv-bar-btn" data-act="pv-remove">${icon('trash')}Rausnehmen</button>` +
+          `<button class="fh-pv-bar-x" data-act="pv-move-cancel" aria-label="Abbrechen">${icon('x')}</button>`);
     } else if (d) {
-      bar.className = 'fh-pv-bar is-done';
-      bar.innerHTML = `${icon('check')}<span class="fh-pv-bar-text"><b>${esc(d.title)}</b><span>liegt ${d.undo ? 'wieder' : 'jetzt'} auf ${esc(barDay(d.to))}</span></span>` +
-        (d.undo ? '' : '<button class="fh-pv-bar-btn" data-act="pv-undo">Rückgängig</button>');
+      const text = d.kind === 'busy' ? 'wird wieder eingeplant …'
+        : d.kind === 'removed' ? `am ${barDay(d.from)} herausgenommen` : `liegt ${d.undo ? 'wieder' : 'jetzt'} auf ${barDay(d.to)}`;
+      bar.className = 'fh-pv-bar is-done' + (d.kind === 'busy' ? ' is-busy' : '');
+      bar.innerHTML = `${icon(d.kind === 'removed' ? 'trash' : d.kind === 'busy' ? 'refresh' : 'check')}<span class="fh-pv-bar-text"><b>${esc(d.title)}</b><span>${esc(text)}</span></span>` +
+        (d.kind === 'busy' || d.undo ? '' : '<button class="fh-pv-bar-btn" data-act="pv-undo">Rückgängig</button>');
     }
     bar.hidden = !(m || d);
   }
   function clearDone() { if (pvDone) { clearTimeout(pvDone.timer); pvDone = null; } }
+  function showDone(note) { // Erfolgsmeldung, 6 s sichtbar (mit „Rückgängig“, außer nach einem Rückgängig)
+    clearDone();
+    pvDone = note;
+    note.timer = setTimeout(() => { if (pvDone === note) { pvDone = null; renderPvBar(); } }, 6000);
+  }
+  // Zwischenstand sofort anpassen (danach lädt loadPlan frisch aus Cookidoo)
+  function planLocal(id, iso, add) {
+    if (!plan || !plan.tage) return;
+    const list = plan.tage[iso] || (plan.tage[iso] = []);
+    const i = list.indexOf(id);
+    if (add) list.push(id); else if (i >= 0) list.splice(i, 1);
+    plan.stale = true;
+    store.set('plan', plan);
+  }
+  const postPlan = (id, date, action) => ckFetch('plan', { method: 'POST', body: JSON.stringify({ recipeId: id, date, action }) });
   function startMove(id, from) {
     if (pvMove && pvMove.busy) return;
     if (pvMove && pvMove.id === id && pvMove.from === from) { cancelMove(); return; } // gleicher Knopf = abbrechen
@@ -907,27 +929,17 @@
     m.busy = true;
     m.to = to;
     applyMoveUi();
-    const post = (date, action) => ckFetch('plan', { method: 'POST', body: JSON.stringify({ recipeId: m.id, date, action }) });
-    post(to, 'add')
-      .then(() => post(m.from, 'remove').then(() => true, (err) => {
+    postPlan(m.id, to, 'add')
+      .then(() => postPlan(m.id, m.from, 'remove').then(() => true, (err) => {
         toast(`Am neuen Tag eingeplant, am alten Tag aber nicht entfernt: ${err.message}`, 5000);
         return false;
       }))
       .then((removed) => {
-        // Zwischenstand sofort anpassen, danach frisch aus Cookidoo laden
-        if (plan && plan.tage) {
-          const t = plan.tage;
-          if (removed && t[m.from]) { const i = t[m.from].indexOf(m.id); if (i >= 0) t[m.from].splice(i, 1); }
-          (t[to] = t[to] || []).push(m.id);
-          plan.stale = true;
-          store.set('plan', plan);
-        }
+        planLocal(m.id, to, true);
+        if (removed) planLocal(m.id, m.from, false);
         pvMove = null;
         clearDone();
-        if (removed) {
-          pvDone = { id: m.id, from: m.from, to, title: m.title, undo: !!undo };
-          pvDone.timer = setTimeout(() => { pvDone = null; renderPvBar(); }, 6000);
-        }
+        if (removed) showDone({ kind: 'moved', id: m.id, from: m.from, to, title: m.title, undo: !!undo });
         renderPlan();
         const cell = el.pvBody.querySelector(`.fh-cal-day[data-date="${to}"]`);
         if (cell) cell.classList.add('is-flash');
@@ -939,10 +951,44 @@
         toast(err.message, 3500);
       });
   }
+  function doRemove() {
+    const m = pvMove;
+    if (!m || m.busy) return;
+    m.busy = true;
+    m.removing = true;
+    applyMoveUi();
+    postPlan(m.id, m.from, 'remove').then(() => {
+      planLocal(m.id, m.from, false);
+      pvMove = null;
+      showDone({ kind: 'removed', id: m.id, from: m.from, title: m.title });
+      renderPlan();
+      loadPlan(true);
+    }, (err) => {
+      m.busy = false;
+      m.removing = false;
+      applyMoveUi();
+      toast(err.message, 3500);
+    });
+  }
   function undoMove() {
     const d = pvDone;
-    if (!d || pvMove) return;
+    if (!d || pvMove || d.kind === 'busy' || d.undo) return;
     clearDone();
+    if (d.kind === 'removed') { // am selben Tag wieder einplanen
+      pvDone = { kind: 'busy', title: d.title };
+      renderPvBar();
+      postPlan(d.id, d.from, 'add').then(() => {
+        planLocal(d.id, d.from, true);
+        showDone({ kind: 'moved', id: d.id, to: d.from, title: d.title, undo: true });
+        renderPlan();
+        loadPlan(true);
+      }, (err) => {
+        pvDone = null;
+        renderPvBar();
+        toast(`Nicht wieder eingeplant: ${err.message}`, 4000);
+      });
+      return;
+    }
     pvMove = { id: d.id, from: d.to, title: d.title, busy: false, to: null };
     doMove(d.from, true);
   }
@@ -1460,6 +1506,7 @@
       case 'pv-day': tapPlanDay(t); break;
       case 'pv-move': startMove(t.dataset.id, t.dataset.day); break;
       case 'pv-move-cancel': cancelMove(); break;
+      case 'pv-remove': doRemove(); break;
       case 'pv-undo': undoMove(); break;
       case 'pv-foreign': toast('Rezept aus dem Cookidoo-Katalog – am Thermomix unter „Meine Woche“', 3200); break;
       case 'ingr': toggleIngredient(t); break;

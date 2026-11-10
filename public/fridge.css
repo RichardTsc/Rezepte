@@ -321,11 +321,18 @@ html.fridge[data-fh-view="cook"] .fh-dock { display: none; }
 .fh-pv-bar.is-busy > .fh-ic { animation: fh-skel .6s ease-in-out infinite alternate; }
 .fh-pv-bar-text { flex: 1; min-width: 0; }
 .fh-pv-bar-text b { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-weight: 750; }
-.fh-pv-bar-text span { display: block; font-size: .88em; opacity: .78; }
+.fh-pv-bar-text > span { display: block; font-size: .88em; opacity: .78; }
 .fh-pv-bar-btn {
-  flex: none; min-height: 60px; padding: 0 24px; border-radius: var(--r-pill);
-  background: var(--on-accent); color: var(--accent); font-size: 18px; font-weight: 750;
+  flex: none; display: inline-flex; align-items: center; gap: 8px; min-height: 60px; padding: 0 24px; border-radius: var(--r-pill);
+  background: var(--on-accent); color: var(--accent); font-size: 18px; font-weight: 750; transition: transform .12s ease;
 }
+.fh-pv-bar-btn .fh-ic { width: 22px; height: 22px; }
+.fh-pv-bar-x {
+  flex: none; width: 60px; height: 60px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(24, 32, 10, .12); color: var(--on-accent); transition: transform .12s ease;
+}
+.fh-pv-bar-x .fh-ic { width: 26px; height: 26px; }
+.fh-pv-bar-btn:active, .fh-pv-bar-x:active { transform: scale(.94); }
 .fh-pv-bar.is-done { background: var(--text); color: var(--bg); }
 .fh-pv-bar.is-done .fh-pv-bar-btn { background: var(--bg); color: var(--text); }
 .fh-pv.has-bar .fh-pv-body { padding-bottom: 112px; }
@@ -593,7 +600,11 @@ html.fridge.fh-drawer-open .fh-timers { display: none; }
   .fh-mv .fh-ic { width: 22px; height: 22px; }
   .fh-pv-bar { left: 12px; right: 12px; bottom: calc(var(--dock-total) + 10px); min-height: 60px; gap: 10px; padding: 6px 6px 6px 16px; font-size: 15px; }
   .fh-pv-bar > .fh-ic { width: 22px; height: 22px; }
-  .fh-pv-bar-btn { min-height: 48px; padding: 0 14px; font-size: 15px; }
+  .fh-pv-bar-btn { min-height: 48px; gap: 6px; padding: 0 12px; font-size: 15px; }
+  .fh-pv-bar-text .fh-wide-only { display: none; }
+  .fh-pv-bar-btn .fh-ic { width: 18px; height: 18px; }
+  .fh-pv-bar-x { width: 46px; height: 46px; }
+  .fh-pv-bar-x .fh-ic { width: 22px; height: 22px; }
   .fh-pv.has-bar .fh-pv-body { padding-bottom: 90px; }
 
   /* Rezept: Foto läuft unter die Statusleiste */
