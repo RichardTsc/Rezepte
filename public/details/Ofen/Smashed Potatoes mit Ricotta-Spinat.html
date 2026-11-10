@@ -63,18 +63,27 @@ gerieben</li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Den Spinat gut
-ausdrücken und zur Seite stellen. Für die Sauce Zwiebeln, Knoblauch,
-Ingwer, 30 g Olivenöl, 1 TL Meersalzflocken, Pfeffer und Muskat im
-Mixtopf 4 Sek./Stufe 7 hacken. Danach im Mixtopf 4
-Min./120°C/Linkslauf/Stufe 1 andünsten.</label>
+ausdrücken und zur Seite stellen. Für die Sauce 100 g Zwiebeln, 2
+Knoblauchzehen, 10 g Ingwer und 30 g Olivenöl in den Mixtopf wiegen, 1
+TL Meersalzflocken, ¼ TL Pfeffer und ¼ TL Muskat dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Das Wasser in den
-Mixtopf gießen, den Varoma mit den Drillingen aufsetzen und 22
-Min./Varoma/Stufe 1 dämpfen. In der Zeit den Backofen auf 220 °C Umluft
-vorheizen und zwei Bleche mit Backpapier auslegen. Anschließend den
-Varoma abnehmen, der Sud bleibt im Mixtopf.</label>
+                            <label for="step---">4 Sek./Stufe 7 hacken,
+danach 4 Min./120°C/Linkslauf/Stufe 1 andünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">300 g Wasser in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Varoma mit den
+Drillingen aufsetzen und 22 Min./Varoma/Stufe 1 dämpfen. In der Zeit den
+Backofen auf 220 °C Umluft vorheizen und zwei Bleche mit Backpapier
+auslegen. Anschließend den Varoma abnehmen, der Sud bleibt im
+Mixtopf.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -86,15 +95,24 @@ in der Zeit die Sauce fertig machen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Weißwein, Sahne,
-Zitronenschale und Speisestärke zum Sud in den Mixtopf geben und im
-Modus Andicken bei 100 °C binden.</label>
+                            <label for="step---">50 g Weißwein, 100 g
+Sahne und 15 g Speisestärke zum Sud in den Mixtopf wiegen, ½ TL
+Zitronenschale dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Ricotta und den
-ausgedrückten Spinat in den Mixtopf geben und im Modus Erwärmen bei 90
-°C auf Stufe 1 durchwärmen. Die Kartoffeln aus dem Ofen holen und mit
+                            <label for="step---">Im Modus Andicken bei
+100 °C binden.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">200 g Ricotta in den
+Mixtopf wiegen, den ausgedrückten Spinat dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im Modus Erwärmen bei
+90 °C auf Stufe 1 durchwärmen. Die Kartoffeln aus dem Ofen holen und mit
 dem Ricotta-Spinat anrichten. Passt als Snack oder als Beilage zu Fisch
 und Fleisch.</label>
                         </li>
@@ -121,7 +139,7 @@ und Fleisch.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

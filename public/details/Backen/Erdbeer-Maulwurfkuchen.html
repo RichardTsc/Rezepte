@@ -75,44 +75,72 @@ Mixtopf spülen und gut abtrocknen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Mandeln 10
-Sek./Stufe 8 im trockenen Mixtopf fein mahlen und
-beiseitestellen.</label>
+                            <label for="step---">150 g Mandeln in den
+trockenen Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Butter, 150 g Zucker,
-Eigelb, Milch und Kakao 1 Min./Stufe 3 im Mixtopf cremig
+                            <label for="step---">10 Sek./Stufe 8 fein
+mahlen und beiseitestellen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">150 g Butter, 150 g
+Zucker, 100 g Milch und 30 g Kakao in den Mixtopf wiegen, die 4 Eigelb
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">1 Min./Stufe 3 cremig
 aufschlagen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mehl, gemahlene Mandeln
-und Backpulver dazugeben und 30 Sek./Stufe 5 im Mixtopf unterrühren. Die
-Masse zum Eischnee geben und mit dem Schneebesen behutsam unterziehen.
-In die Form füllen und etwa 50 Minuten bei 180 °C backen. Mit einem
-Holzstäbchen prüfen: Hängt noch Teig daran, 5 Minuten länger backen und
-erneut testen. Den Kuchen 10 Minuten in der Form abkühlen lassen.
-Währenddessen Mixtopf und Rühraufsatz spülen.</label>
+                            <label for="step---">100 g Mehl in den
+Mixtopf wiegen, die gemahlenen Mandeln und ½ TL Backpulver
+dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Schokolade 8
-Sek./Stufe 6 im Mixtopf zerkleinern und in eine große Schüssel
-geben.</label>
+                            <label for="step---">30 Sek./Stufe 5
+unterrühren. Die Masse zum Eischnee geben und mit dem Schneebesen
+behutsam unterziehen. In die Form füllen und etwa 50 Minuten bei 180 °C
+backen. Mit einem Holzstäbchen prüfen: Hängt noch Teig daran, 5 Minuten
+länger backen und erneut testen. Den Kuchen 10 Minuten in der Form
+abkühlen lassen. Währenddessen Mixtopf und Rühraufsatz spülen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">100 g
+Zartbitter-Schokolade in Stücken in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">8 Sek./Stufe 6
+zerkleinern und in eine große Schüssel geben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Mit eingesetztem
-Rühraufsatz Sahne und Vanillezucker ohne Zeitvorgabe auf Stufe 3 im
-Mixtopf schlagen, bis die gewünschte Festigkeit erreicht ist. Danach den
+Rühraufsatz 200 g Sahne und 30 g Vanillezucker in den Mixtopf
+wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ohne Zeitvorgabe auf
+Stufe 3 schlagen, bis die gewünschte Festigkeit erreicht ist. Danach den
 Rühraufsatz abnehmen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mascarpone,
-Zitronenschale, Quark und 60 g Zucker dazugeben und 10 Sek./Stufe 4 im
-Mixtopf verrühren.</label>
+                            <label for="step---">250 g Mascarpone, 250 g
+Magerquark und 60 g Zucker in den Mixtopf wiegen, ½ TL Zitronenschale
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">10 Sek./Stufe 4
+verrühren.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -152,7 +180,7 @@ kalt stellen und in 16 Stücke schneiden.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

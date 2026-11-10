@@ -47,24 +47,33 @@ gemahlen</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für den Hefeteig Mehl,
-60 g Zucker, 60 g Butter, 1 TL Kardamom, Milch und Hefe im Mixtopf im
-Modus Teig kneten 4 Min. verarbeiten. Den Teig in eine Schüssel geben
-und zugedeckt etwa 1 Stunde gehen lassen. Solange den Mixtopf spülen und
-ein Blech mit Backpapier auslegen.</label>
+                            <label for="step---">Für den Hefeteig 500 g
+Mehl, 60 g Zucker, 60 g Butter, 300 g Milch und 20 g frische Hefe in den
+Mixtopf wiegen, 1 TL Kardamom dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im Modus Teig kneten 4
+Min. verarbeiten. Den Teig in eine Schüssel geben und zugedeckt etwa 1
+Stunde gehen lassen. Solange den Mixtopf spülen und ein Blech mit
+Backpapier auslegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Für die Füllung die
-restliche Butter (100 g), braunen Zucker, ½–1 TL Kardamom und Zimt 20
-Sek./Stufe 3 im Mixtopf verrühren. Den Teig auf bemehlter Fläche auf
-etwa 40 × 60 cm ausrollen und, von einer kurzen Seite ausgehend, zwei
-Drittel der Fläche mit der Füllung bestreichen. Wie einen Brief falten:
-zuerst das unbestrichene Drittel zur Mitte klappen, dann das
-gegenüberliegende darüberlegen. So entsteht ein dreilagiges Stück von
-etwa 20 × 40 cm. Kurz nachrollen und von der kurzen Seite her in 18
-Streifen à 1 cm schneiden. Jeweils zwei Streifen umeinanderdrehen und zu
-einem Knoten schlingen.</label>
+restliche Butter (100 g) und 70 g braunen Zucker in den Mixtopf wiegen,
+½–1 TL Kardamom und 1 TL Zimt dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">20 Sek./Stufe 3
+verrühren. Den Teig auf bemehlter Fläche auf etwa 40 × 60 cm ausrollen
+und, von einer kurzen Seite ausgehend, zwei Drittel der Fläche mit der
+Füllung bestreichen. Wie einen Brief falten: zuerst das unbestrichene
+Drittel zur Mitte klappen, dann das gegenüberliegende darüberlegen. So
+entsteht ein dreilagiges Stück von etwa 20 × 40 cm. Kurz nachrollen und
+von der kurzen Seite her in 18 Streifen à 1 cm schneiden. Jeweils zwei
+Streifen umeinanderdrehen und zu einem Knoten schlingen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -80,9 +89,13 @@ Minuten bei 180 °C backen. Währenddessen den Mixtopf spülen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Für den Sirup den
-restlichen Zucker (70 g), Wasser und ½ TL Kardamom 5 Min./100°C/Stufe 1
-im Mixtopf kochen. Die Schnecken noch warm damit einpinseln und
-servieren.</label>
+restlichen Zucker (70 g) und 70 g Wasser in den Mixtopf wiegen, ½ TL
+Kardamom dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">5 Min./100°C/Stufe 1
+kochen. Die Schnecken noch warm damit einpinseln und servieren.</label>
                         </li>
                                     </ul>
             </div>
@@ -107,7 +120,7 @@ servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

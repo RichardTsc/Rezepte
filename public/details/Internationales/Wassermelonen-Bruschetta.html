@@ -67,9 +67,14 @@ dem Spatel nach unten schieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für das Dressing
-Limettensaft, Olivenöl, Honig, Salz und Pfeffer hinzufügen und im
-Mixtopf 10 Sek./Stufe 4 verrühren.</label>
+                            <label for="step---">Für das Dressing 20 g
+Limettensaft, 30 g Olivenöl und 10 g Honig in den Mixtopf wiegen, ¼ TL
+Salz und 2 Prisen Pfeffer dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">10 Sek./Stufe 4
+verrühren.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -101,7 +106,7 @@ servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

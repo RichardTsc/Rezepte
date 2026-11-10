@@ -67,22 +67,36 @@ schieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mit dem Öl im Mixtopf 3
-Min./120°C/Stufe 1 glasig dünsten.</label>
+                            <label for="step---">10 g Öl in den Mixtopf
+wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Das Gemüse (Kohlrabi,
-Möhren, Kartoffeln) mit Wasser, Gewürzpaste und Salz dazugeben. Im
-Mixtopf 30–35 Min./100°C/Linkslauf/Sanftrührstufe garen, bis alles weich
-ist.</label>
+                            <label for="step---">3 Min./120°C/Stufe 1
+glasig dünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Gehackte Petersilie und
-Schmelzkäse mit dem Spatel unterrühren, mit Pfeffer abschmecken und den
-Eintopf in eine große Schüssel füllen. Die geschnittenen Brühwürstchen
-hineingeben, 5 Minuten darin warm ziehen lassen und servieren.</label>
+                            <label for="step---">300 g Kohlrabi, 250 g
+Möhren, 500 g Kartoffeln und 800 g Wasser in den Mixtopf wiegen, 1–2 TL
+Gewürzpaste für Gemüsebrühe und 1 TL Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">30–35
+Min./100°C/Linkslauf/Sanftrührstufe garen, bis alles weich ist.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">200 g Schmelzkäse in
+den Mixtopf wiegen, die gehackte Petersilie dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit dem Spatel
+unterrühren, mit Pfeffer abschmecken und den Eintopf in eine große
+Schüssel füllen. Die geschnittenen Brühwürstchen hineingeben, 5 Minuten
+darin warm ziehen lassen und servieren.</label>
                         </li>
                                     </ul>
             </div>
@@ -107,7 +121,7 @@ hineingeben, 5 Minuten darin warm ziehen lassen und servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

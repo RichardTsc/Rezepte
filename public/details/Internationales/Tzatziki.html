@@ -50,10 +50,15 @@ Beträufeln</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Gurkenstücke mit 1
-TL Salz im Mixtopf 3 Sek./Stufe 5 klein hacken. Alles in den Gareinsatz
-geben und rund 10 Minuten Wasser ziehen lassen. Anschließend die Gurke
-portionsweise mit den Händen gut ausdrücken und beiseitestellen.</label>
+                            <label for="step---">400 g Salatgurke in den
+Mixtopf wiegen, 1 TL Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Sek./Stufe 5 klein
+hacken. Alles in den Gareinsatz geben und rund 10 Minuten Wasser ziehen
+lassen. Anschließend die Gurke portionsweise mit den Händen gut
+ausdrücken und beiseitestellen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -68,8 +73,13 @@ zerkleinern.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Joghurt, Sauerrahm, ½
-TL Salz und Pfeffer zum Knoblauch geben und im Mixtopf 15 Sek./Stufe 3,5
+                            <label for="step---">400 g griechischen
+Joghurt zum Knoblauch in den Mixtopf wiegen, 2 EL Sauerrahm, ½ TL Salz
+und ¼ TL Pfeffer dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">15 Sek./Stufe 3,5
 cremig rühren.</label>
                         </li>
                                             <li>
@@ -102,7 +112,7 @@ Olivenöl beträufeln und servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

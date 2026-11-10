@@ -52,16 +52,25 @@ Stücken</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Kartoffeln und Möhren
-mit Gewürzpaste, Wasser, Milch, Senf, Salz, Pfeffer, Muskat, Majoran und
-Lorbeer in den Mixtopf füllen. Im Mixtopf 25 Min./98°C/Stufe 0,5 weich
-garen.</label>
+                            <label for="step---">800 g Kartoffeln, 400 g
+Möhren, 100 g Wasser und 250 g Milch in den Mixtopf wiegen, 1 TL
+Gewürzpaste für Gemüsebrühe, 2 TL Senf, 2 TL Salz, ½ TL Pfeffer, ½ TL
+Muskat, 1 TL Majoran und 3 Lorbeerblätter dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">25 Min./98°C/Stufe 0,5
+weich garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Den Lorbeer
-herausfischen. Mit der Butter im Mixtopf 4 Sek./Stufe 6 zu einem groben
-Stampf verarbeiten.</label>
+herausfischen. 60 g Butter in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">4 Sek./Stufe 6 zu einem
+groben Stampf verarbeiten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -91,7 +100,7 @@ passen zum Beispiel Bratwurst oder Frikadellen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

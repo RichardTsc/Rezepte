@@ -43,31 +43,48 @@ g)</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Das Viertel
-Vanilleschote mit Zucker und Kokosraspeln im Mixtopf 20 Sek./Stufe 10 zu
+                            <label for="step---">¼ Vanilleschote, 150 g
+Zucker und 50 g Kokosraspeln in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">20 Sek./Stufe 10 zu
 feinem Pulver mahlen, danach vom Rand nach unten schieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Kokosmilch und Sahne
-dazugeben und im Mixtopf 15 Sek./Stufe 4 mischen. Die Masse in eine
-flache Gefrierdose gießen, mit Frischhaltefolie abdecken und mindestens
-10 Std., besser über Nacht, einfrieren.</label>
+                            <label for="step---">400 g Kokosmilch und
+200 g Sahne in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">15 Sek./Stufe 4
+mischen. Die Masse in eine flache Gefrierdose gießen, mit
+Frischhaltefolie abdecken und mindestens 10 Std., besser über Nacht,
+einfrieren.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Die gefrorene Masse 10
 Min. im Kühlschrank antauen lassen und mit einem großen, scharfen Messer
-in Würfel von etwa 4 cm schneiden. Die Hälfte der Würfel mit 30 g Milch
-im Mixtopf 13 Sek./Stufe 8 cremig rühren und in eine Schüssel
-geben.</label>
+in Würfel von etwa 4 cm schneiden. Die Hälfte der Würfel in den Mixtopf
+geben und 30 g Milch dazuwiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">13 Sek./Stufe 8 cremig
+rühren und in eine Schüssel geben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Die restlichen Würfel
-mit den übrigen 30 g Milch ebenso im Mixtopf 13 Sek./Stufe 8 cremig
-rühren und zum ersten Teil geben. Sofort servieren oder, für festeres
-Eis, vorher noch 15 Min. ins Gefrierfach stellen.</label>
+in den Mixtopf geben und die übrigen 30 g Milch dazuwiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ebenso 13 Sek./Stufe 8
+cremig rühren und zum ersten Teil geben. Sofort servieren oder, für
+festeres Eis, vorher noch 15 Min. ins Gefrierfach stellen.</label>
                         </li>
                                     </ul>
             </div>
@@ -92,7 +109,7 @@ Eis, vorher noch 15 Min. ins Gefrierfach stellen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

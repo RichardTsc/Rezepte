@@ -94,10 +94,14 @@ höher, sonst wird sie zu Brei.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Hackfleisch,
-Cayennepfeffer, Pfeffer und 2 TL Tamari in den Mixtopf geben und 20
-Sek./Linkslauf/Stufe 3 vermengen. Mit geölten Händen esslöffelgroße
-Bällchen formen.</label>
+                            <label for="step---">450 g
+Hähnchenhackfleisch in den Mixtopf wiegen, ¼ TL Cayennepfeffer, Pfeffer
+und 2 TL Tamari dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">20 Sek./Linkslauf/Stufe
+3 vermengen. Mit geölten Händen esslöffelgroße Bällchen formen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -154,7 +158,7 @@ servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

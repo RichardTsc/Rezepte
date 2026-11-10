@@ -57,21 +57,30 @@ dort erst in Schritt 3, so ist das Wasser rechtzeitig heiß.)</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Parmesan und Pecorino
-in Stücken in den Mixtopf geben, 10 Sek./Stufe 10 zerkleinern und
+                            <label for="step---">40 g Parmesan und 30 g
+Pecorino in Stücken in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">10 Sek./Stufe 10
+zerkleinern und in ein Schälchen umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">150 g Speckwürfel und
+15 g Olivenöl in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ohne Messbecher 6
+Min./120°C/Stufe 1 dünsten. Den Speck in eine große Schüssel
 umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Speckwürfel und
-Olivenöl in den Mixtopf geben und ohne Messbecher 6 Min./120°C/Stufe 1
-dünsten. Den Speck in eine große Schüssel umfüllen.</label>
-                        </li>
-                                            <li>
-                            <input type="checkbox">
-                            <label for="step---">Geriebenen Käse, Ei,
-Eigelb, Pfeffer und Salz in den Mixtopf geben und 15 Min./65°C/Stufe 2
-zu einer cremigen Eiermasse erhitzen.</label>
+                            <label for="step---">Den zerkleinerten Käse,
+1 Ei, 3 Eigelb, 3 Prisen Pfeffer und 1 Prise Salz in den Mixtopf geben
+und 15 Min./65°C/Stufe 2 zu einer cremigen Eiermasse erhitzen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -109,7 +118,7 @@ verwenden, die Eiermasse wird nur leicht erhitzt.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

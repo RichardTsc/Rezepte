@@ -58,8 +58,13 @@ Knoblauchpulver</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Petersilie mit Stielen
-in den Mixtopf geben, 3 Sek./Stufe 8 zerkleinern und umfüllen.</label>
+                            <label for="step---">10 g Petersilie mit
+Stielen in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Sek./Stufe 8
+zerkleinern und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -75,9 +80,13 @@ Garkörbchen waschen und mit der Karotte mischen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">1200 g Wasser, 1½ TL
-Salz und 1 TL Öl in den Mixtopf geben, das Garkörbchen einhängen und 19
-Min./Varoma/Stufe 1 garen.</label>
+                            <label for="step---">1200 g Wasser in den
+Mixtopf wiegen, 1½ TL Salz und 1 TL Öl dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Garkörbchen
+einhängen und 19 Min./Varoma/Stufe 1 garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -135,7 +144,7 @@ bestreuen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

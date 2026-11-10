@@ -52,9 +52,14 @@ feinen Röllchen</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Parmesan im Mixtopf 10
-Sek./Stufe 10 fein reiben und in einer großen Servierschüssel
-bereitstellen. Den Mixtopf danach ausspülen.</label>
+                            <label for="step---">100 g Parmesan in
+Stücken in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">10 Sek./Stufe 10 fein
+reiben und in einer großen Servierschüssel bereitstellen. Den Mixtopf
+danach ausspülen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -63,9 +68,14 @@ Mixtopf 3 Sek./Stufe 6 hacken und vom Rand nach unten schieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Risoni, Butter,
-Weißwein, Wasser, Gewürzpaste und Pfeffer in den Mixtopf geben und im
-Modus Reis kochen garen.</label>
+                            <label for="step---">250 g Risoni-Nudeln, 40
+g Butter, 50 g Weißwein und 500 g Wasser in den Mixtopf wiegen, 1½ TL
+Gewürzpaste für Gemüsebrühe und ¼ TL Pfeffer dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im Modus Reis kochen
+garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -97,7 +107,7 @@ servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

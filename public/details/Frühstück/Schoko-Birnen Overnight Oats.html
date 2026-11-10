@@ -53,28 +53,47 @@ Proteingehalt</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Schokolade 10
-Sek./Stufe 7 im Mixtopf hacken und vom Rand zusammenschieben.</label>
+                            <label for="step---">60 g
+Zartbitter-Schokolade in Stücken in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die gerösteten
-Haselnüsse dazugeben und 10 Sek./Stufe 4,5 grob mitzerkleinern. Die
-Hälfte der Schoko-Nuss-Mischung auf vier Gläser verteilen, den Rest zum
-Bestreuen aufheben.</label>
+                            <label for="step---">10 Sek./Stufe 7 hacken
+und vom Rand zusammenschieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Haferflocken, Milch,
-Vanilleextrakt, Dattelzucker und Salz in den Mixtopf geben und im Modus
-Erwärmen bei 75 °C auf Stufe 2 aufwärmen.</label>
+                            <label for="step---">50 g geröstete
+Haselnüsse in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Chiasamen und Sahne in
-den Mixtopf geben und 1 Min./65°C/Stufe 3 unterrühren. Die Masse auf die
-Schoko-Nuss-Mischung in den Gläsern gießen, mit den Birnenwürfeln
-belegen und über Nacht im Kühlschrank quellen lassen.</label>
+                            <label for="step---">10 Sek./Stufe 4,5 grob
+mitzerkleinern. Die Hälfte der Schoko-Nuss-Mischung auf vier Gläser
+verteilen, den Rest zum Bestreuen aufheben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">60 g Haferflocken, 500
+g Milch und 30 g Dattelzucker in den Mixtopf wiegen, 1 TL Vanilleextrakt
+und 1 Prise Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im Modus Erwärmen bei
+75 °C auf Stufe 2 aufwärmen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">50 g Chiasamen und 100
+g Sahne in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">1 Min./65°C/Stufe 3
+unterrühren. Die Masse auf die Schoko-Nuss-Mischung in den Gläsern
+gießen, mit den Birnenwürfeln belegen und über Nacht im Kühlschrank
+quellen lassen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -105,7 +124,7 @@ restlichen Schoko-Nuss-Mischung bestreuen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

@@ -66,25 +66,34 @@ vorheizen und ein Backblech mit Backpapier auslegen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Eine große Schüssel auf
-den Mixtopfdeckel stellen und Süßkartoffeln, Blumenkohl und Öl
-hineinwiegen. Mit 1 TL Salz, ¼ TL Pfeffer und dem Chili würzen, gut
-durchmischen und auf dem Blech ausbreiten. Das Gemüse etwa 40 Minuten im
-Ofen backen und in der Zeit mit dem Dip weitermachen.</label>
+den Mixtopfdeckel stellen und 500 g Süßkartoffeln, 500 g Blumenkohl und
+25 g Öl hineinwiegen. Mit 1 TL Salz, ¼ TL Pfeffer und dem Chili würzen,
+gut durchmischen und auf dem Blech ausbreiten. Das Gemüse etwa 40
+Minuten im Ofen backen und in der Zeit mit dem Dip weitermachen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Die Pinienkerne in
-einer Pfanne ohne Fett anrösten. 40 g davon mit dem Knoblauch in den
-Mixtopf geben und 3 Sek./Stufe 8 zerkleinern. Mit dem Spatel nach unten
-schieben, die übrigen Pinienkerne für später beiseitelegen.</label>
+einer Pfanne ohne Fett anrösten. 40 g davon und 1 Knoblauchzehe in den
+Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Bohnen, Schmand,
-Zitronensaft, Wasser, Kümmel, 1 TL Salz und ½ TL Pfeffer in den Mixtopf
-geben und 6 Sek./Stufe 3,5 verrühren. Über die Wassermenge lässt sich
-steuern, wie cremig der Dip wird. Abschmecken, umfüllen und bis zum
-Anrichten kalt stellen.</label>
+                            <label for="step---">3 Sek./Stufe 8
+zerkleinern. Mit dem Spatel nach unten schieben, die übrigen Pinienkerne
+für später beiseitelegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">250 g weiße Bohnen, 150
+g Schmand, 30 g Zitronensaft und 30–50 g Wasser in den Mixtopf wiegen, ½
+TL Kümmel, 1 TL Salz und ½ TL Pfeffer dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">6 Sek./Stufe 3,5
+verrühren. Über die Wassermenge lässt sich steuern, wie cremig der Dip
+wird. Abschmecken, umfüllen und bis zum Anrichten kalt stellen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -124,7 +133,7 @@ und servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

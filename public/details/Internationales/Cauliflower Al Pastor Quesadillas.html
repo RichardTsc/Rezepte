@@ -83,8 +83,13 @@ vorheizen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Falls der Käse am Stück
-ist: in Stücken in den Mixtopf geben, 5 Sek./Stufe 5 zerkleinern und
-umfüllen.</label>
+ist: 55 g Cheddar und 55 g Pepper Jack in Stücken in den Mixtopf
+wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">5 Sek./Stufe 5
+zerkleinern und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -103,9 +108,15 @@ karamellisiert.</label>
                             <input type="checkbox">
                             <label for="step---">Gleichzeitig die
 Knoblauchzehen bei laufendem Messer Stufe 8 in den Mixtopf fallen
-lassen. Chipotle-Chili-Gewürz, entkernte Jalapeño, Chilipulver,
-Paprikapulver, Ananassaft, Essig und die Hälfte der Ananasstücke in den
-Mixtopf geben und 30 Sek./Stufe 10 ganz glatt pürieren.</label>
+lassen. Die Hälfte der Ananasstücke (ca. 165 g) in den Mixtopf wiegen,
+1½ TL Chipotle-Chili-Gewürz, die entkernte Jalapeño, 2 EL Chilipulver, 2
+TL geräuchertes Paprikapulver, 120 ml Ananassaft und 60 ml Essig
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">30 Sek./Stufe 10 ganz
+glatt pürieren.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -156,7 +167,7 @@ und mit dem Avocado-Mus servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

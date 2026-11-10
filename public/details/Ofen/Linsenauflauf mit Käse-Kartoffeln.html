@@ -74,15 +74,20 @@ Ober-/Unterhitze vorheizen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Petersilie in den
-Mixtopf geben, 3 Sek./Stufe 8 zerkleinern und umfüllen.</label>
+                            <label for="step---">10 g Petersilie in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Sek./Stufe 8
+zerkleinern und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Zwiebel halbieren.
-Zwiebel und Knoblauch in den Mixtopf geben, 5 Sek./Stufe 5 zerkleinern
-und nach unten schieben. Öl in den Mixtopf geben und 3 Min./120°C/Stufe
-1 dünsten.</label>
+Zwiebel und 1 Knoblauchzehe in den Mixtopf geben, 5 Sek./Stufe 5
+zerkleinern und nach unten schieben. 1½ EL Öl dazugeben und 3
+Min./120°C/Stufe 1 dünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -94,17 +99,29 @@ geben.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Champignons vierteln.
-Champignons, stückige Tomaten, Tomatenmark, Sojasoße, Senf, Brühepulver,
-Kräuter, getrocknete Tomaten, Chili, Knoblauchpulver und 150 g Wasser in
-den Mixtopf geben. Varoma aufsetzen und 15 Min./Varoma/Linkslauf/Stufe 1
-garen.</label>
+150 g Champignons, die stückigen Tomaten (ca. 390 g), 4 g
+Gemüsebrühepulver und 150 g Wasser in den Mixtopf wiegen, 1 EL
+Tomatenmark, 25 ml Sojasoße, 10 ml Senf, 1 TL italienische Kräuter, 1 TL
+getrocknete Tomaten, 1 Prise Chiliflocken und ¼ TL Knoblauchpulver
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Varoma aufsetzen und 15
+Min./Varoma/Linkslauf/Stufe 1 garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Linsen in einem Sieb
-abspülen. Varoma abnehmen. Linsen, Crème fraîche, Zucchini und ¾ der
-Petersilie in den Mixtopf geben, 2 Min./95°C/Linkslauf/Stufe 1
-vermischen und mit Salz und Pfeffer abschmecken.</label>
+abspülen. Varoma abnehmen. Die Linsen (ca. 390 g) und 100 g Crème
+fraîche in den Mixtopf wiegen, die Zucchini und ¾ der Petersilie
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">2
+Min./95°C/Linkslauf/Stufe 1 vermischen und mit Salz und Pfeffer
+abschmecken.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -141,7 +158,7 @@ Petersilie bestreuen und servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

@@ -67,45 +67,76 @@ setzen, den Deckel schließen und den Varoma beiseitestellen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Den Parmesan im Mixtopf
-10 Sek./Stufe 10 fein reiben. In eine Schale füllen und den Mixtopf
-ausspülen.</label>
+                            <label for="step---">80 g Parmesan in
+Stücken in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Schalotten und
-Knoblauch im Mixtopf 3 Sek./Stufe 5 hacken. Die Stücke mit dem Spatel
-von der Wand nach unten schieben.</label>
+                            <label for="step---">10 Sek./Stufe 10 fein
+reiben. In eine Schale füllen und den Mixtopf ausspülen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mit 30 g Butter im
-Mixtopf 3 Min./100°C/Linkslauf/Stufe 1 andünsten.</label>
+                            <label for="step---">70 g Schalotten und 1
+Knoblauchzehe in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Den Reis in den Mixtopf
-geben und 3 Min./100°C/Linkslauf/Stufe 1 anschwitzen.</label>
+                            <label for="step---">3 Sek./Stufe 5 hacken.
+Die Stücke mit dem Spatel von der Wand nach unten schieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Weißwein,
-Zitronenschale und die zurückbehaltenen 10 g Zitronensaft in den Mixtopf
-geben und 2 Min./100°C/Linkslauf/Stufe 1 ablöschen.</label>
+                            <label for="step---">30 g Butter in den
+Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Wasser, Gewürzpaste, ½
-TL Salz, ¼ TL weißen Pfeffer und die Thymianblättchen dazugeben. Einmal
-mit dem Spatel über den Boden des Mixtopfs fahren, damit kein Reis
-anhängt. Den Varoma aufsetzen und alles im Mixtopf 14
-Min./Varoma/Linkslauf/Stufe 1 garen.</label>
+                            <label for="step---">3
+Min./100°C/Linkslauf/Stufe 1 andünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Den Varoma abnehmen,
-die restlichen 30 g Butter in den Mixtopf geben und einmal mit dem
-Spatel durchrühren. Den Varoma wieder auf den Mixtopf setzen und 5
+                            <label for="step---">300 g Risottoreis in
+den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3
+Min./100°C/Linkslauf/Stufe 1 anschwitzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">150 g Weißwein und die
+zurückbehaltenen 10 g Zitronensaft in den Mixtopf wiegen, die
+Zitronenschale dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">2
+Min./100°C/Linkslauf/Stufe 1 ablöschen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">850 g Wasser in den
+Mixtopf wiegen, 2 TL Gewürzpaste für Gemüsebrühe, ½ TL Salz, ¼ TL weißen
+Pfeffer und die Thymianblättchen dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Einmal mit dem Spatel
+über den Boden des Mixtopfs fahren, damit kein Reis anhängt. Den Varoma
+aufsetzen und alles 14 Min./Varoma/Linkslauf/Stufe 1 garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Varoma abnehmen.
+Die restlichen 30 g Butter in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Einmal mit dem Spatel
+durchrühren. Den Varoma wieder auf den Mixtopf setzen und 5
 Min./Varoma/Linkslauf/Stufe 1 fertig garen.</label>
                         </li>
                                             <li>
@@ -139,7 +170,7 @@ garnieren und sofort servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

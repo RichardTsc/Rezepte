@@ -66,9 +66,13 @@ und nach unten schieben. Öl in den Mixtopf geben und 3 Min./120°C/Stufe
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Passierte Tomaten,
-Cashewkerne und 50 g Wasser in den Mixtopf geben und mit dem Garkörbchen
-als Spritzschutz 10 Min./100°C/Stufe 1 köcheln.</label>
+                            <label for="step---">300 g passierte
+Tomaten, 40 g Cashewkerne und 50 g Wasser in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit dem Garkörbchen als
+Spritzschutz 10 Min./100°C/Stufe 1 köcheln.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -83,8 +87,13 @@ Kirschtomaten halbieren und Basilikum in Streifen schneiden.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Zwei Minuten bevor die
-Penne fertig sind, 100 g Kochwasser abschöpfen. Kochwasser, Hefeflocken,
-Brühepulver, Salz und Zucker in den Mixtopf geben und 1 Min./Stufe 5–10
+Penne fertig sind, 100 g Kochwasser abschöpfen. Das Kochwasser, 5 g
+Hefeflocken und 6 g Gemüsebrühepulver in den Mixtopf wiegen, 1 TL Salz
+und ½ TL Zucker dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">1 Min./Stufe 5–10
 schrittweise ansteigend pürieren. Ist die Soße zu dick, noch etwas
 Kochwasser zugeben.</label>
                         </li>
@@ -122,7 +131,7 @@ und mit Kirschtomaten und Basilikum toppen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

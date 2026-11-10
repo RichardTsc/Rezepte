@@ -46,9 +46,13 @@ frisch</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Äpfel mit dem
-Zitronensaft im Mixtopf 4 Sek./Stufe 8 klein hacken, dann alles vom Rand
-mit dem Spatel nach unten streichen.</label>
+                            <label for="step---">2 Äpfel (ca. 300 g) und
+20 g Zitronensaft in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">4 Sek./Stufe 8 klein
+hacken, dann alles vom Rand mit dem Spatel nach unten streichen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -58,8 +62,13 @@ streichen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Haferflocken, Milch und
-Agavendicksaft zu den Äpfeln geben und den Brei im Mixtopf 12
+                            <label for="step---">160 g Haferflocken, 700
+g Milch und 30 g Agavendicksaft zu den Äpfeln in den Mixtopf
+wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Brei 12
 Min./90°C/Linkslauf/Stufe 1 garen. Warm in vier Schalen füllen und mit
 den Beeren belegen.</label>
                         </li>
@@ -86,7 +95,7 @@ den Beeren belegen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

@@ -63,10 +63,23 @@ Honig</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Erdnüsse in den Mixtopf
-geben, 2 Sek./Stufe 5 zerkleinern und umfüllen. Minz- und
-Petersilienblätter in den Mixtopf geben, 3 Sek./Stufe 8 zerkleinern und
-umfüllen.</label>
+                            <label for="step---">20 g gesalzene Erdnüsse
+in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">2 Sek./Stufe 5
+zerkleinern und in ein Schälchen umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">10 g Minz- und
+Petersilienblätter in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Sek./Stufe 8
+zerkleinern und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -77,15 +90,29 @@ Balsamico und Zucker 7–8 Min. karamellisieren. Herausnehmen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Gleichzeitig die andere
-Zwiebelhälfte, die Karotten (in Stücken) und nach Wunsch den Knoblauch
-in den Mixtopf geben und 4 Sek./Stufe 5 zerkleinern. 1 EL Öl, Currypaste
-und Madras-Curry in den Mixtopf geben und 2 Min./120°C/Stufe 1
+Zwiebelhälfte, die Karotten (in Stücken) und nach Wunsch 1 Knoblauchzehe
+in den Mixtopf geben, 4 Sek./Stufe 5 zerkleinern.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">25 g gelbe Currypaste
+und 2 g Madras-Currypulver in den Mixtopf wiegen, 1 EL Öl
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">2 Min./120°C/Stufe 1
 andünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Reis waschen. Reis, 350
-g Wasser, Hühnerbrühepulver und ¼ TL Salz in den Mixtopf geben und 12
+                            <label for="step---">Reis waschen. 150 g
+Basmatireis, 350 g Wasser und 8 g Hühnerbrühepulver in den Mixtopf
+wiegen, ¼ TL Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">12
 Min./100°C/Linkslauf/Sanftrührstufe garen.</label>
                         </li>
                                             <li>
@@ -137,7 +164,7 @@ Aprikosen-Minz-Joghurt servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

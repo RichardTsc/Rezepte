@@ -50,8 +50,13 @@ Olivenöl</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Den Parmesan im Mixtopf
-8 Sek./Stufe 8 fein reiben.</label>
+                            <label for="step---">40 g Parmesan in
+Stücken in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">8 Sek./Stufe 8 fein
+reiben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -61,14 +66,19 @@ Sek./Stufe 6 hacken.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für die Basis Sahne,
-Zitronensaft, Senf, Zucker, Salz und Pfeffer hinzufügen und alles im
-Mixtopf 8 Sek./Stufe 5 glatt rühren.</label>
+                            <label for="step---">Für die Basis 100 g
+Sahne, 15 g Zitronensaft und 15 g Dijon-Senf in den Mixtopf wiegen, 1 TL
+Zucker, 2 Prisen Salz und ¼ TL Pfeffer dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">8 Sek./Stufe 5 glatt
+rühren.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Ein kleines Kännchen
-auf den Mixtopfdeckel stellen, das Olivenöl hineinwiegen und
+auf den Mixtopfdeckel stellen, 100 g natives Olivenöl hineinwiegen und
 beiseitestellen.</label>
                         </li>
                                             <li>
@@ -106,7 +116,7 @@ Romanasalat.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

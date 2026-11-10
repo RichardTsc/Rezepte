@@ -58,26 +58,45 @@ Oregano (gehäuft)</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Zwiebel und Knoblauch
-im Mixtopf 3 Sek./Stufe 6 hacken und mit dem Spatel vom Rand
-schieben.</label>
+                            <label for="step---">60 g Zwiebel und 1
+Knoblauchzehe in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Das Olivenöl dazugeben
-und 3 Min./120°C/Stufe 1 andünsten.</label>
+                            <label for="step---">3 Sek./Stufe 6 hacken
+und mit dem Spatel vom Rand schieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Rotwein, Tomatenmark,
-Tomatenstücke, Zucker, Salz, Pfeffer, Basilikum, Gewürzpaste, Oregano
-und Wasser dazugeben und alles 13 Min./100°C/Stufe 1 kochen.</label>
+                            <label for="step---">30 g Olivenöl in den
+Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Sahne dazugeben und
-die Suppe im Modus Pürieren 30 Sek. glatt mixen. Abschmecken und heiß
-auf den Tisch bringen.</label>
+                            <label for="step---">3 Min./120°C/Stufe 1
+andünsten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">50 g Rotwein, 100 g
+Tomatenmark, 800 g Tomatenstücke und 300 g Wasser in den Mixtopf wiegen,
+1 TL Zucker, 1 TL Salz, 3 Prisen Pfeffer, 1 TL Basilikum, 1 TL
+Gewürzpaste für Gemüsebrühe und 1 TL Oregano dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">13 Min./100°C/Stufe 1
+kochen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">100 g Sahne in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im Modus Pürieren 30
+Sek. glatt mixen. Abschmecken und heiß auf den Tisch bringen.</label>
                         </li>
                                     </ul>
             </div>
@@ -102,7 +121,7 @@ auf den Tisch bringen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

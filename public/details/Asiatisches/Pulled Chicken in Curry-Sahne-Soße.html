@@ -55,22 +55,37 @@ Currypulver</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Petersilie in den
-Mixtopf geben, 3 Sek./Stufe 8 zerkleinern und umfüllen. Schnittlauch mit
-der Schere in Röllchen schneiden.</label>
+                            <label for="step---">10 g Petersilie in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Sek./Stufe 8
+zerkleinern und in ein Schälchen umfüllen. Schnittlauch mit der Schere
+in Röllchen schneiden.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Zwiebel halbieren,
-Karotte und Kohlrabi schälen und grob schneiden. Mit dem Knoblauch in
-den Mixtopf geben, 4 Sek./Stufe 5 zerkleinern und umfüllen.</label>
+Karotte und Kohlrabi schälen und grob schneiden. 150 g Kohlrabi, die
+Karotte, die Zwiebel und 1 Knoblauchzehe in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">1000 g heißes Wasser
-und 1 TL Salz in den Mixtopf geben. Reis im Garkörbchen waschen und
-einhängen. Hähnchenbrust in 2–3 Stücke schneiden, salzen und in den
-Varoma legen. Varoma aufsetzen und 20 Min./Varoma/Stufe 4 garen.</label>
+                            <label for="step---">4 Sek./Stufe 5
+zerkleinern und in ein Schälchen umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">1000 g heißes Wasser in
+den Mixtopf wiegen, 1 TL Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Reis im Garkörbchen
+waschen und einhängen. Hähnchenbrust in 2–3 Stücke schneiden, salzen und
+in den Varoma legen. Varoma aufsetzen und 20 Min./Varoma/Stufe 4
+garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -97,8 +112,13 @@ in den Mixtopf geben und 1 Min./120°C/Stufe 1 anrösten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Hühnerbrühe, Kochsahne,
-Hähnchen, Salz und Pfeffer in den Mixtopf geben und 3
+                            <label for="step---">100 g Kochsahne in den
+Mixtopf wiegen, 100 ml Hühnerbrühe, das Hähnchen, Salz und Pfeffer
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3
 Min./100°C/Linkslauf/Stufe 1 köcheln. Dann das Hähnchen 5–8
 Sek./Linkslauf/Stufe 4 im Mixtopf zerfasern (Abweichung vom Original:
 dort wird das Hähnchen angebraten und mit zwei Gabeln gezupft).</label>
@@ -132,7 +152,7 @@ toppen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

@@ -76,9 +76,14 @@ umfüllen. Mixtopf nicht spülen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Ingwer schälen, Pilze,
-Kohl und Karotten grob schneiden. Alles in den Mixtopf geben, 4
-Sek./Stufe 4,5 zerkleinern, prüfen und bei Bedarf 1–2 Sek.
-nachzerkleinern. Die Füllung soll fein, aber nicht breiig sein.</label>
+Kohl und Karotten grob schneiden. 225 g Shiitake-Pilze, 80 g Chinakohl
+und 100 g Karotten in den Mixtopf wiegen, den Ingwer dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">4 Sek./Stufe 4,5
+zerkleinern, prüfen und bei Bedarf 1–2 Sek. nachzerkleinern. Die Füllung
+soll fein, aber nicht breiig sein.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -142,7 +147,7 @@ servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

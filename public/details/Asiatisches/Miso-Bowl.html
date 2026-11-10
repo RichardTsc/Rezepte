@@ -72,9 +72,9 @@ weitermachen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Spitzkohl, Paprika,
-Radieschen und Champignons in einer Schüssel auf dem Mixtopfdeckel
-abwiegen und die Schüssel wieder abnehmen.</label>
+                            <label for="step---">200 g Spitzkohl, 150 g
+Paprika, 160 g Radieschen und 300 g Champignons in einer Schüssel auf
+dem Mixtopfdeckel abwiegen und die Schüssel wieder abnehmen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -113,15 +113,24 @@ garen, dann im Garkörbchen abtropfen lassen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für das Dressing
-Knoblauch und Ingwer im Mixtopf 3 Sek./Stufe 8 fein hacken und mit dem
-Spatel nach unten schieben.</label>
+                            <label for="step---">Für das Dressing 10 g
+Ingwer und 1 Knoblauchzehe in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Olivenöl, Sojasauce,
-Miso-Paste, Ahornsirup, Balsamico, 40 g Wasser, ¼ TL Salz und
-Cayenne-Pfeffer in den Mixtopf geben und 10 Sek./Stufe 6 glatt
+                            <label for="step---">3 Sek./Stufe 8 fein
+hacken und mit dem Spatel nach unten schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">15 g Olivenöl, 40 g
+Sojasauce, 50 g Miso-Paste, 10 g Ahornsirup, 20 g hellen Balsamico und
+40 g Wasser in den Mixtopf wiegen, ¼ TL Salz und 1 Prise Cayenne-Pfeffer
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">10 Sek./Stufe 6 glatt
 mixen.</label>
                         </li>
                                             <li>
@@ -154,7 +163,7 @@ Dressing beträufeln und nach Belieben mit Sesam bestreuen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

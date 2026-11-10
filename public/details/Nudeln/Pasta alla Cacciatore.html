@@ -66,16 +66,30 @@ reichlich Wasser für die Fettuccine aufsetzen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Hartkäse in Stücken in
-den Mixtopf geben, 10 Sek./Stufe 10 zerkleinern und umfüllen. Oliven in
-den Mixtopf geben, 2 Sek./Stufe 4 zerkleinern und umfüllen.</label>
+                            <label for="step---">20 g Hartkäse in
+Stücken in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">10 Sek./Stufe 10
+zerkleinern und in ein Schälchen umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">70 g schwarze Oliven in
+den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">2 Sek./Stufe 4
+zerkleinern und zum Käse umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Zwiebel halbieren,
-Karotte grob schneiden. Zwiebel, Knoblauch und Karotte in den Mixtopf
-geben, 5 Sek./Stufe 5 zerkleinern und nach unten schieben. 1 EL Olivenöl
-in den Mixtopf geben und 3 Min./120°C/Stufe 1 dünsten.</label>
+Karotte grob schneiden. Zwiebel, 2 Knoblauchzehen und Karotte in den
+Mixtopf geben, 5 Sek./Stufe 5 zerkleinern und nach unten schieben. 1 EL
+Olivenöl dazugeben und 3 Min./120°C/Stufe 1 dünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -85,9 +99,15 @@ anbraten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Hähnchen, Tomatensugo,
-Kräuter, getrocknete Tomaten, Chili und Knoblauchpulver in den Mixtopf
-geben und 6 Min./100°C/Linkslauf/Stufe 1 köcheln.</label>
+                            <label for="step---">Das angebratene
+Hähnchen und 200 g Tomatensugo in den Mixtopf wiegen, 2 TL italienische
+Kräuter, 1 EL getrocknete Tomaten, 1 Prise Chiliflocken und ½ TL
+Knoblauchpulver dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">6
+Min./100°C/Linkslauf/Stufe 1 köcheln.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -132,7 +152,7 @@ toppen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

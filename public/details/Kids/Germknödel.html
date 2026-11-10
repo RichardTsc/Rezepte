@@ -48,21 +48,34 @@ Stücken</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für das Topping Mohn
-mit 20 g Zucker im Mixtopf 30 Sek./Stufe 10 fein mahlen und in ein
-Schälchen geben. Den Mixtopf danach kurz mit Wasser ausspülen.</label>
+                            <label for="step---">Für das Topping 40 g
+Mohn und 20 g Zucker in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Hefe mit Milch und
-den restlichen 10 g Zucker im Mixtopf 1 Min./37°C/Stufe 3 lauwarm
-auflösen.</label>
+                            <label for="step---">30 Sek./Stufe 10 fein
+mahlen und in ein Schälchen geben. Den Mixtopf danach kurz mit Wasser
+ausspülen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mehl, Ei, Salz und 30 g
-Butter einwiegen und im Modus Teig kneten 90 Sek. durchkneten
-lassen.</label>
+                            <label for="step---">20 g frische Hefe, 100
+g Milch und die restlichen 10 g Zucker in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">1 Min./37°C/Stufe 3
+lauwarm auflösen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">270 g Mehl und 30 g
+Butter einwiegen, 1 Ei und ½ TL Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im Modus Teig kneten 90
+Sek. durchkneten lassen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -81,13 +94,23 @@ Mixtopf auswaschen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">500 g Wasser in den
-Mixtopf füllen, den Varoma aufsetzen und die Knödel 20 Min./Varoma/Stufe
-1 dämpfen. Danach den Varoma abnehmen und das Wasser weggießen.</label>
+Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Im leeren Mixtopf die
-übrigen 100 g Butter 90 Sek./80°C/Stufe 1 schmelzen.</label>
+                            <label for="step---">Den Varoma aufsetzen
+und die Knödel 20 Min./Varoma/Stufe 1 dämpfen. Danach den Varoma
+abnehmen und das Wasser weggießen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die übrigen 100 g
+Butter in den leeren Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">90 Sek./80°C/Stufe 1
+schmelzen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -119,7 +142,7 @@ Kinder oder 2–3 Erwachsene.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

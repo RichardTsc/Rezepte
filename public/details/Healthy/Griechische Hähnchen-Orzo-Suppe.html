@@ -75,16 +75,25 @@ geben und 3 Min./120°C/Stufe 1 dünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Orzo in den Mixtopf
-geben und 2 Min./120°C/Linkslauf/Stufe 1 anschwitzen.</label>
+                            <label for="step---">90 g Orzo-Nudeln in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">2
+Min./120°C/Linkslauf/Stufe 1 anschwitzen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Hähnchen in 2 cm große
-Stücke schneiden. 550 g heißes Wasser, Brühepulver, Paprika-, Zwiebel-
-und Knoblauchpulver, ½ TL Salz und das Hähnchen in den Mixtopf geben.
-Mit dem Garkörbchen statt Messbecher 12 Min./100°C/Linkslauf/Stufe 1
-garen.</label>
+Stücke schneiden. 550 g heißes Wasser, 6 g Hühnerbrühepulver und 250 g
+Hähncheninnenfilets in den Mixtopf wiegen, 1 TL Paprikapulver, ¼ TL
+Zwiebelpulver, ¼ TL Knoblauchpulver und ½ TL Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit dem Garkörbchen
+statt Messbecher 12 Min./100°C/Linkslauf/Stufe 1 garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -94,11 +103,15 @@ vierteln.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Spinat, Crème fraîche,
-Zitronenschale und den Saft von 2 Zitronenvierteln in den Mixtopf geben
-und 1 Min./90°C/Linkslauf/Sanftrührstufe unterrühren. Ist die Suppe zu
-dick, etwas heißes Wasser zugeben. Mit Salz und Pfeffer
-abschmecken.</label>
+                            <label for="step---">50 g Babyspinat und 100
+g Crème fraîche in den Mixtopf wiegen, die Zitronenschale und den Saft
+von 2 Zitronenvierteln dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">1
+Min./90°C/Linkslauf/Sanftrührstufe unterrühren. Ist die Suppe zu dick,
+etwas heißes Wasser zugeben. Mit Salz und Pfeffer abschmecken.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -129,7 +142,7 @@ Zitronenvierteln servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

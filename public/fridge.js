@@ -129,7 +129,7 @@
   const unitSeconds = (u) => (/^(stu|std|h)/i.test(u) ? 3600 : /^m/i.test(u) ? 60 : 1);
 
   // Einwiege-Schritt (Thermomix-Waage): eigener Schritt „… in den Mixtopf wiegen“ – wird optisch als Waage markiert.
-  const isWeigh = (t) => /\bwiegen\b/i.test(t);
+  const isWeigh = (t) => /wiegen\b/i.test(t);
 
   function stepHtml(text, stepNo) {
     let out = '', last = 0;

@@ -79,9 +79,14 @@ waschen und 10 Min. einweichen lassen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Koriander, Basilikum
-und 2 EL Sushi-Ingwer in den Mixtopf geben, 3 Sek./Stufe 6 zerkleinern
-und in eine Schüssel umfüllen.</label>
+                            <label for="step---">15 g Koriander und 15 g
+Thai-Basilikum in den Mixtopf wiegen, 2 EL Sushi-Ingwer
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Sek./Stufe 6
+zerkleinern und in eine Schüssel umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -123,10 +128,15 @@ schneiden, Salat waschen und in Stücke schneiden.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Reis in eine Schüssel
-umfüllen, Wasser abgießen. Erdnussbutter, Sojasauce, Sesamöl, 60 ml
-Einlegesaft vom Sushi-Ingwer, Gochujang, Honig und 3 EL Limettensaft in
-den ungespülten Mixtopf geben und 20 Sek./Stufe 5 glatt mixen. Bei
-Bedarf mit etwas Wasser verdünnen.</label>
+umfüllen, Wasser abgießen. 120 g Erdnussbutter in den ungespülten
+Mixtopf wiegen, 80 ml Sojasauce, 60 ml Sesamöl, 60 ml Einlegesaft vom
+Sushi-Ingwer, 1 EL Gochujang, 1 EL Honig und 3 EL Limettensaft
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">20 Sek./Stufe 5 glatt
+mixen. Bei Bedarf mit etwas Wasser verdünnen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -158,7 +168,7 @@ Soße servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

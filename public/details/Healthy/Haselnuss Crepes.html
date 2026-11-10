@@ -85,21 +85,35 @@ sie nussig duftet und braune Partikel zeigt. Vom Herd nehmen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Gleichzeitig, falls
-ganze Haselnüsse: 55 g in den Mixtopf geben, 10 Sek./Stufe 10 mahlen und
-umfüllen.</label>
+ganze Haselnüsse: 55 g Haselnüsse in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">10 Sek./Stufe 10 mahlen
+und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Grünkohl von den
-Stielen zupfen. Grünkohl, Knoblauch, Salbei und Thymian in den Mixtopf
-geben, 4 Sek./Stufe 4,5 zerkleinern und umfüllen.</label>
+Stielen zupfen. 150 g Grünkohl in den Mixtopf wiegen, 2 Knoblauchzehen,
+1 EL Salbei und 1 EL Thymian dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Eier, Milch,
-Haselnussmehl, Mehl, Salz, 120 g Wasser und die gebräunte Butter in den
-Mixtopf geben und 30 Sek./Stufe 5 zu einem dünnflüssigen Teig mixen. Den
-Teig mindestens 30 Min. kalt stellen, er hält bis zu 48 Std.</label>
+                            <label for="step---">4 Sek./Stufe 4,5
+zerkleinern und in ein Schälchen umfüllen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">2 Eier, 55 g
+Haselnussmehl, 65 g Weizenmehl und 120 g Wasser in den Mixtopf wiegen,
+180 ml Milch, ¼ TL Salz und die gebräunte Butter dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">30 Sek./Stufe 5 zu
+einem dünnflüssigen Teig mixen. Den Teig mindestens 30 Min. kalt
+stellen, er hält bis zu 48 Std.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -153,7 +167,7 @@ Spiegelei und frittiertem Salbei servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

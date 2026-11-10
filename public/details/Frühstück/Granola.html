@@ -59,25 +59,36 @@ vorheizen und ein Blech mit Backpapier auslegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Nüsse 2 Sek./Stufe
-6 im Mixtopf grob hacken und in eine große Schüssel umfüllen.</label>
+                            <label for="step---">100 g gemischte Nüsse
+in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">2 Sek./Stufe 6 grob
+hacken und in eine große Schüssel umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Die Schüssel auf den
-Mixtopfdeckel stellen. Hafer-, Dinkel- und Buchweizenflocken, Amaranth,
-Kürbis- und Sonnenblumenkerne sowie Leinsamen dazuwiegen, mit den Nüssen
-mischen und beiseitestellen.</label>
+Mixtopfdeckel stellen. 250 g Haferflocken, 100 g Dinkelflocken, 50 g
+Buchweizenflocken, 15 g gepufften Amaranth, 40 g Kürbiskerne, 40 g
+Sonnenblumenkerne und 10 g Leinsamen dazuwiegen, mit den Nüssen mischen
+und beiseitestellen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Ahornsirup, Kokosöl,
-Zimt und Salz in den Mixtopf geben und 3 Min./100°C/Stufe 2 erhitzen.
-Über die Flocken gießen und mit dem Spatel gründlich vermengen. Die
-Masse gleichmäßig auf dem Blech verteilen und im unteren Drittel des
-Backofens bei 160 °C 25–30 Min. backen. Dabei alle 5–10 Minuten
-durchmischen, damit das Granola gleichmäßig bräunt und nicht zu dunkel
-wird.</label>
+                            <label for="step---">200 g Ahornsirup und 40
+g Kokosöl in den Mixtopf wiegen, 1 TL Zimt und 1 Msp. Salz
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Min./100°C/Stufe 2
+erhitzen. Über die Flocken gießen und mit dem Spatel gründlich
+vermengen. Die Masse gleichmäßig auf dem Blech verteilen und im unteren
+Drittel des Backofens bei 160 °C 25–30 Min. backen. Dabei alle 5–10
+Minuten durchmischen, damit das Granola gleichmäßig bräunt und nicht zu
+dunkel wird.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -110,7 +121,7 @@ aufbewahren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

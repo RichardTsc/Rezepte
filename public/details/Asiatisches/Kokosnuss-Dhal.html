@@ -57,21 +57,37 @@ grob gehackt, zum Garnieren</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für die Basis Zwiebeln,
-Chilis und Tomaten 5 Sek./Stufe 6 im Mixtopf hacken und anschließend vom
-Rand zusammenschieben.</label>
+                            <label for="step---">Für die Basis 240 g
+Zwiebeln und 150 g Tomaten in den Mixtopf wiegen, 1–2 grüne Chilischoten
+dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Rote Linsen,
-Kokosmilch, Kurkuma, Senfkörner, Wasser und Gewürzpaste für Gemüsebrühe
-in den Mixtopf geben und 15 Min./110°C/Linkslauf/Stufe 1 garen.</label>
+                            <label for="step---">5 Sek./Stufe 6 hacken
+und anschließend vom Rand zusammenschieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Den Babyspinat mit dem
-Spatel in das heiße Dhal im Mixtopf rühren, bis er zusammenfällt.
-Abschmecken und mit Koriander bestreut auf den Tisch bringen.</label>
+                            <label for="step---">250 g rote Linsen, 400
+g Kokosmilch und 300 g Wasser in den Mixtopf wiegen, 1 TL Kurkuma, 2 TL
+schwarze Senfkörner und ½ TL Gewürzpaste für Gemüsebrühe
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">15
+Min./110°C/Linkslauf/Stufe 1 garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">120 g Babyspinat in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit dem Spatel in das
+heiße Dhal rühren, bis er zusammenfällt. Abschmecken und mit Koriander
+bestreut auf den Tisch bringen.</label>
                         </li>
                                     </ul>
             </div>
@@ -96,7 +112,7 @@ Abschmecken und mit Koriander bestreut auf den Tisch bringen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

@@ -54,20 +54,34 @@ frisch, ggf. grob gehackt</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Zwiebeln und Knoblauch
-im Mixtopf 3 Sek./Stufe 6 fein hacken, dann mit dem Spatel nach unten
-streichen.</label>
+                            <label for="step---">150 g Zwiebeln und 2
+Knoblauchzehen in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mit 60 g Butter im
-Mixtopf 5 Min./120°C/Linkslauf/Stufe 1 andünsten.</label>
+                            <label for="step---">3 Sek./Stufe 6 fein
+hacken, dann mit dem Spatel nach unten streichen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">60 g Butter in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">5
+Min./120°C/Linkslauf/Stufe 1 andünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Gareinsatz einsetzen
-und mit den Kartoffeln füllen. Wasser und 1 TL Salz angießen. Die
-Kartoffeln im Mixtopf 15 Min./Varoma/Linkslauf/Stufe 1 garen.</label>
+und mit den Kartoffeln füllen. 500 g Wasser in den Mixtopf wiegen, 1 TL
+Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Kartoffeln 15
+Min./Varoma/Linkslauf/Stufe 1 garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -80,17 +94,26 @@ Den Sud aus dem Mixtopf in ein Gefäß gießen und aufheben.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Für das Püree den
-Rühraufsatz einsetzen. Kartoffeln mit Milch, 50 g Butter, 1 TL Salz und
-je ¼ TL Pfeffer und Muskat in den Mixtopf geben. Im Mixtopf 30
-Sek./80°C/Stufe 3 cremig rühren. Rühraufsatz abnehmen, das Püree in eine
-Schüssel geben und abgedeckt warm halten.</label>
+Rühraufsatz einsetzen. Die Kartoffeln, 300 g Milch und 50 g Butter in
+den Mixtopf wiegen, 1 TL Salz, ¼ TL Pfeffer und ¼ TL Muskat
+dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für den Rahmspinat
-Spinat, 100 g vom Sud und die Sahne in den Mixtopf geben und mit ½–1 TL
-Salz, ½ TL Pfeffer und ¼ TL Muskat würzen. Den Gareinsatz statt des
-Messbechers als Spritzschutz auf den Deckel stellen und im Mixtopf 5
+                            <label for="step---">30 Sek./80°C/Stufe 3
+cremig rühren. Rühraufsatz abnehmen, das Püree in eine Schüssel geben
+und abgedeckt warm halten.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für den Rahmspinat den
+Spinat, 100 g vom Sud und 150 g Sahne in den Mixtopf wiegen, ½–1 TL
+Salz, ½ TL Pfeffer und ¼ TL Muskat dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Gareinsatz statt
+des Messbechers als Spritzschutz auf den Deckel stellen und 5
 Min./110°C/Linkslauf/Stufe 2 garen. Gleichzeitig in einer Pfanne auf dem
 Herd vier Spiegeleier in etwas Butter braten.</label>
                         </li>
@@ -124,7 +147,7 @@ Teller verteilen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

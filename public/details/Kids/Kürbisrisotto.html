@@ -55,28 +55,47 @@ gemahlen</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Den Hartkäse im Mixtopf
-10 Sek./Stufe 8 reiben und beiseitestellen.</label>
+                            <label for="step---">60 g Hartkäse in
+Stücken in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Kürbis und Zwiebeln im
-Mixtopf 5 Sek./Stufe 5 zerkleinern und nach unten schieben. Hokkaido
-muss nicht geschält werden, die dünne Schale gart mit.</label>
+                            <label for="step---">10 Sek./Stufe 8 reiben
+und beiseitestellen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Reis, Weißwein, Wasser,
-Kreuzkümmel und Gewürzpaste dazugeben und 16 Min./100°C/Linkslauf/Stufe
-1 garen.</label>
+                            <label for="step---">250 g Hokkaidokürbis
+und 80–100 g Zwiebeln in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Butter und 40 g vom
-geriebenen Käse mit dem Spatel unterrühren und abschmecken. In tiefen
-Tellern anrichten, den übrigen Käse und frisch gemahlenen Pfeffer
-darüberstreuen und gleich essen. Dazu passen gehackte Petersilie oder
-knusprig gebratener Speck.</label>
+                            <label for="step---">5 Sek./Stufe 5
+zerkleinern und nach unten schieben. Hokkaido muss nicht geschält
+werden, die dünne Schale gart mit.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">125 g Risottoreis, 90 g
+Weißwein und 280 g Wasser in den Mixtopf wiegen, ¼ TL Kreuzkümmel und
+2–3 TL Gewürzpaste für Gemüsebrühe dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">16
+Min./100°C/Linkslauf/Stufe 1 garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">20 g Butter in den
+Mixtopf wiegen, 40 g vom geriebenen Käse dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit dem Spatel
+unterrühren und abschmecken. In tiefen Tellern anrichten, den übrigen
+Käse und frisch gemahlenen Pfeffer darüberstreuen und gleich essen. Dazu
+passen gehackte Petersilie oder knusprig gebratener Speck.</label>
                         </li>
                                     </ul>
             </div>
@@ -101,7 +120,7 @@ knusprig gebratener Speck.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

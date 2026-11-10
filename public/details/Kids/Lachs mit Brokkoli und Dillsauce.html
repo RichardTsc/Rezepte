@@ -54,10 +54,19 @@ abgezupft</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Wasser und Gewürzpaste
-in den Mixtopf geben und das Garkörbchen einhängen. Die Kartoffeln
-hineinwiegen, den Varoma-Behälter mit dem Brokkoli aufsetzen und
-schließen. Im Mixtopf 11 Min./Varoma/Stufe 1 garen.</label>
+                            <label for="step---">500 g Wasser in den
+Mixtopf wiegen, 1 TL Gewürzpaste für Gemüsebrühe dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Das Garkörbchen
+einhängen und 800 g Kartoffeln hineinwiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Den Varoma-Behälter mit
+dem Brokkoli aufsetzen und schließen. 11 Min./Varoma/Stufe 1
+garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -81,11 +90,16 @@ Mixtopf in ein Gefäß gießen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">300 g Garflüssigkeit
-(falls nötig mit Wasser ergänzt), 100 g der gegarten Kartoffeln, Sahne
-und die abgezupften Dillspitzen in den Mixtopf geben und im Modus
-Pürieren 30 Sek. glatt mixen. Die Sauce mit Salz, Pfeffer und dem
-restlichen Zitronensaft abschmecken und zu Lachs, Brokkoli und
-Kartoffeln servieren.</label>
+(falls nötig mit Wasser ergänzt), 100 g der gegarten Kartoffeln und 100
+g Sahne in den Mixtopf wiegen, die abgezupften Dillspitzen
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im Modus Pürieren 30
+Sek. glatt mixen. Die Sauce mit Salz, Pfeffer und dem restlichen
+Zitronensaft abschmecken und zu Lachs, Brokkoli und Kartoffeln
+servieren.</label>
                         </li>
                                     </ul>
             </div>
@@ -110,7 +124,7 @@ Kartoffeln servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

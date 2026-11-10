@@ -56,8 +56,13 @@ gemahlen</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Petersilie in den
-Mixtopf geben, 3 Sek./Stufe 8 zerkleinern und umfüllen.</label>
+                            <label for="step---">10 g Petersilie in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Sek./Stufe 8
+zerkleinern und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -67,17 +72,25 @@ Soße umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Hackfleisch, Panko,
-Milch, Muskat, Salz und Pfeffer in den Mixtopf geben und 20
-Sek./Linkslauf/Stufe 3 vermengen. Aus der Masse ca. 12 Bällchen
-formen.</label>
+                            <label for="step---">250 g gemischtes
+Hackfleisch und 25 g Panko-Mehl in den Mixtopf wiegen, 1 EL Milch, 1
+Prise Muskatnuss, Salz und Pfeffer dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">20 Sek./Linkslauf/Stufe
+3 vermengen. Aus der Masse ca. 12 Bällchen formen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Mixtopf heiß ausspülen,
 weil rohes Fleisch darin war. Kartoffeln schälen und vierteln. 500 g
-Wasser und 1 TL Salz in den Mixtopf geben, die Kartoffeln im Garkörbchen
-einhängen und 25 Min./Varoma/Stufe 1 garen.</label>
+Wasser in den Mixtopf wiegen, 1 TL Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Kartoffeln im
+Garkörbchen einhängen und 25 Min./Varoma/Stufe 1 garen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -140,7 +153,7 @@ Salat servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

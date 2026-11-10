@@ -82,15 +82,28 @@ vorheizen.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Falls der Käse am Stück
-ist: in Stücken in den Mixtopf geben, 5 Sek./Stufe 5 zerkleinern und
-umfüllen.</label>
+ist: 150 g Käse in Stücken in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">5 Sek./Stufe 5
+zerkleinern und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Jalapeños entkernen, in
-den Mixtopf geben und 3 Sek./Stufe 7 zerkleinern. Joghurt, Saft von 1
-Limette und 1 Prise Salz in den Mixtopf geben, 5 Sek./Stufe 3 verrühren
-und umfüllen. Mixtopf nicht spülen.</label>
+den Mixtopf geben und 3 Sek./Stufe 7 zerkleinern.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">250 g griechischen
+Joghurt in den Mixtopf wiegen, den Saft von 1 Limette und 1 Prise Salz
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">5 Sek./Stufe 3
+verrühren und umfüllen. Mixtopf nicht spülen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -101,13 +114,22 @@ Mixtopf geben und 3 Min./120°C/Stufe 1 dünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Hähnchenhackfleisch in
-den Mixtopf geben und 5 Min./120°C/Linkslauf/Stufe 1 garen.</label>
+                            <label for="step---">450 g
+Hähnchenhackfleisch in den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Alle Gewürze, Salz und
-180 g Wasser in den Mixtopf geben und ohne Messbecher 10
+                            <label for="step---">5
+Min./120°C/Linkslauf/Stufe 1 garen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">180 g Wasser in den
+Mixtopf wiegen, alle Gewürze und das Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Ohne Messbecher 10
 Min./100°C/Linkslauf/Stufe 1 köcheln, bis die Soße leicht
 eindickt.</label>
                         </li>
@@ -160,7 +182,7 @@ Limettenspalten servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

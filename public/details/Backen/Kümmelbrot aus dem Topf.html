@@ -58,20 +58,30 @@ mit Öl auspinseln und mit Mehl ausstäuben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Die Roggenkörner 20
-Sek./Stufe 10 im Mixtopf fein mahlen.</label>
+                            <label for="step---">150 g Roggenkörner in
+den Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Weizenmehl, Hefe,
-Wasser, 10 g Öl, Salz, Honig, Apfelessig, gemahlenen Kümmel und
-Kümmelsamen dazugeben und im Mixtopf im Modus Teig kneten 4 Min.
-verarbeiten. Den Teig in die Schüssel geben, mit Mehl bestäuben und rund
-6 Stunden gehen lassen, bis er sich verdoppelt hat. Alternativ abends
-ansetzen und über Nacht (etwa 8 Std.) im Kühlschrank gehen lassen. Gegen
-Ende einen ofenfesten Topf mit Deckel (3–4 l) vorbereiten: Tontopf nach
-Gebrauchsanweisung, ggf. vorher wässern, einen neuen Gusseisentopf mit
-hoch erhitzbarem Öl einfetten. Den Topf dann mit Mehl
+                            <label for="step---">20 Sek./Stufe 10 fein
+mahlen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">400 g Weizenmehl, ¼
+Würfel Hefe (10 g), 320 g Wasser, 10 g Öl und 20 g Apfelessig
+dazuwiegen, 2 TL Salz, 1 TL Honig, 1 TL gemahlenen Kümmel und 2–3 TL
+Kümmelsamen dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Im Modus Teig kneten 4
+Min. verarbeiten. Den Teig in die Schüssel geben, mit Mehl bestäuben und
+rund 6 Stunden gehen lassen, bis er sich verdoppelt hat. Alternativ
+abends ansetzen und über Nacht (etwa 8 Std.) im Kühlschrank gehen
+lassen. Gegen Ende einen ofenfesten Topf mit Deckel (3–4 l) vorbereiten:
+Tontopf nach Gebrauchsanweisung, ggf. vorher wässern, einen neuen
+Gusseisentopf mit hoch erhitzbarem Öl einfetten. Den Topf dann mit Mehl
 ausstreuen.</label>
                         </li>
                                             <li>
@@ -109,7 +119,7 @@ lassen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

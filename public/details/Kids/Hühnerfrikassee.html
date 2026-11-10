@@ -79,32 +79,50 @@ in eine Schüssel gießen und aufheben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für die Sauce die
-Butter im leeren Mixtopf 3 Min./100°C/Stufe 1 zerlassen. Wer Reis dazu
-möchte, setzt ihn jetzt in einem Topf auf dem Herd nach Packungsangabe
-auf.</label>
+                            <label for="step---">Für die Sauce 50 g
+Butter in den leeren Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mehl einstreuen und mit
-der Butter im Mixtopf 3 Min./100°C/Stufe 1 zu einer hellen Mehlschwitze
-anschwitzen.</label>
+                            <label for="step---">3 Min./100°C/Stufe 1
+zerlassen. Wer Reis dazu möchte, setzt ihn jetzt in einem Topf auf dem
+Herd nach Packungsangabe auf.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mit 500 g der Brühe,
-dem Wein und der Sahne auffüllen, ½ TL Salz und ¼ TL Pfeffer dazu. Die
-Sauce im Mixtopf 5 Min./100°C/Stufe 3 aufkochen lassen. Für Kinder statt
-Wein einfach entsprechend mehr Brühe nehmen. Die Zeit nutzen, um das
-Fleisch von den Knochen zu zupfen und in Happen zu schneiden und die
-Möhren in Scheiben zu schneiden.</label>
+                            <label for="step---">50 g Mehl in den
+Mixtopf wiegen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Zum Schluss kommen
-Fleisch, Möhren, Erbsen und Petersilie in die Sauce. Kurz mit dem Spatel
-durchmischen und im Mixtopf 4 Min./100°C/Linkslauf/Sanftrührstufe warm
-werden lassen. Nachwürzen, Reis passt gut dazu.</label>
+                            <label for="step---">Mit der Butter 3
+Min./100°C/Stufe 1 zu einer hellen Mehlschwitze anschwitzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">500 g der Brühe, 50 g
+Weißwein und 100 g Sahne in den Mixtopf wiegen, ½ TL Salz und ¼ TL
+Pfeffer dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Sauce 5
+Min./100°C/Stufe 3 aufkochen lassen. Für Kinder statt Wein einfach
+entsprechend mehr Brühe nehmen. Die Zeit nutzen, um das Fleisch von den
+Knochen zu zupfen und in Happen zu schneiden und die Möhren in Scheiben
+zu schneiden.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">150 g Erbsen (TK) in
+den Mixtopf wiegen, das Fleisch, die Möhren und die Petersilie
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Kurz mit dem Spatel
+durchmischen und 4 Min./100°C/Linkslauf/Sanftrührstufe warm werden
+lassen. Nachwürzen, Reis passt gut dazu.</label>
                         </li>
                                     </ul>
             </div>
@@ -129,7 +147,7 @@ werden lassen. Nachwürzen, Reis passt gut dazu.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

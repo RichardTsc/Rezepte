@@ -54,36 +54,59 @@ Gemüsebrühe (gehäuft), selbst gemacht</li>
                 <ul class="check-list" itemprop="recipeInstructions">
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Wasser und Salz in den
-Mixtopf geben, das Garkörbchen einhängen und Möhren, Sellerie, 100 g
-Kartoffeln und 100 g Porree darin 14 Min./Varoma/Stufe 1 dämpfen. Das
-Körbchen mit dem Spatel herausheben und das Gemüse beiseitestellen. Die
-Garflüssigkeit in einem Gefäß aufheben, sie wird für die Suppe
-gebraucht.</label>
+                            <label for="step---">500 g Wasser in den
+Mixtopf wiegen, 1 TL Salz dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Zwiebel mit 50 g Porree
-im Mixtopf 8 Sek./Stufe 5 hacken, dann vom Rand nach unten
-schieben.</label>
+                            <label for="step---">Das Garkörbchen
+einhängen und Möhren, Sellerie, 100 g Kartoffeln und 100 g Porree darin
+14 Min./Varoma/Stufe 1 dämpfen. Das Körbchen mit dem Spatel herausheben
+und das Gemüse beiseitestellen. Die Garflüssigkeit in einem Gefäß
+aufheben, sie wird für die Suppe gebraucht.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Mit der Butter im
-Mixtopf 3 Min./120°C/Stufe 2 andünsten.</label>
+                            <label for="step---">1 Zwiebel (ca. 50 g)
+und 50 g Porree in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">8 Sek./Stufe 5 hacken,
+dann vom Rand nach unten schieben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">20 g Butter in den
+Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">3 Min./120°C/Stufe 2
+andünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Die übrigen 300 g
-Kartoffeln, 600 g Garflüssigkeit und die Gewürzpaste in den Mixtopf
-geben und 18 Min./100°C/Stufe 1 kochen. Reicht die Garflüssigkeit nicht,
-mit Wasser auf 600 g ergänzen.</label>
+Kartoffeln und 600 g Garflüssigkeit in den Mixtopf wiegen, 2 TL
+Gewürzpaste für Gemüsebrühe dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Für die Cremigkeit
-Sahne, Crème fraîche und Pfeffer zufügen und die Suppe im Mixtopf 30
-Sek./Stufe 5–9 schrittweise ansteigend fein pürieren.</label>
+                            <label for="step---">18 Min./100°C/Stufe 1
+kochen. Reicht die Garflüssigkeit nicht, mit Wasser auf 600 g
+ergänzen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Für die Cremigkeit 50 g
+Sahne und 75 g Crème fraîche in den Mixtopf wiegen, 3 Prisen Pfeffer
+dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Die Suppe 30 Sek./Stufe
+5–9 schrittweise ansteigend fein pürieren.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -115,7 +138,7 @@ nachwürzen und heiß servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

@@ -57,14 +57,24 @@ beiseitestellen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Butter mit dem Zucker
-im Mixtopf 3 Min./100°C/Stufe 1 schmelzen lassen.</label>
+                            <label for="step---">40 g Butter in den
+Mixtopf wiegen, 2–3 TL Zucker dazugeben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">Kartoffel- und
-Kohlrabiwürfel, Sahne, Milch, Gewürzpaste und Salz dazugeben. Zuerst 10
-Min./120°C/Linkslauf/Sanftrührstufe im Mixtopf garen. Anschließend 10–15
+                            <label for="step---">3 Min./100°C/Stufe 1
+schmelzen lassen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">500 g Kartoffelwürfel,
+500 g Kohlrabiwürfel, 140 g Sahne und 80 g Milch in den Mixtopf wiegen,
+1–2 TL Gewürzpaste für Gemüsebrühe und 1 TL Salz dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Zuerst 10
+Min./120°C/Linkslauf/Sanftrührstufe garen. Anschließend 10–15
 Min./98°C/Linkslauf/Sanftrührstufe weitergaren, bis die Würfel weich
 sind (an einem Stück prüfen).</label>
                         </li>
@@ -97,7 +107,7 @@ gebratenem Fleisch.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

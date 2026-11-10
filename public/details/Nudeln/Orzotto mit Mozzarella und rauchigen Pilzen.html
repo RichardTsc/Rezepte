@@ -73,30 +73,43 @@ gleichzeitig fertig.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Basilikumblätter
-abzupfen. Parmesan (halbiert), die Hälfte der Basilikumblätter und alle
-Stiele in den Mixtopf geben, 5 Sek./Stufe 8 zerkleinern und nach unten
-schieben. Noch einmal 5 Sek./Stufe 8 zerkleinern und umfüllen.</label>
+abzupfen. 20 g Parmesan (halbiert), die Hälfte der Basilikumblätter und
+alle Basilikumstiele in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">5 Sek./Stufe 8
+zerkleinern und nach unten schieben. Noch einmal 5 Sek./Stufe 8
+zerkleinern und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Zwiebel halbieren.
-Zwiebel und Knoblauch in den Mixtopf geben, 5 Sek./Stufe 5 zerkleinern
-und nach unten schieben.</label>
+Zwiebel und 2 Knoblauchzehen in den Mixtopf geben, 5 Sek./Stufe 5
+zerkleinern und nach unten schieben.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
-                            <label for="step---">1 EL Öl, Orzo und
-Tomatenpesto in den Mixtopf geben und mit dem Garkörbchen als
+                            <label for="step---">180 g Orzo-Nudeln und
+25 g Tomatenpesto in den Mixtopf wiegen, 1 EL Öl dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit dem Garkörbchen als
 Spritzschutz 3 Min./120°C/Linkslauf/Stufe 1 andünsten.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Thymianblättchen
-abzupfen. 450 g heißes Wasser, Gemüsebrühepulver und Thymian in den
-Mixtopf geben und mit dem Spatel über den Boden fahren, damit sich die
-Orzo lösen. Mit dem Garkörbchen als Spritzschutz 8
-Min./98°C/Linkslauf/Stufe 1 garen. Danach 5 Min. im Mixtopf quellen
-lassen und den Biss prüfen.</label>
+abzupfen. 450 g heißes Wasser und 4 g Gemüsebrühepulver in den Mixtopf
+wiegen, den Thymian dazugeben.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Mit dem Spatel über den
+Boden fahren, damit sich die Orzo lösen. Mit dem Garkörbchen als
+Spritzschutz 8 Min./98°C/Linkslauf/Stufe 1 garen. Danach 5 Min. im
+Mixtopf quellen lassen und den Biss prüfen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -139,7 +152,7 @@ Käse-Basilikum-Mischung toppen.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');

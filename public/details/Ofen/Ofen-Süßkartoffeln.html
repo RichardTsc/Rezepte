@@ -69,8 +69,12 @@ auf dem Rost 50–60 Min. backen, bis sie weich sind.</label>
                                             <li>
                             <input type="checkbox">
                             <label for="step---">Falls der Cheddar am
-Stück ist: in Stücken in den Mixtopf geben, 5 Sek./Stufe 5 zerkleinern
-und umfüllen.</label>
+Stück ist: 100 g Cheddar in Stücken in den Mixtopf wiegen.</label>
+                        </li>
+                                            <li>
+                            <input type="checkbox">
+                            <label for="step---">Falls zerkleinert wird:
+5 Sek./Stufe 5 zerkleinern und in ein Schälchen umfüllen.</label>
                         </li>
                                             <li>
                             <input type="checkbox">
@@ -141,7 +145,7 @@ und mit griechischem Joghurt servieren.</label>
                 label.htmlFor = uniqueId;
 
                 // Einwiege-Schritt (Thermomix-Waage) markieren: „… in den Mixtopf wiegen“
-                if (/\bwiegen\b/i.test(label.textContent)) {
+                if (/wiegen\b/i.test(label.textContent)) {
                     li.classList.add('is-weigh');
                     label.insertAdjacentHTML('afterbegin',
                         '<svg class="weigh-ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="10" width="17" height="10" rx="2.5"/><path d="M8.2 10 7.5 6.5h9L15.8 10"/><circle cx="12" cy="15" r="2.3"/></svg>');
