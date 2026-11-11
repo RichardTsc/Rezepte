@@ -209,6 +209,8 @@
         byCookidoo = new Map(recipes.filter((r) => r.cookidoo).map((r) => [r.cookidoo, r]));
         renderHome();
         route();
+        applyCooked();   // zuletzt Gekochte sofort aus dem Zwischenstand ausblenden
+        loadKochbuch();  // frischen Stand vom NAS nachladen
         // Korb-Anzahl fürs Badge direkt von der Einkauf-API. Den Einkauf selbst NICHT mehr vorladen: Er blieb sonst dauerhaft
         // als zweite App im Speicher, und der Kühlschrank beendete den Tab im Standby („Renderer process has crashed“).
         refreshBadge();
@@ -241,14 +243,18 @@
     el.chips.innerHTML = `<button class="fh-chip is-active" data-act="cat" data-cat="-1">Alle<span>${inAll}</span></button>` +
       cats.map((c, i) => `<button class="fh-chip" data-act="cat" data-cat="${i}">${esc(c)}</button>`).join('');
     el.home.dataset.cat = '-1';
-    el.home.innerHTML = `<div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>
+    el.home.removeAttribute('data-show-recent');
+    el.home.innerHTML = `<button class="fh-recent-toggle" id="fh-recent-toggle" data-act="toggle-recent" hidden></button>
+      <div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>
       <div class="fh-msg" id="fh-nohit" hidden></div>
       <button class="fh-version" data-act="reload">Stand ${esc(BUILD.t || '?')} · ${esc(BUILD.v)} · antippen zum Neuladen</button>`;
     // Filtern per CSS: eine Regel je Kategorie, umgeschaltet wird nur data-cat am Container (eine Änderung statt 31).
     // Unter „Alle“ (-1) blendet für jeden eigenen Bereich eine weitere Regel dessen Kacheln aus – außer bei einer Suche
     // (data-q): Die soll auch Backen und Kids finden.
     const css = cats.map((c, i) => `#fh-home[data-cat="${i}"] .fh-card:not([data-cat="${i}"]){display:none}` +
-      (isSeparate(c) ? `#fh-home[data-cat="-1"]:not([data-q]) .fh-card[data-cat="${i}"]{display:none}` : '')).join('');
+      (isSeparate(c) ? `#fh-home[data-cat="-1"]:not([data-q]) .fh-card[data-cat="${i}"]{display:none}` : '')).join('') +
+      // Zuletzt gekochte Rezepte (14 Tage) standardmäßig ausblenden – außer bei einer Suche oder wenn der Schalter sie zeigt.
+      `#fh-home:not([data-q]):not([data-show-recent]) .fh-card.is-recent{display:none}`;
     let style = document.getElementById('fh-catcss');
     if (!style) { style = document.createElement('style'); style.id = 'fh-catcss'; document.head.appendChild(style); }
     style.textContent = css;
@@ -265,6 +271,91 @@
     if (scroller.scrollTop > 0) scroller.scrollTop = 0;
     searchInfo();
   }
+
+  // ---------- Kochbuch (zuletzt gekocht / Probe gekocht) ----------
+  // Eigenes Logbuch auf dem NAS (Picnic-Dienst, data/kochbuch.json), nur unter der Küchen-Adresse same-origin erreichbar
+  // als /einkauf/api/kochbuch:
+  //   GET  → { eintraege: { "<rezeptId>": { zuletzt: "JJJJ-MM-TT", anzahl: N } } }
+  //   POST { recipeId, date: "JJJJ-MM-TT", action: "add" | "remove" } → frisches { eintraege }
+  // Wofür: Rezepte der letzten 14 Tage auf der Startseite ausblenden (die Suche zeigt sie weiter), „Probe gekocht“
+  // anzeigen und „Heute gekocht“ merken. Auf GitHub Pages (kein Backend) ist das Kochbuch aus.
+  const KOCH_API = '/einkauf/api/kochbuch';
+  const RECENT_DAYS = 14;
+  let cooked = store.get('kochbuch', {}) || {}; // Zwischenstand für sofortige Anzeige nach dem Aufwachen
+  const dayIso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  function todayIso() { const d = new Date(); d.setHours(12, 0, 0, 0); return dayIso(d); }
+  function daysSince(iso) {
+    if (!iso) return Infinity;
+    const [y, m, d] = iso.split('-').map(Number);
+    const then = new Date(y, m - 1, d, 12, 0, 0, 0), now = new Date(); now.setHours(12, 0, 0, 0);
+    return Math.round((now - then) / 86400000);
+  }
+  const cookCount = (id) => { const e = cooked[id]; return e && e.anzahl > 0 ? e.anzahl : 0; };
+  const isRecent = (id) => { const e = cooked[id]; return !!(e && daysSince(e.zuletzt) < RECENT_DAYS); };
+  function fmtDateRel(iso) {
+    const n = daysSince(iso);
+    if (n <= 0) return 'heute';
+    if (n === 1) return 'gestern';
+    if (n < 7) return `vor ${n} Tagen`;
+    const [y, m, d] = iso.split('-');
+    return `${+d}.${+m}.${y}`;
+  }
+
+  function loadKochbuch() {
+    if (!EMBED_SHOP) return;
+    fetch(KOCH_API, { credentials: 'same-origin', cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d && d.eintraege) { cooked = d.eintraege; store.set('kochbuch', cooked); applyCooked(); } }, () => {});
+  }
+
+  // Kacheln der letzten 14 Tage als is-recent markieren (CSS blendet sie außerhalb der Suche aus) und den Zeige-Schalter nachführen.
+  function applyCooked() {
+    if (!el.home) return;
+    let hidden = 0;
+    for (const c of el.home.querySelectorAll('.fh-card')) {
+      const recent = isRecent(c.dataset.id);
+      c.classList.toggle('is-recent', recent);
+      if (recent) hidden++;
+    }
+    updateRecentToggle(hidden);
+    if (view === 'recipe') updateCookedBlock(byId.get(currentId()));
+  }
+
+  function updateRecentToggle(count) {
+    const t = $('#fh-recent-toggle');
+    if (!t) return;
+    const showing = el.home.hasAttribute('data-show-recent');
+    if (el.home.dataset.q || (!count && !showing)) { t.hidden = true; return; }
+    t.hidden = false;
+    t.innerHTML = showing
+      ? `${icon('check')}Zuletzt Gekochte werden gezeigt – wieder ausblenden`
+      : `${icon('refresh')}${count} zuletzt gekocht – ausgeblendet, trotzdem zeigen`;
+  }
+
+  // Als heute gekocht merken bzw. zurücknehmen. Der NAS liefert den frischen Stand zurück, danach wird alles neu gezeichnet.
+  function markCooked(id, on, btn) {
+    if (!EMBED_SHOP || !id) return;
+    if (btn) btn.disabled = true;
+    fetch(KOCH_API, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ recipeId: id, date: todayIso(), action: on ? 'add' : 'remove' }) })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
+      .then((d) => { cooked = (d && d.eintraege) || cooked; store.set('kochbuch', cooked); applyCooked(); if (btn) toast(on ? 'Als heute gekocht gemerkt' : 'Eintrag entfernt'); })
+      .catch(() => { if (btn) { btn.disabled = false; toast('Kochbuch nicht erreichbar', 3000); } });
+  }
+
+  // Statuszeile + Knopf im Rezeptkopf (nur mit Backend)
+  function cookedInner(rec) {
+    if (!rec) return '';
+    const n = cookCount(rec.id), e = cooked[rec.id], today = n && e.zuletzt === todayIso();
+    const status = n
+      ? `<span class="fh-tag fh-tag-ok">${icon('check')}Probe gekocht</span><span class="fh-cooked-when">zuletzt ${esc(fmtDateRel(e.zuletzt))}${n > 1 ? ` · ${n}×` : ''}</span>`
+      : `<span class="fh-tag fh-tag-todo">${icon('book')}Noch nicht probegekocht</span>`;
+    const btn = today
+      ? `<button class="fh-btn fh-cooked-btn is-done" data-act="cooked-off">${icon('check')}Heute gekocht – rückgängig</button>`
+      : `<button class="fh-btn fh-cooked-btn" data-act="cooked-on">${icon('check')}Heute gekocht</button>`;
+    return `<div class="fh-cooked-row">${status}</div>${btn}`;
+  }
+  const cookedBlock = (rec) => (EMBED_SHOP ? `<div class="fh-cooked" id="fh-cooked">${cookedInner(rec)}</div>` : '');
+  function updateCookedBlock(rec) { const b = $('#fh-cooked'); if (b) b.innerHTML = cookedInner(rec); }
 
   // ---------- Zutatensuche ----------
   // Selten gebraucht, deshalb eingeklappt: Die Lupe im Kopf klappt das Suchfeld anstelle von Titel und Uhr aus, es kostet
@@ -336,7 +427,7 @@
 
   // Kacheln: kleine quadratische Bilder (300 px, tiles/), sofort laden – alle 31 sind ohnehin auf dem ersten Bildschirm
   const card = (r, cat) => `
-    <a class="fh-card" href="#/r/${r.id}" data-cat="${cat}">
+    <a class="fh-card" href="#/r/${r.id}" data-cat="${cat}" data-id="${r.id}">
       ${r.tile || r.thumb ? `<img src="${esc(r.tile || r.thumb)}" alt="" width="300" height="300" decoding="async">` : ''}
       ${r.prepTime ? `<span class="fh-card-time">${esc(shortTime(r.prepTime))}</span>` : ''}
       <span class="fh-card-title"><span>${esc(r.name)}</span></span>
@@ -497,6 +588,7 @@
           <h1>${esc(rec.title)}</h1>
           <div class="fh-pills">${pill('clock', fmtTime(rec.prepTime))}${pill('users', fmtYield(rec.yield))}${pill('pen', rec.author)}</div>
           ${tagsBlock(rec)}
+          ${cookedBlock(rec)}
         </div>
         <section class="fh-panel">
           <div class="fh-panel-head"><h2>Zutaten</h2>
@@ -1125,6 +1217,7 @@
   function finishCook(rec) {
     store.del('session');
     store.del('checks.' + rec.id);
+    markCooked(rec.id, true); // Kochen beendet = heute gekocht (blendet es auf der Startseite aus, „Probe gekocht“)
     toast('Guten Appetit!');
     goBack('#/r/' + rec.id);
   }
@@ -1521,6 +1614,9 @@
         break;
       case 'cat': filterCategory(+t.dataset.cat); break;
       case 'search': toggleSearch(!searchOpen()); break;
+      case 'toggle-recent': el.home.toggleAttribute('data-show-recent'); applyCooked(); break;
+      case 'cooked-on': markCooked(id, true, t); break;
+      case 'cooked-off': markCooked(id, false, t); break;
       case 'resume': {
         const s = session();
         if (s) location.hash = `#/r/${s.id}/k/${s.step}`;

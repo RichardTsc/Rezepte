@@ -363,7 +363,27 @@ html.fridge.fh-moving .fh-timers { display: none; }
 }
 .fh-tag .fh-ic { width: 22px; height: 22px; }
 .fh-tag-todo { border-color: rgba(255, 154, 118, .55); color: var(--warn); background: rgba(255, 154, 118, .1); }
+.fh-tag-ok { border-color: var(--accent-line); color: var(--accent); background: var(--accent-soft); }
 .fh-ck-btn { min-height: 64px; font-size: 21px; border: 1px solid var(--accent-line); color: var(--accent); background: var(--accent-soft); }
+
+/* Kochbuch: Status „Probe gekocht“ + Knopf „Heute gekocht“ im Rezeptkopf; Zeige-Schalter auf der Startseite */
+.fh-cooked { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 14px; }
+.fh-cooked-row { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.fh-cooked-when { color: var(--muted); font-size: 17px; }
+.fh-cooked-btn {
+  min-height: 46px; padding: 0 18px; box-sizing: border-box; display: inline-flex; align-items: center; gap: 8px;
+  border-radius: var(--r-pill); border: 1px solid var(--line); background: var(--surface-2); color: var(--text); font-size: 17px; font-weight: 650;
+}
+.fh-cooked-btn .fh-ic { width: 20px; height: 20px; }
+.fh-cooked-btn.is-done { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
+.fh-cooked-btn[disabled] { opacity: .5; }
+.fh-recent-toggle {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box;
+  min-height: 48px; margin: 0 0 12px; padding: 0 18px; border-radius: var(--r-pill);
+  background: var(--surface); border: 1px solid var(--line); color: var(--muted); font-size: 17px; font-weight: 600;
+}
+.fh-recent-toggle .fh-ic { width: 20px; height: 20px; }
+.fh-recent-toggle[hidden] { display: none; }
 .fh-ck-hint { margin: 0 0 14px; color: var(--muted); font-size: 18px; }
 /* Tageskacheln: Beschriftung links, rechts die Bildpunkte der anderen schon geplanten Gerichte (wie im Kalenderblatt) */
 .fh-ck-days { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
