@@ -342,20 +342,129 @@
       .catch(() => { if (btn) { btn.disabled = false; toast('Kochbuch nicht erreichbar', 3000); } });
   }
 
-  // Statuszeile + Knopf im Rezeptkopf (nur mit Backend)
+  // Statuszeile + Knopf im Rezeptkopf (nur mit Backend): Status links, Aktion rechts – ein aufgeräumter Streifen.
   function cookedInner(rec) {
     if (!rec) return '';
     const n = cookCount(rec.id), e = cooked[rec.id], today = n && e.zuletzt === todayIso();
     const status = n
-      ? `<span class="fh-tag fh-tag-ok">${icon('check')}Probe gekocht</span><span class="fh-cooked-when">zuletzt ${esc(fmtDateRel(e.zuletzt))}${n > 1 ? ` · ${n}×` : ''}</span>`
-      : `<span class="fh-tag fh-tag-todo">${icon('book')}Noch nicht probegekocht</span>`;
+      ? `<span class="fh-cooked-status is-ok">${icon('check')}<span class="fh-cooked-txt"><b>Probe gekocht</b><small>zuletzt ${esc(fmtDateRel(e.zuletzt))}${n > 1 ? ` · ${n}×` : ''}</small></span></span>`
+      : `<span class="fh-cooked-status">${icon('book')}<span class="fh-cooked-txt"><b>Noch nicht probegekocht</b><small>nach dem Kochen hier bestätigen</small></span></span>`;
     const btn = today
-      ? `<button class="fh-btn fh-cooked-btn is-done" data-act="cooked-off">${icon('check')}Heute gekocht – rückgängig</button>`
-      : `<button class="fh-btn fh-cooked-btn" data-act="cooked-on">${icon('check')}Heute gekocht</button>`;
-    return `<div class="fh-cooked-row">${status}</div>${btn}`;
+      ? `<button class="fh-cooked-btn is-done" data-act="cooked-off">${icon('check')}Heute gekocht</button>`
+      : `<button class="fh-cooked-btn" data-act="cooked-on">${icon('check')}Heute gekocht</button>`;
+    return status + btn;
   }
   const cookedBlock = (rec) => (EMBED_SHOP ? `<div class="fh-cooked" id="fh-cooked">${cookedInner(rec)}</div>` : '');
   function updateCookedBlock(rec) { const b = $('#fh-cooked'); if (b) b.innerHTML = cookedInner(rec); }
+
+  // ---------- Feedback zum Rezept ----------
+  // Dezenter Stift im Rezeptkopf öffnet einen Dialog, in dem man per Sprache oder Tippen eine Notiz zum Rezept
+  // hinterlässt. Sie landet auf dem NAS (Picnic-Dienst, data/feedback.json) und wird beim nächsten Pflege-Durchgang
+  // (Claude am Mac) gesichtet und abgeräumt:
+  //   GET  /einkauf/api/feedback → { eintraege: [ { id, recipeId, recipe, text, erstellt } ] }
+  //   POST { recipeId, recipe, text } → frische Liste   |   POST { action:"resolve", id } → abräumen
+  // Nur mit Backend (same-origin über den Gateway), auf GitHub Pages ohne NAS gibt es den Stift nicht.
+  const FEEDBACK_API = '/einkauf/api/feedback';
+  // Eigene Spracherfassung, strikt getrennt von der Kochmodus-Steuerung (die deutet Wörter als Befehle). Hier wird
+  // einfach diktiert: Zwischenergebnisse live, Endstücke an den Basistext angehängt.
+  let fbRec = null, fbListening = false, fbBase = '', fbRec_rec = null;
+
+  function sendFeedback(rec, text) {
+    return fetch(FEEDBACK_API, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recipeId: rec.id, recipe: rec.title || rec.name || '', text }) })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))));
+  }
+
+  function openFeedback(rec) {
+    if (!EMBED_SHOP || !rec) return;
+    closeFeedback();
+    fbRec_rec = rec;
+    const canSpeak = !!SR;
+    const wrap = document.createElement('div');
+    wrap.className = 'fh-fb';
+    wrap.id = 'fh-fb';
+    wrap.innerHTML = `
+      <div class="fh-scrim" data-act="fb-close"></div>
+      <div class="fh-fb-card" role="dialog" aria-label="Feedback zum Rezept">
+        <div class="fh-fb-head"><h2>Feedback zum Rezept</h2>
+          <button class="fh-round" data-act="fb-close" aria-label="Schließen">${icon('x')}</button></div>
+        <p class="fh-fb-sub">${esc(rec.title || rec.name || '')} – was ist dir aufgefallen?</p>
+        ${canSpeak ? `<div class="fh-fb-microw"><button class="fh-fb-mic" id="fh-fb-mic" data-act="fb-mic" aria-label="Diktat starten oder stoppen">${icon('mic')}<span id="fh-fb-mic-lbl">Sprechen</span></button></div>` : ''}
+        <textarea class="fh-fb-text" id="fh-fb-text" rows="4" placeholder="${canSpeak ? 'Mikrofon antippen und sprechen – oder hier tippen …' : 'Feedback eintippen …'}"></textarea>
+        <div class="fh-fb-actions">
+          <button class="fh-btn" data-act="fb-close">Abbrechen</button>
+          <button class="fh-btn fh-primary" id="fh-fb-send" data-act="fb-send">${icon('check')}Senden</button>
+        </div>
+      </div>`;
+    el.recipe.appendChild(wrap);
+    root.classList.add('fh-fb-open');
+    requestAnimationFrame(() => wrap.classList.add('is-open'));
+    // Auf dem Kühlschrank nicht automatisch fokussieren (Tastatur verdeckt den Dialog); am Handy hilft der Fokus.
+    if (!IS_FRIDGE) setTimeout(() => { const t = $('#fh-fb-text'); if (t) try { t.focus(); } catch { /* egal */ } }, 80);
+  }
+
+  function closeFeedback() {
+    fbStopDictate();
+    const w = $('#fh-fb');
+    if (w) w.remove();
+    root.classList.remove('fh-fb-open');
+    fbRec_rec = null;
+  }
+
+  function fbToggleDictate() {
+    const ta = $('#fh-fb-text');
+    if (!SR || !ta) return;
+    if (fbListening) { fbStopDictate(); return; }
+    if (!fbRec) {
+      fbRec = new SR();
+      fbRec.lang = 'de-DE';
+      fbRec.continuous = true;
+      fbRec.interimResults = true;
+      fbRec.maxAlternatives = 1;
+      fbRec.onstart = () => {
+        fbListening = true;
+        const b = $('#fh-fb-mic'), l = $('#fh-fb-mic-lbl');
+        if (b) b.classList.add('is-live');
+        if (l) l.textContent = 'Zuhören – zum Stoppen tippen';
+      };
+      fbRec.onresult = (e) => {
+        let fin = '', interim = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const r = e.results[i];
+          if (!r || !r[0]) continue;
+          if (r.isFinal) fin += r[0].transcript; else interim += r[0].transcript;
+        }
+        if (fin.trim()) fbBase = (fbBase ? fbBase + ' ' : '') + fin.trim();
+        const t = $('#fh-fb-text');
+        if (t) { t.value = (fbBase + (interim ? ' ' + interim.trim() : '')).replace(/\s+/g, ' ').replace(/^\s+/, ''); t.scrollTop = t.scrollHeight; }
+      };
+      fbRec.onerror = (ev) => {
+        if (ev.error === 'not-allowed' || ev.error === 'service-not-allowed') toast('Mikrofon nicht erlaubt');
+        else if (ev.error !== 'no-speech' && ev.error !== 'aborted') toast('Spracherkennung gestört – bitte tippen', 3000);
+      };
+      fbRec.onend = () => {
+        fbListening = false;
+        const b = $('#fh-fb-mic'), l = $('#fh-fb-mic-lbl');
+        if (b) b.classList.remove('is-live');
+        if (l) l.textContent = 'Weiter sprechen';
+      };
+    }
+    fbBase = ta.value.trim();
+    try { fbRec.start(); } catch { /* läuft schon */ }
+  }
+  function fbStopDictate() { if (fbRec && fbListening) try { fbRec.stop(); } catch { /* egal */ } }
+
+  function submitFeedback() {
+    const ta = $('#fh-fb-text'), btn = $('#fh-fb-send'), rec = fbRec_rec;
+    if (!ta || !rec) return;
+    const text = ta.value.trim();
+    if (!text) { toast('Noch kein Feedback eingegeben'); if (!IS_FRIDGE) try { ta.focus(); } catch { /* egal */ } return; }
+    fbStopDictate();
+    if (btn) btn.disabled = true;
+    sendFeedback(rec, text)
+      .then(() => { closeFeedback(); toast('Danke! Feedback gespeichert'); })
+      .catch(() => { if (btn) btn.disabled = false; toast('Feedback nicht gespeichert – NAS nicht erreichbar', 3200); });
+  }
 
   // ---------- Zutatensuche ----------
   // Selten gebraucht, deshalb eingeklappt: Die Lupe im Kopf klappt das Suchfeld anstelle von Titel und Uhr aus, es kostet
@@ -582,7 +691,8 @@
     el.recipe.innerHTML = `
       <div class="fh-scroll" id="fh-rscroll">
         <div class="fh-hero">${rec.thumb ? `<img id="fh-hero" src="${esc(rec.thumb)}" alt="">` : ''}
-          <button class="fh-round fh-hero-back" data-act="close-recipe" aria-label="Zurück">${icon('back')}</button></div>
+          <button class="fh-round fh-hero-back" data-act="close-recipe" aria-label="Zurück">${icon('back')}</button>
+          ${EMBED_SHOP ? `<button class="fh-round fh-hero-fb" data-act="fb-open" aria-label="Feedback zum Rezept geben">${icon('pen')}</button>` : ''}</div>
         <div class="fh-rec-head">
           <div class="fh-kicker">${esc(rec.category)}</div>
           <h1>${esc(rec.title)}</h1>
@@ -1623,6 +1733,10 @@
         break;
       }
       case 'close-recipe': goBack(recipeParent()); break;
+      case 'fb-open': openFeedback(byId.get(id)); break;
+      case 'fb-close': closeFeedback(); break;
+      case 'fb-mic': fbToggleDictate(); break;
+      case 'fb-send': submitFeedback(); break;
       case 'pv-top': // Planen-Tab erneut antippen: nach oben und auffrischen
         if (view === 'plan') { e.preventDefault(); el.pv.scrollTo({ top: 0, behavior: 'smooth' }); loadPlan(false); }
         break;
@@ -1691,7 +1805,8 @@
     else if (view === 'cook' && e.key === 'ArrowLeft') step(-1);
     else if (e.key === 'Escape') {
       const d = $('#fh-drawer'), p = $('#fh-plan');
-      if (view === 'plan' && pvMove) cancelMove();
+      if ($('#fh-fb')) closeFeedback();
+      else if (view === 'plan' && pvMove) cancelMove();
       else if (d && !d.hidden) closeDrawer();
       else if (p && !p.hidden) closePlan();
       else if (view === 'cook') goBack('#/r/' + cookRecipeId);
