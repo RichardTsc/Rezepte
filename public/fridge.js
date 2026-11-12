@@ -244,8 +244,8 @@
       cats.map((c, i) => `<button class="fh-chip" data-act="cat" data-cat="${i}">${esc(c)}</button>`).join('');
     el.home.dataset.cat = '-1';
     el.home.removeAttribute('data-show-recent');
-    el.home.innerHTML = `<button class="fh-recent-toggle" id="fh-recent-toggle" data-act="toggle-recent" hidden></button>
-      <div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>
+    el.home.innerHTML = `<div class="fh-grid">${recipes.map((r) => card(r, cats.indexOf(r.category))).join('')}</div>
+      <button class="fh-recent-toggle" id="fh-recent-toggle" data-act="toggle-recent" hidden></button>
       <div class="fh-msg" id="fh-nohit" hidden></div>
       <button class="fh-version" data-act="reload">Stand ${esc(BUILD.t || '?')} · ${esc(BUILD.v)} · antippen zum Neuladen</button>`;
     // Filtern per CSS: eine Regel je Kategorie, umgeschaltet wird nur data-cat am Container (eine Änderung statt 31).

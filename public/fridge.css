@@ -379,7 +379,7 @@ html.fridge.fh-moving .fh-timers { display: none; }
 .fh-cooked-btn[disabled] { opacity: .5; }
 .fh-recent-toggle {
   display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box;
-  min-height: 48px; margin: 0 0 12px; padding: 0 18px; border-radius: var(--r-pill);
+  min-height: 48px; margin: 14px 0 2px; padding: 0 18px; border-radius: var(--r-pill);
   background: var(--surface); border: 1px solid var(--line); color: var(--muted); font-size: 17px; font-weight: 600;
 }
 .fh-recent-toggle .fh-ic { width: 20px; height: 20px; }
