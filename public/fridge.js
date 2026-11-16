@@ -109,7 +109,7 @@
   const shopLink = (term) => (EMBED_SHOP ? '#/einkauf' + (term ? '/suche/' + encodeURIComponent(term) : '') : shopUrl(term));
 
   // „400 g Kartoffeln“ → „Kartoffeln“, „1 Zoll frischer Ingwer“ → „Ingwer“
-  const UNITS = 'g|kg|mg|ml|cl|dl|l|liter|el|tl|esslöffel|teelöffel|msp|prisen?|packung(?:en)?|pck|dosen?|zehen?|bund|stück|stk|scheiben?|zoll|cm|handvoll|becher|gläser|glas|tassen?|blatt|blätter|zweige?|knollen?|würfel|beutel|blöcke|block|köpfe|kopf';
+  const UNITS = 'g|kg|mg|ml|cl|dl|l|liter|(?:geh\\.|gestr\\.)\\s*(?:el|tl)|el|tl|esslöffel|teelöffel|msp|prisen?|packung(?:en)?|pck|dosen?|zehen?|bund|stück|stk|scheiben?|zoll|cm|handvoll|becher|gläser|glas|tassen?|blatt|blätter|zweige?|stängel|stiele?|knollen?|würfel|beutel|blöcke|block|köpfe|kopf';
   const UNIT_RE = new RegExp(`^(?:${UNITS})\\.?(?![a-zäöüß])\\s*`, 'i');
   function shopTerm(ingredient) {
     let s = ingredient.replace(/\(.*?\)/g, ' ').replace(/[‘’'"„“‚][^‘’'"„“‚]*[‘’'"„“‚]/g, ' ');
@@ -209,6 +209,9 @@
         byCookidoo = new Map(recipes.filter((r) => r.cookidoo).map((r) => [r.cookidoo, r]));
         renderHome();
         route();
+        // Wurde zuletzt ein Katalog-Rezept gekocht, kennt die frische Seite es noch nicht: nachladen fürs Weiterkochen-Banner
+        const s0 = store.get('session', null);
+        if (EMBED_SHOP && s0 && KAT_SLUG.test(s0.id) && Date.now() - s0.ts < SESSION_MAX_AGE) loadKatalog(s0.id).then(renderResume, () => {});
         applyCooked();   // zuletzt Gekochte sofort aus dem Zwischenstand ausblenden
         loadKochbuch();  // frischen Stand vom NAS nachladen
         // Korb-Anzahl fürs Badge direkt von der Einkauf-API. Den Einkauf selbst NICHT mehr vorladen: Er blieb sonst dauerhaft
@@ -549,6 +552,53 @@
       <span><b>Weiterkochen:</b> ${esc(r.name)} · Schritt ${s.step} von ${r.steps.length}</span>${icon('chevR')}</button>` : '';
   }
 
+  // ---------- Katalog-Rezepte (Cookidoo, nicht in der Sammlung) ----------
+  // Geplante Rezepte aus dem Cookidoo-Katalog, die nicht in der Sammlung stehen, lassen sich ad hoc öffnen und kochen
+  // (Wunsch des Nutzers, 2026-11-16). Die Brücke liefert Zutaten und Schritte: GET /cookidoo/api/rezept/<rId>.
+  // Das Rezept kommt nur in byId (Rezeptansicht, Kochmodus, Timer, Weiterkochen) unter der ID „ck-<rId>“, nie in recipes:
+  // keine Kachel, keine Suche, kein Kochbuch, kein Feedback. Gespeichert wird es nicht. Nach einem Neuladen holt die App
+  // es neu, die Brücke hält es dafür 6 h im Speicher.
+  const KAT_SLUG = /^ck-(r\d+)$/;
+  const katalogSlug = (rid) => 'ck-' + rid;
+  const katalogPending = new Map(); // slug → laufende Anfrage
+  const fmtMin = (m) => (m < 60 ? `${m} Min.` : m % 60 ? `${Math.floor(m / 60)} Std. ${m % 60} Min.` : `${m / 60} Std.`);
+  function katalogRecipe(d) {
+    return {
+      id: katalogSlug(d.id), katalog: true, cookidoo: d.id, name: d.titel, title: d.titel, category: 'Cookidoo-Katalog',
+      // Großes Bild sofort: dieselbe URL wie bildGross im Wochenplan, also meist schon im Browser-Cache (Ladeansicht)
+      thumb: d.bild || d.bildKlein || '', image: d.bild || '', yield: d.portionen || '',
+      total: d.gesamtzeit || 0, active: d.arbeitszeit || 0,
+      ingredients: d.zutaten || [], steps: d.schritte || [], utensils: d.utensilien || [], notes: d.hinweise || [],
+    };
+  }
+  function loadKatalog(slug) {
+    if (byId.has(slug)) return Promise.resolve(byId.get(slug));
+    if (!katalogPending.has(slug)) {
+      const p = ckFetch('rezept/' + KAT_SLUG.exec(slug)[1])
+        .then((d) => { const rec = katalogRecipe(d); byId.set(slug, rec); return rec; })
+        .finally(() => katalogPending.delete(slug));
+      katalogPending.set(slug, p);
+    }
+    return katalogPending.get(slug);
+  }
+  // Ladeansicht: Bild und Titel sofort aus dem Steckbrief des Wochenplans, danach baut route() die echte Ansicht auf
+  function showKatalogLoading(slug) {
+    const rid = KAT_SLUG.exec(slug)[1];
+    const s = (plan && plan.rezepte && plan.rezepte[rid]) || {};
+    el.recipe.innerHTML = `<div class="fh-scroll">
+        <div class="fh-hero">${pvImg(s.bildGross || s.bild)}
+          <button class="fh-round fh-hero-back" data-act="close-recipe" aria-label="Zurück">${icon('back')}</button></div>
+        <div class="fh-rec-head"><div class="fh-kicker">Cookidoo-Katalog</div><h1>${esc(s.titel || 'Rezept aus Cookidoo')}</h1>
+          <p class="fh-kat-status" id="fh-kat-status">Zutaten und Schritte kommen aus Cookidoo …</p></div></div>`;
+    el.recipe.hidden = false;
+    loadKatalog(slug).then(() => { if (currentId() === slug) route(); }, (err) => {
+      const st = $('#fh-kat-status');
+      if (!st || currentId() !== slug) return;
+      st.classList.add('is-error');
+      st.innerHTML = `${esc(err.message)}<br><button class="fh-btn" data-act="kat-retry">${icon('refresh')}Nochmal versuchen</button>`;
+    });
+  }
+
   // ---------- Navigation (Hash-Routen: #/  #/r/<id>  #/r/<id>/k/<schritt>) ----------
   let currentHash = null;
   let view = 'home';
@@ -629,7 +679,10 @@
 
     const r = parseHash();
     const rec = r.id ? byId.get(r.id) : null;
-    if ((r.view === 'recipe' || r.view === 'cook') && !rec) { location.replace('#/'); return; }
+    if ((r.view === 'recipe' || r.view === 'cook') && !rec) {
+      if (!EMBED_SHOP || !KAT_SLUG.test(r.id)) { location.replace('#/'); return; }
+      r.view = 'recipe'; // Katalog-Rezept noch nicht geladen: Ladeansicht, danach ruft showKatalogLoading route() erneut
+    }
     if (r.view === 'shop' && !EMBED_SHOP) { location.href = shopUrl(r.term); return; }
     if (r.view === 'plan' && !EMBED_SHOP) { location.replace('#/'); return; } // ohne Cookidoo-Brücke (GitHub Pages) kein Plan
 
@@ -649,7 +702,7 @@
       el.recipe.hidden = r.view !== 'recipe';
       el.shop.hidden = r.view !== 'shop';
       el.pv.hidden = r.view !== 'plan';
-      if (r.view === 'recipe') showRecipe(rec);
+      if (r.view === 'recipe') { if (rec) showRecipe(rec); else showKatalogLoading(r.id); }
       else if (r.view === 'shop') showShop(r.term);
       else if (r.view === 'plan') showPlanView();
       else { recipeScroll = { id: null, top: 0 }; renderResume(); }
@@ -684,31 +737,40 @@
       <a class="fh-round fh-cart" href="${esc(shopLink(term))}" aria-label="${esc(term)} im Einkauf suchen">${icon('cart')}</a></li>`;
   };
 
+  // Katalog-Rezepte: Gesamt- und Arbeitszeit wie in Cookidoo, kein Autor (steht im Kicker)
+  const recipePills = (rec) => (rec.katalog
+    ? pill('clock', rec.total ? fmtMin(rec.total) : '') + pill('timer', rec.active && rec.active !== rec.total ? `${fmtMin(rec.active)} Arbeitszeit` : '') + pill('users', rec.yield)
+    : pill('clock', fmtTime(rec.prepTime)) + pill('users', fmtYield(rec.yield)) + pill('pen', rec.author));
+  const notePanel = (title, html) => `<section class="fh-panel"><h2>${title}</h2>${html}</section>`;
+
   function showRecipe(rec) {
     const checks = new Set(store.get('checks.' + rec.id, []));
     const s = session();
     const resumeStep = s && s.id === rec.id ? s.step : 0;
+    const foreignImg = rec.katalog ? ' referrerpolicy="no-referrer"' : ''; // Bilder vom Cookidoo-Server wie im Planen-Tab
     el.recipe.innerHTML = `
       <div class="fh-scroll" id="fh-rscroll">
-        <div class="fh-hero">${rec.thumb ? `<img id="fh-hero" src="${esc(rec.thumb)}" alt="">` : ''}
+        <div class="fh-hero">${rec.thumb ? `<img id="fh-hero" src="${esc(rec.thumb)}" alt=""${foreignImg}>` : ''}
           <button class="fh-round fh-hero-back" data-act="close-recipe" aria-label="Zurück">${icon('back')}</button>
-          ${EMBED_SHOP ? `<button class="fh-round fh-hero-fb" data-act="fb-open" aria-label="Feedback zum Rezept geben">${icon('pen')}</button>` : ''}</div>
+          ${EMBED_SHOP && !rec.katalog ? `<button class="fh-round fh-hero-fb" data-act="fb-open" aria-label="Feedback zum Rezept geben">${icon('pen')}</button>` : ''}</div>
         <div class="fh-rec-head">
           <div class="fh-kicker">${esc(rec.category)}</div>
           <h1>${esc(rec.title)}</h1>
-          <div class="fh-pills">${pill('clock', fmtTime(rec.prepTime))}${pill('users', fmtYield(rec.yield))}${pill('pen', rec.author)}</div>
+          <div class="fh-pills">${recipePills(rec)}</div>
           ${tagsBlock(rec)}
-          ${cookedBlock(rec)}
+          ${rec.katalog ? '' : cookedBlock(rec)}
         </div>
         <section class="fh-panel">
           <div class="fh-panel-head"><h2>Zutaten</h2>
             <button class="fh-textbtn" data-act="reset-checks"${checks.size ? '' : ' hidden'}>Häkchen löschen</button></div>
           <ul class="fh-ingr">${rec.ingredients.map((x, i) => ingrRow(x, i, checks)).join('')}</ul>
         </section>
+        ${rec.utensils && rec.utensils.length ? notePanel('Utensilien', `<p class="fh-note">${rec.utensils.map(esc).join(' · ')}</p>`) : ''}
         <section class="fh-panel">
           <h2>Zubereitung</h2>
           <ol class="fh-steplist">${rec.steps.map((t, i) => `<li data-act="cook-at" data-step="${i + 1}"><span class="fh-num">${i + 1}</span><span>${esc(t)}</span></li>`).join('')}</ol>
         </section>
+        ${rec.notes && rec.notes.length ? notePanel('Hinweise', rec.notes.map((n) => `<p class="fh-note">${esc(n)}</p>`).join('')) : ''}
       </div>
       <div class="fh-bar">${cookidooButton(rec)}${mainAction(rec, resumeStep)}</div>
       <aside class="fh-drawer" id="fh-plan" hidden></aside>`;
@@ -719,6 +781,7 @@
     // Erst das kleine Vorschaubild zeigen, dann das große Foto nachladen
     if (rec.image && rec.image !== rec.thumb) {
       const big = new Image();
+      if (rec.katalog) big.referrerPolicy = 'no-referrer';
       big.onload = () => { const h = $('#fh-hero'); if (h && currentId() === rec.id) h.src = rec.image; };
       big.src = rec.image;
     }
@@ -767,6 +830,7 @@
   const picnicHref = (id) => `nl.picnic-supermarkt://store/page;id=selling-group-details-page,selling_group_id=${encodeURIComponent(id)}`;
   const picnicTag = (rec) => (PICNIC_APP && !rec.picnic ? `<span class="fh-tag fh-tag-todo">${icon('cart')}Muss noch in Picnic angelegt werden</span>` : '');
   function tagsBlock(rec) {
+    if (rec.katalog) return `<div class="fh-ck fh-tags"><span class="fh-tag">${icon('cal')}Aus Cookidoo · nicht in der Sammlung</span></div>`;
     const tags = cookidooTag(rec) + picnicTag(rec);
     return tags ? `<div class="fh-ck fh-tags">${tags}</div>` : '';
   }
@@ -940,11 +1004,12 @@
     return out;
   }
 
-  // Karte eines geplanten Gerichts. Die Fläche öffnet eigene Rezepte, bei Katalog-Rezepten (gibt es nur in Cookidoo bzw. am
-  // Thermomix) kommt ein Hinweis. Der Knopf oben rechts nimmt das Gericht zum Verschieben auf. Link und Knopf liegen als
-  // Geschwister über der Karte (ein Knopf in einem Link wäre ungültig).
+  // Karte eines geplanten Gerichts. Die Fläche öffnet Rezepte der Sammlung und, ad hoc von der Brücke geladen, Katalog-Rezepte
+  // (#/r/ck-<rId>). Nur bei eigenen Cookidoo-Kreationen außerhalb der Sammlung kommt ein Hinweis. Der Knopf oben rechts nimmt
+  // das Gericht zum Verschieben auf. Link und Knopf liegen als Geschwister über der Karte (ein Knopf in einem Link wäre ungültig).
+  const itemHref = (it) => (it.rec ? `#/r/${it.rec.id}` : KATALOG_ID.test(it.id) ? `#/r/${katalogSlug(it.id)}` : '');
   const itemTag = (it, iso, cls, inner) => `<div class="${cls}${it.rec ? '' : ' is-foreign'}" data-ck="${esc(it.id)}" data-day="${iso}">${inner}
-    ${it.rec ? `<a class="fh-stretch" href="#/r/${esc(it.rec.id)}" aria-label="${esc(it.title)} öffnen"></a>`
+    ${itemHref(it) ? `<a class="fh-stretch" href="${esc(itemHref(it))}" aria-label="${esc(it.title)} öffnen"></a>`
       : `<button class="fh-stretch" data-act="pv-foreign" aria-label="${esc(it.title)}"></button>`}
     <button class="fh-mv" data-act="pv-move" data-id="${esc(it.id)}" data-day="${iso}" aria-label="${esc(it.title)} verschieben">${icon('move')}</button></div>`;
   const pvImg = (src) => (src ? `<img src="${esc(src)}" alt="" decoding="async" referrerpolicy="no-referrer">` : '');
@@ -1327,7 +1392,7 @@
   function finishCook(rec) {
     store.del('session');
     store.del('checks.' + rec.id);
-    markCooked(rec.id, true); // Kochen beendet = heute gekocht (blendet es auf der Startseite aus, „Probe gekocht“)
+    if (!rec.katalog) markCooked(rec.id, true); // Kochen beendet = heute gekocht (blendet es auf der Startseite aus, „Probe gekocht“)
     toast('Guten Appetit!');
     goBack('#/r/' + rec.id);
   }
@@ -1746,7 +1811,8 @@
       case 'pv-move-cancel': cancelMove(); break;
       case 'pv-remove': doRemove(); break;
       case 'pv-undo': undoMove(); break;
-      case 'pv-foreign': toast('Rezept aus dem Cookidoo-Katalog – am Thermomix unter „Meine Woche“', 3200); break;
+      case 'pv-foreign': toast('Eigenes Cookidoo-Rezept, nicht in der Sammlung – am Thermomix unter „Meine Woche“', 3200); break;
+      case 'kat-retry': route(); break;
       case 'ingr': toggleIngredient(t); break;
       case 'ck-open': openPlan(); break;
       case 'ck-close': closePlan(); break;

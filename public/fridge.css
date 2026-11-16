@@ -444,6 +444,11 @@ html.fridge.fh-moving .fh-timers { display: none; }
 .fh-ck-day.is-active .fh-cal-stack > i:not(.fh-cal-more) { background: var(--on-accent); }
 .fh-ck-day:disabled { opacity: .5; }
 .fh-ck-status { min-height: 1.4em; margin: 14px 0 0; color: var(--muted); font-size: 17px; }
+/* Katalog-Rezept (ad hoc von der Cookidoo-Brücke): Ladehinweis bzw. Fehler mit „Nochmal versuchen“, Utensilien, Hinweise */
+.fh-kat-status { margin: 4px 0 0; color: var(--muted); font-size: 20px; line-height: 1.45; }
+.fh-kat-status.is-error { color: var(--warn); }
+.fh-kat-status .fh-btn { margin-top: 16px; }
+.fh-note { margin: 4px 0 14px; font-size: 19px; line-height: 1.45; }
 .fh-panel { margin: 16px; padding: 18px 18px 6px; background: var(--surface); border-radius: var(--r-card); }
 .fh-panel h2 { margin: 0 0 6px; font-size: 25px; }
 .fh-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -712,6 +717,8 @@ html.fridge.fh-drawer-open .fh-timers { display: none; }
   .fh-cart { width: 44px; height: 44px; }
   .fh-cart .fh-ic { width: 22px; height: 22px; }
   .fh-steplist li { gap: 12px; padding: 12px 0; font-size: 16.5px; }
+  .fh-note { margin: 2px 0 12px; font-size: 16.5px; }
+  .fh-kat-status { font-size: 17px; }
   .fh-num { width: 30px; height: 30px; font-size: 15px; }
   .fh-bar { gap: 10px; padding: 10px 12px var(--pad-b); }
   .fh-btn { min-height: 58px; padding: 0 18px; gap: 8px; border-radius: 18px; font-size: 19px; }
